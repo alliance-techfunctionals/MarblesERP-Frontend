@@ -1,0 +1,104 @@
+<div
+  *ngIf="{
+    qualityList: (qualityList$ | async) ?? [],
+    designList: (designList$ | async) ?? [],
+    colorList: (colorList$ | async) ?? [],
+    sizeList: (sizeList$ | async) ?? [],
+    supplierUserList: (supplierUserList$ | async) ?? []
+  } as group"
+>
+  <div class="col-md-12">
+    <app-card cardTitle="" [hidHeader]="true" [options]="false">
+      <form [formGroup]="inventoryForm">
+        <h5>{{ inventoryForm.value.id === 0 ? "Add" : "Edit" }} Inventory</h5>
+        <hr />
+        <div class="row">
+          <div class="col-md-6">
+            <!-- select quality -->
+            <div class="form-group">
+              <label for="quality">Quality<span class="required">*</span></label>
+              <select class="form-control" id="quality" formControlName="quality">
+                <option value="0" disabled>Select</option>
+                <option *ngFor="let quality of group.qualityList" value="{{ quality.id }}">{{ quality.name }}</option>
+              </select>
+              <ul *ngIf="quality.touched && quality.invalid">
+                <li *ngIf="quality.errors?.['min']" class="text-danger">Quality is required</li>
+                <li *ngIf="quality.errors?.['message']" class="text-danger">{{ quality.errors?.["message"] }}</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <!-- select design -->
+            <div class="form-group">
+              <label for="design">Design<span class="required">*</span></label>
+              <select class="form-control" id="design" formControlName="design">
+                <option value="0" disabled>Select</option>
+                <option *ngFor="let design of group.designList" value="{{ design.id }}">{{ design.name }}</option>
+              </select>
+              <ul *ngIf="design.touched && design.invalid">
+                <li *ngIf="design.errors?.['min']" class="text-danger">Design is required</li>
+                <li *ngIf="design.errors?.['message']" class="text-danger">{{ design.errors?.["message"] }}</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <!-- select color -->
+            <div class="form-group">
+              <label for="design">Colour<span class="required">*</span></label>
+              <input type="text" class="form-control text-capitalize" id="city" placeholder="Ex: Blue" formControlName="color" [typeahead]="group.colorList" />
+              <ul *ngIf="color.touched && color.invalid">
+                <li *ngIf="color.errors?.['required']" class="text-danger">Colour is required</li>
+                <li *ngIf="color.errors?.['message']" class="text-danger">{{ color.errors?.["message"] }}</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <!-- select size -->
+            <div class="form-group">
+              <label for="size">Size<span class="required">*</span></label>
+              <input type="text" class="form-control" id="size" placeholder="Ex: 5*6" formControlName="size" [typeahead]="group.sizeList" />
+              <ul *ngIf="size.touched && size.invalid">
+                <li *ngIf="size.errors?.['required']" class="text-danger">Size is required</li>
+                <li *ngIf="size.errors?.['message']" class="text-danger">{{ size.errors?.["message"] }}</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <!-- select quantity -->
+            <div class="form-group">
+              <label for="quantity">Quantity</label>
+              <input type="number" class="form-control" id="quantity" placeholder="Ex: 1" formControlName="quantity" />
+              <ul *ngIf="quantity.touched && quantity.invalid">
+                <li *ngIf="quantity.errors?.['required']" class="text-danger">Quantity is required</li>
+                <li *ngIf="quantity.errors?.['message']" class="text-danger">{{ quantity.errors?.["message"] }}</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <!-- select quantity -->
+            <div class="form-group">
+              <label for="quantity">Image</label>
+              <input type="file" class="form-control" id="quantity" (change)="onFileSelected($event)" formControlName="file"/>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <!-- select quantity -->
+            <div class="form-group">
+              <label for="supplier">Supplier</label>
+              <select id="supplier" class="form-control" formControlName="supplierId">
+                <option value="0">Select</option>
+                <option *ngFor="let supplier of group.supplierUserList" value="{{ supplier.id }}">{{ supplier.name }}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </form>
+      <div class="col-md-12">
+        <button type="button" class="btn btn-outline-primary m-r-15" [routerLink]="'/inventory'">Cancel</button>
+        <button type="button" *ngIf="inventoryForm.dirty" class="btn btn-primary" [disabled]="inventoryForm.invalid" (click)="uppertInventory()">{{ inventoryForm.value.id === 0 ? "Save" : "Update" }}</button>
+      </div>
+    </app-card>
+  </div>
+</div>

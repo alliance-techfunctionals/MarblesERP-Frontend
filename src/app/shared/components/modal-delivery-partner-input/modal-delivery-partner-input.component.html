@@ -1,0 +1,24 @@
+<!-- <div
+  *ngIf="{
+    deliveryPartnersList: (deliveryPartnersList$ | async) ?? []
+  } as group"
+  > -->
+  <div class="modal-body text-center">
+    <p class="m-b-0">
+      <b
+        >Enter Delivery Partner Details</b
+      >
+    </p>
+    <br>
+    <form [formGroup]="inputForm">
+      <div class="form-group">
+        <input type="text" formControlName="name" class="form-control" placeholder="Delivery Partner Name" />
+      </div>
+      <div class="form-group">
+        <input type="text" formControlName="url" class="form-control" placeholder="URL" />
+      </div>
+      <button type="button" class="btn btn-primary m-r-15" (click)="modalConfirm()" [disabled]="inputForm.invalid">Save</button>
+      <button type="button" class="btn btn-outline-primary" (click)="modalDecline()">Cancel</button>
+    </form>
+  </div>
+<!-- </div> -->

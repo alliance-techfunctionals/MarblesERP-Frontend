@@ -1,0 +1,103 @@
+<div
+  *ngIf="{
+    voucherList: (voucherList$ | async) ?? []
+  } as group"
+>
+  <div class="col-xl-12" *ngIf="!isUserAdmin">
+    <app-card cardTitle="" [hidHeader]="true" [options]="false" blockClass="table-border-style">
+      <h4 class="text-end">
+        <button class="btn btn-primary bi-plus" (click)="navigateVoucher()">Add</button>
+      </h4>
+      <div class="col-md-12 text-center">
+        <img src="assets/images/KCI Logo.png" alt="">
+      </div>
+    </app-card>
+  </div>
+  <div class="col-xl-12" *ngIf="isUserAdmin">
+    <app-card cardTitle="" [hidHeader]="true" [options]="false" blockClass="table-border-style">
+      <h4 class="d-flex"></h4>
+      <h4 class="text-end d-flex flex-row justify-content-between">
+        <h4>Voucher List</h4>
+        <button class="btn btn-primary" (click)="navigateVoucher()">
+          <i class="feather icon-plus"></i>
+          Add
+        </button>
+      </h4>
+
+      <form class="row row-cols-sm-auto" [formGroup]="dateFilterForm">
+        <div class="col-12">
+          <div class="dp-hidden position-absolute">
+            <div class="input-group">
+              <input
+                name="datepicker"
+                class="form-control"
+                ngbDatepicker
+                #datepicker="ngbDatepicker"
+                [autoClose]="'outside'"
+                (dateSelect)="onDateSelection($event)"
+                [displayMonths]="2"
+                [dayTemplate]="t"
+                outsideDays="hidden"
+                [startDate]="fromDate1!"
+                tabindex="-1"
+                [maxDate]="limitDate!"
+              />
+              <ng-template #t let-date let-focused="focused">
+                <span
+                  class="custom-day"
+                  [class.focused]="focused"
+                  [class.range]="isRange(date)"
+                  [class.faded]="isHovered(date) || isInside(date)"
+                  (mouseenter)="hoveredDate = date"
+                  (mouseleave)="hoveredDate = null"
+                >
+                  {{ date.day }}
+                </span>
+              </ng-template>
+            </div>
+          </div>
+          <div class="input-group">
+            <input
+              #dpFromDate
+              class="form-control"
+              placeholder="yyyy-mm-dd"
+              name="dpFromDate"
+              [value]="formatter.format(fromDate1)"
+              (input)="fromDate1 = dateService.validateInput(fromDate1, dpFromDate.value)"
+            />
+            <button class="btn btn-outline-secondary bi bi-calendar3" (click)="datepicker.toggle()" type="button"></button>
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="input-group">
+            <input
+              #dpToDate
+              class="form-control"
+              placeholder="yyyy-mm-dd"
+              name="dpToDate"
+              [value]="formatter.format(toDate1)"
+              (input)="toDate1 = dateService.validateInput(toDate1, dpToDate.value)"
+            />
+            <button class="btn btn-outline-secondary bi bi-calendar3" (click)="datepicker.toggle()" type="button"></button>
+          </div>
+        </div>
+        <button id="filterAndResetBtn" class="btn btn-primary m-r-10" [disabled]="dateFilterForm.invalid" (click)="filterClick()">Filter</button>
+        <button id="filterAndResetBtn" class="btn btn-primary" (click)="resetClick()">Reset</button>
+      </form>
+
+      <hr>
+      <div>
+        <ag-grid-angular 
+          [pagination]="true" 
+          [paginationPageSizeSelector]="paginationPageSize" 
+          [paginationPageSize]="10" 
+          [defaultColDef]="agGridService.defaultColDef" 
+          domLayout="autoHeight" 
+          style="width: 100%" 
+          class="ag-theme-quartz" 
+          [rowData]="group.voucherList" 
+          [columnDefs]="colDefs"> 
+        </ag-grid-angular>
+      </div>
+    </app-card>
+</div>

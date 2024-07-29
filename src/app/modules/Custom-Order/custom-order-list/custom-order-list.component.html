@@ -1,0 +1,63 @@
+<div *ngIf="{
+    customOrderList: (customOrderList$ | async) ?? [],
+  } as group">
+  <div class="col-xl-12">
+    <app-card cardTitle="" [hidHeader]="true" [options]="false" blockClass="table-border-style">
+      <h4 class="d-flex"></h4>
+      <h4 class="text-end d-flex flex-row justify-content-between">
+        <h4>Custom Order List</h4>
+      </h4>
+      <hr />
+
+      <ag-grid-angular 
+        [pagination]="true" 
+        [paginationPageSizeSelector]="paginationPageSize" 
+        [paginationPageSize]="10"
+        [defaultColDef]="defaultColDef" 
+        domLayout="autoHeight" 
+        style="width: 100%" 
+        class="ag-theme-quartz"
+        [rowData]="group.customOrderList" 
+        [columnDefs]="colDefs"> 
+      </ag-grid-angular>
+
+      <!-- <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Order No.</th>
+              <th>Supplier</th>
+              <th>POC</th>
+              <th>EDD</th>
+              <th>Description</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let order of group.customOrderList | sortDescending: 'desc' | paginate: pagingConfig; let i = index">
+              
+              <td>{{ i+1 }}</td>
+              <td>{{ order.orderNumber }}</td>
+              <td>{{ order.supplierId | getUserByRoleId | async | titlecase }}</td>
+              <td>{{ order.pocId | getUserByRoleId | async | titlecase }}</td>
+              <td>{{ order.edd? (order.edd | date: 'mediumDate'): 'N/a' }}</td>
+              <td class="description-column">
+                <span class="description-text" [title]="order.orderDescription">{{ order.orderDescription | slice: 0: descriptionLimit }}</span>
+                <span *ngIf="order.orderDescription.length > descriptionLimit" class="ellipsis">...</span>
+              </td>
+              <td>
+                <i class="feather icon-edit m-r-15" (click)="navigateCustomOrder(order.id)"></i>
+                <i class="bi bi-check2-circle" (click)="openReceivedConfirmationModal(order)"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div> 
+      <div class="d-flex justify-content-center">
+        <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="pagingConfig.currentPage = $event"> </pagination-controls>
+      </div> -->
+
+    </app-card>
+  </div>
+</div>

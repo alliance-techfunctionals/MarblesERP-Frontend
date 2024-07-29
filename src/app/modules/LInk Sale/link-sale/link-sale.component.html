@@ -1,0 +1,43 @@
+<div
+  *ngIf="{
+    saleList: (saleList$ | async) ?? [],
+    voucherList: (voucherList$ | async) ?? [],
+  } as group"
+>
+  <div class="col-md-12">
+    <app-card cardTitle="Link Sale" [hidHeader]="false" [options]="false">
+      <form [formGroup]="linkSaleForm">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="orderNumber">Order Number</label>
+              <select id="orderNumber" class="form-control" formControlName="saleMasterId" (change)="fillVoucherAndInvoiceNo()">
+                <option value="0">Select</option>
+                <option *ngFor="let sale of group.saleList; let i=index" value="{{ sale.id }}">{{ sale.orderNumber + ' - ' + (sale.customerId | getClientNameById | async | titlecase) + ' - ' + (sale.country | titlecase) }}</option>
+              </select>
+            </div>
+            <button class="btn btn-primary m-r-10" [disabled]="linkSaleForm.invalid || (voucherId.value == '0' && invoiceNo.value == '')" (click)="linkSaleClick()">Save</button>
+            <button class="btn btn-primary" [disabled]="saleMasterId.errors?.['min']" (click)="openDeleteConfirmationModal()">Remove</button>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="voucherCode">Voucher Code</label>
+              <select id="voucherCode" class="form-control" formControlName="voucherId">
+                <option value="0">Select</option>
+                <option *ngFor="let voucher of group.voucherList; let i=index" value="{{ voucher.id }}">{{ voucher.voucherCode + '/ ' + voucher.companyName }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="invoiceNo">Invoice No</label>
+              <input type="text" class="form-control" id="invoiceNo" formControlName="invoiceNo">
+            </div>
+          </div>
+        </div>
+      </form>
+    </app-card>
+  </div>
+</div>

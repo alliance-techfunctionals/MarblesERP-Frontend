@@ -1,0 +1,87 @@
+<div
+  *ngIf="{
+    currencyList:  []
+  } as group"
+>
+  <div class="col-md-12">
+    <app-card cardTitle="" [hidHeader]="true" [options]="false">
+      <h5>Order Details</h5>
+      <hr />
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <span class="fw-bold">Date - {{ sale?.orderDate | date: 'dd MMM YYYY' }}</span><br>
+          <span class="fw-bold">Order No: {{ sale?.orderNumber }}&nbsp;&nbsp;&nbsp;&nbsp; Invoice No: {{ sale?.gstInvoiceNumber || 'N/A' }}&nbsp;&nbsp;&nbsp;&nbsp; Voucher No: {{ sale?.voucherCode == 'N/A'?'N/A (Not Yet Assigned)': sale?.voucherCode }}</span><br>
+        </div>
+        
+        <div class="col-md-6"></div>
+
+        <div class="col-md-6 mb-3">
+          <h6>Carpet Details</h6>
+          <table class="table">
+            <tr>
+              <td class="fw-bold">Quality</td>
+              <td *ngFor="let product of sale?.details;let i=index">{{ product.quality }}</td>
+            </tr>
+            <tr>
+              <td class="fw-bold">Design</td>
+              <td *ngFor="let product of sale?.details;let i=index">{{ product.design }}</td>
+            </tr>
+            <tr>
+              <td class="fw-bold">Colour</td>
+              <td *ngFor="let product of sale?.details;let i=index">{{ product.colour }}</td>
+            </tr>
+            <tr>
+              <td class="fw-bold">Size</td>
+              <td *ngFor="let product of sale?.details;let i=index">{{ product.size }}</td>
+            </tr>
+            <tr>
+              <td class="fw-bold">Quantity</td>
+              <td *ngFor="let product of sale?.details;let i=index">{{ product.quantity }}</td>
+            </tr>
+            <tr>
+              <td class="fw-bold">Description</td>
+              <td *ngFor="let product of sale?.details;let i=index">{{ product.description || '-' }}</td>
+            </tr>
+          </table>
+        </div>
+
+        <hr>
+
+        <div class="col-md-6 mb-3">
+          <span class="fw-bold">Customer Details - </span><br>
+          {{ sale?.customerName }} <br>
+          {{ sale?.formattedAddress }} <br>
+          {{ sale?.city + ', ' + sale?.pinCode }} <br>
+          {{ sale?.state + ', ' + sale?.country }} <br>
+          <span class="fw-bold">Contact - </span> {{ sale?.mobileNumberList![0] }} <br>
+          <span class="fw-bold">Email - </span> {{ sale?.emailAddressList![0] }} <br>
+        </div>
+
+        <hr>
+
+        <div class="col-md-6 mb-3">
+          <span class="fw-bold">Order Status: </span>{{ sale?.orderStatusName }}
+        </div>
+
+        <div class="col-md-6"></div>
+
+        <div class="col-md-6 mb-3 fw-bold">
+          <span>SalesMan: </span>{{ sale?.salesManName }}
+        </div>
+
+        <hr>
+
+        <div class="col-md-6 mb-3">
+          <span class="fw-bold">Payment Details: </span><br>
+          {{ sale?.isFullPayment? 'Full Payment has been received at the time of sale': 'Partial Payment has been received at the time of sale' }} <br>
+        </div>
+
+        <div class="col-md-6"></div>
+
+        <div class="col-md-6">
+          <button class="btn btn-outline-primary" routerLink="/sale">Back</button>
+        </div>
+      </div>
+    </app-card>
+  </div>
+</div>

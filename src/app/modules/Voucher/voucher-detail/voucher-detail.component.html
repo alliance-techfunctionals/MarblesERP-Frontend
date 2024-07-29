@@ -1,0 +1,101 @@
+<div
+  *ngIf="{
+    salesManUserList: (salesManUserList$ | async) ?? []
+  } as group"
+>
+  <div class="col-md-12">
+    <app-card cardTitle="" [hidHeader]="true" [options]="false">
+      <form [formGroup]="voucherForm">
+        <h5>{{ voucherForm.value.id === 0 ? "Add" : "Edit" }} Voucher</h5>
+        <hr />
+        <div class="row">
+          <div class="col-md-6">
+            <!-- show voucher number -->
+            <div class="form-group">
+              <label for="voucherNo">Voucher Number<span class="required">*</span></label>
+              <input type="text" class="form-control" id="name" formControlName="voucherCode" />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <!-- enter name -->
+            <div class="form-group">
+              <label for="companyName">Company Name<span class="required">*</span></label>
+              <input type="text" class="form-control text-capitalize" id="companyName" placeholder="Ex: KCI" formControlName="companyName" />
+              <ul *ngIf="companyName.touched && companyName.invalid">
+                <li *ngIf="companyName.errors?.['required']" class="text-danger">Company Name is required</li>
+                <li *ngIf="companyName.errors?.['message']" class="text-danger">{{ companyName.errors?.["message"] }}</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <!-- enter driver -->
+            <div class="form-group">
+              <label for="driverName">Driver Name<span class="required">*</span></label>
+              <input type="text" class="form-control text-capitalize" id="driverName" placeholder="Ex: John" formControlName="driverName" />
+              <ul *ngIf="driverName.touched && driverName.invalid">
+                <li *ngIf="driverName.errors?.['required']" class="text-danger">Driver Name is required</li>
+                <li *ngIf="driverName.errors?.['message']" class="text-danger">{{ driverName.errors?.["message"] }}</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <!-- enter vehicle No -->
+            <div class="form-group">
+              <label for="vehicleNumber">Vehicle Number</label>
+              <input class="form-control text-uppercase" id="vehicleNumber" placeholder="Ex: UP 80 4512" formControlName="vehicleNumber" />
+              <!-- <ul *ngIf="vehicleNumber.touched && vehicleNumber.invalid">
+                <li *ngIf="vehicleNumber.errors?.['required']" class="text-danger">Vehicle Number is required</li>
+                <li *ngIf="vehicleNumber.errors?.['message']" class="text-danger">{{ vehicleNumber.errors?.["message"] }}</li>
+              </ul> -->
+            </div>
+          </div>
+          <div class="col-md-6">
+            <!-- enter guide name -->
+            <div class="form-group">
+              <label for="guideName">Guide Name</label>
+              <input type="text" class="form-control text-capitalize" id="guideName" placeholder="Ex: John" formControlName="guideName" />
+              <!-- <ul *ngIf="guideName.touched && guideName.invalid">
+                <li *ngIf="guideName.errors?.['required']" class="text-danger">Guide Name is required</li>
+                <li *ngIf="guideName.errors?.['message']" class="text-danger">{{ guideName.errors?.["message"] }}</li>
+              </ul> -->
+            </div>
+          </div>
+          <div class="col-md-6">
+            <!-- select salesMan -->
+            <div class="form-group">
+              <label for="salesMan">Sales Consultant<span class="required">*</span></label>
+              <select class="form-control" id="salesMan" formControlName="salesManId">
+                <option value="0" disabled>Select</option>
+                <option *ngFor="let salesMan of group.salesManUserList | sortDescending: 'desc'" [value]="salesMan.id">
+                  {{ salesMan.name | titlecase }}
+                </option>
+              </select>
+              <ul *ngIf="salesManId.touched && salesManId.invalid">
+                <li *ngIf="salesManId.errors?.['required']" class="text-danger">Sales Consultant is required</li>
+                <li *ngIf="salesManId.errors?.['message']" class="text-danger">{{ salesManId.errors?.["message"] }}</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <!-- enter comments -->
+            <div class="form-group">
+              <label for="createdOn">Voucher Date</label>
+              <input type="datetime-local" class="form-control" id="createdOn" formControlName="voucherDate">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <!-- enter comments -->
+            <div class="form-group">
+              <label for="comments">Comments</label>
+              <textarea class="form-control" rows="2" id="comments" formControlName="comments"></textarea>
+            </div>
+          </div>
+        </div>
+      </form>
+      <div class="col-md-12">
+        <button type="button" class="btn btn-outline-primary m-r-15" [routerLink]="'/voucher'">Cancel</button>
+        <button type="button" *ngIf="voucherForm.dirty" class="btn btn-primary" [disabled]="voucherForm.invalid" (click)="uppertVoucher()">{{ voucherForm.value.id === 0 ? "Save" : "update" }} </button>
+      </div>
+    </app-card>
+  </div>
+</div>

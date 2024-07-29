@@ -1,0 +1,54 @@
+$color: red;
+.required{
+  color: $color;
+}
+
+.icon-edit{
+  color: blue;
+}
+
+.icon-trash-2{
+  color: $color;
+}
+
+.icon-edit:hover, .icon-trash-2:hover{
+  cursor: pointer;
+}
+
+ul{
+  padding: 0;
+}
+
+li{
+  list-style-type: none;
+}
+
+ngb-rating {
+  color: #FFC107;
+  font-size: 40px;
+}
+
+// body {
+//   padding: 3rem;
+// }
+
+
+
+.modalAClass .modal-content {
+  border: none;
+  background: transparent !important;
+  box-shadow: none;
+}
+.modalAClass .modal-header {
+  width: 5rem !important;
+  height: 5rem !important;
+  border-width: 0.5rem;
+  border-color: white;
+  border-right-color: transparent;
+}
+
+@media screen and (max-width: 600px) {
+  #app-card{
+  margin-top: 2vh;
+}
+}

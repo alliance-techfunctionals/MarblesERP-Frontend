@@ -1,0 +1,30 @@
+.icon-edit{
+  color: blue;
+  cursor: pointer;
+}
+
+.bi-check2-circle{
+  color: green;
+  cursor: pointer;
+}
+
+.description-column {
+  white-space: nowrap; /* Prevent wrapping */
+  overflow: hidden; /* Hide overflow */
+  text-overflow: ellipsis; /* Show ellipsis on overflow */
+  width: 200px; /* Adjust width as needed */
+  cursor: pointer; /* Add cursor pointer on hover */
+}
+
+.description-column:hover .description-text {
+  color: #000; /* Change text color on hover (optional) */
+  text-decoration: underline; /* Add underline on hover (optional) */
+}
+
+.ellipsis {
+  color: #ccc; /* Adjust color */
+}
+
+.description-column:hover .ellipsis {
+  color: #000; /* Change ellipsis color on hover (optional) */
+}

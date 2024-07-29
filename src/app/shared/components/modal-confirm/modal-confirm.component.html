@@ -1,0 +1,8 @@
+    <div class="modal-body text-center">
+      <i [class]="icon"></i>
+      <h5> Are you sure? </h5>
+      <p class="m-b-0">This action will <span>{{message}}.</span></p>
+      <p >This process cannot be undone.</p>
+      <button type="button" class="btn btn-primary m-r-15" (click)="modalConfirm()">OK</button>
+      <button type="button" class="btn btn-outline-primary" (click)="modalDecline()">Cancel</button>
+    </div>

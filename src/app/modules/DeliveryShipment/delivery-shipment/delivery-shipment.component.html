@@ -1,0 +1,108 @@
+<div
+  *ngIf="{
+    toBeShippedSaleList: (toBeShippedSaleList$ | async) ?? [],
+    ordersWithDeliveredStatus: (ordersWithDeliveredStatus$ | async) ?? [],
+    ordersWithNotDeliveredStatus: (ordersWithNotDeliveredStatus$ | async) ?? [],
+  } as group"
+>
+    <div class="col-xl-12">
+        <app-card cardTitle="" [hidHeader]="true" [options]="false" blockClass="table-border-style">
+          <h4 class="text-end d-flex flex-row justify-content-between">
+            <h4>Delivery and Shipments</h4>
+            <button class="btn btn-primary" (click)="openDeliveryPartnerInputModal()">
+              <i class="feather icon-plus"></i>
+              Add Delivery Partner
+            </button>
+          </h4>
+
+          <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+            <!-- <ng-container *ngFor="let role of group.roleList | sortDescending: 'asc' "> -->
+              <li [ngbNavItem]="1">
+                <button ngbNavLink>Shipment</button>
+                <ng-template ngbNavContent>
+                  <ag-grid-angular 
+                    [pagination]="true" 
+                    [paginationPageSizeSelector]="paginationPageSize" 
+                    [paginationPageSize]="10" 
+                    [defaultColDef]="defaultColDef" 
+                    domLayout="autoHeight" 
+                    style="width: 100%" 
+                    class="ag-theme-quartz" 
+                    [rowData]="group.ordersWithNotDeliveredStatus" 
+                    [columnDefs]="colDefs"> 
+                  </ag-grid-angular>
+
+                  <!-- <div class="table-responsive">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>Date</th>
+                          <th>Order No.</th>
+                          <th>Customer Name</th>
+                          <th>Order Status</th>
+                          <th class="px-5">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let sale of group.ordersWithNotDeliveredStatus| sortDescending: 'desc' | paginate: pagingConfig; let i = index">
+                          <td>{{ sale.createdOn | date: 'mediumDate' }}</td>
+                          <td>{{ sale.orderNumber }}</td>
+                          <td>{{ sale.customerId | getClientNameById | async | titlecase}}</td>
+                          <td class="{{ 'order-'+sale.orderStatus}}">{{ orderStatusService.getOrderStatusDisplayName(sale.orderStatus) }}</td>
+                          <td>
+                            <button class="btn btn-outline-primary m-r-10" (click)="openShipmentModal(sale)" [disabled]="sale.orderStatus != 6">Ship Now</button>
+                            <button class="btn btn-outline-primary" (click)="upsertDelivery(sale)" [disabled]="sale.orderStatus != 7">Delivered</button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div> -->
+
+                </ng-template>
+              </li>
+              <li [ngbNavItem]="2">
+                <button ngbNavLink>Delivered</button>
+                <ng-template ngbNavContent>
+                <ag-grid-angular 
+                  [pagination]="true" 
+                  [paginationPageSizeSelector]="false" 
+                  [paginationPageSize]="10" 
+                  [defaultColDef]="defaultColDef" 
+                  domLayout="autoHeight" 
+                  style="width: 100%" 
+                  class="ag-theme-quartz" 
+                  [rowData]="group.ordersWithDeliveredStatus" 
+                  [columnDefs]="colDefsDelivered"> 
+                </ag-grid-angular>
+
+                  <!-- <div class="table-responsive">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>Date</th>
+                          <th>Order No.</th>
+                          <th>Customer Name</th>
+                          <th>Order Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let sale of group.ordersWithDeliveredStatus| sortDescending: 'desc' | paginate: pagingConfig; let i = index">
+                          <td>{{ sale.createdOn | date: 'mediumDate' }}</td>
+                          <td>{{ sale.orderNumber }}</td>
+                          <td>{{ sale.customerId | getClientNameById | async | titlecase}}</td>
+                          <td class="{{ 'order-'+sale.orderStatus}}">{{ orderStatusService.getOrderStatusDisplayName(sale.orderStatus) }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div> -->
+                
+                </ng-template>
+              </li>
+            <!-- </ng-container> -->
+          </ul>
+          <div [ngbNavOutlet]="nav" class="mt-2"></div>
+          <!-- <div class="d-flex justify-content-center">
+            <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="pagingConfig.currentPage = $event"> </pagination-controls>
+          </div> -->
+        </app-card>
+</div>

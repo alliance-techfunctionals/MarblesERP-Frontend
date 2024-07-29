@@ -1,0 +1,107 @@
+<div
+  *ngIf="{
+    currencyList: (currencyList) ?? []
+  } as group"
+>
+  <div class="col-md-12">
+    <app-card cardTitle="" [hidHeader]="true" [options]="false">
+      <form [formGroup]="pendingPaymentForm">
+        <h5>Edit Pending Payment</h5>
+        <hr />
+        <div class="row">
+          <div class="col-md-6">
+            <!-- enter order number -->
+            <div class="form-group">
+              <label for="orderNo">Order Number<span class="required">*</span></label>
+              <input type="text" id="orderNo" class="form-control" formControlName="orderNo">
+              <!-- <ul *ngIf="roleId.touched && roleId.invalid">
+                <li *ngIf="roleId.errors?.['required']" class="text-danger">Role is required</li>
+                <li *ngIf="roleId.errors?.['message']" class="text-danger">{{ roleId.errors?.["message"] }}</li>
+              </ul> -->
+            </div>
+          </div>
+          <!-- <div class="col-md-6">
+            <div class="form-group">
+              <label for="clientName">Client Name</label>
+              <input type="text" id="clientName" class="form-control">
+            </div>
+          </div> -->
+          <div class="col-md-6">
+            <!-- select gender -->
+            <div class="form-group">
+              <label for="gender">Status<span class="required">*</span></label>
+              <!-- <input type="text" class="form-control" formControlName="status"> -->
+              <div class="form-check">
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="status" id="due" value="false" formControlName="status">
+                  <label class="form-check-label" for="due">Due</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="status" id="completed" value="true" formControlName="status">
+                  <label class="form-check-label" for="completed">Completed</label>
+                </div>
+              </div>
+              <!-- <ul *ngIf="gender.touched && gender.invalid">
+                <li *ngIf="gender.errors?.['required']" class="text-danger">Gender is required</li>
+                <li *ngIf="gender.errors?.['message']" class="text-danger">{{ gender.errors?.["message"] }}</li>
+              </ul> -->
+            </div>
+          </div>
+          <div class="col-md-6">
+            <!-- enter payment due date -->
+            <div class="form-group">
+              <label for="paymentDate">Payment Date<span class="required">*</span></label>
+              <input type="date" class="form-control"  id="paymentDate" formControlName="paymentDueDate" />
+            </div>
+            <!-- <ul *ngIf="mobileNumber.touched && mobileNumber.invalid">
+              <li *ngIf="mobileNumber.errors?.['required']" class="text-danger">Mobile Number is required</li>
+              <li *ngIf="mobileNumber.errors?.['message']" class="text-danger">{{ mobileNumber.errors?.["message"] }}</li>
+            </ul> -->
+          </div>
+          <div class="col-md-6">
+            <!-- enter comments -->
+            <div class="form-group">
+              <label for="comments">Comments<span class="required">*</span></label>
+              <textarea rows="1" class="form-control" id="comments" formControlName="comments" ></textarea>
+              <!-- <ul *ngIf="emailAddress.touched && emailAddress.invalid">
+                <li *ngIf="emailAddress.errors?.['required']" class="text-danger">E-mail address is required</li>
+                <li *ngIf="emailAddress.errors?.['message']" class="text-danger">{{ emailAddress.errors?.["message"] }}</li>
+              </ul> -->
+            </div>
+          </div>
+          <div class="col-md-2">
+            <!-- enter name -->
+            <div class="form-group">
+              <label for="amount">Amount<span class="required">*</span></label>
+              <input type="text" class="form-control" id="amount" formControlName="amount"/>
+              <!-- <ul *ngIf="name.touched && name.invalid">
+                <li *ngIf="name.errors?.['required']" class="text-danger">Name is required</li>
+                <li *ngIf="name.errors?.['message']" class="text-danger">{{ name.errors?.["message"] }}</li>
+              </ul> -->
+            </div>
+          </div>
+          <div class="col-md-4">
+            <!-- select currency -->
+            <div class="form-group">
+              <label for="currency">Currency<span class="required">*</span></label>
+              <select id="currency" class="form-control" formControlName="currency">
+                <option value="">Select</option>
+                <option *ngFor="let currency of group.currencyList; let i=index" value="{{ currency.code }}">{{ currency.code + ' - ' + currency.description }}</option>
+              </select>
+              <!-- <ul *ngIf="name.touched && name.invalid">
+                <li *ngIf="name.errors?.['required']" class="text-danger">Name is required</li>
+                <li *ngIf="name.errors?.['message']" class="text-danger">{{ name.errors?.["message"] }}</li>
+              </ul> -->
+            </div>
+          </div>
+        </div>
+      </form>
+      <div class="col-md-12">
+        <button type="button" class="btn btn-outline-primary m-r-15" [routerLink]="'/pending-payment'">Cancel</button>
+        <button type="button" *ngIf="pendingPaymentForm.dirty" [disabled]="pendingPaymentForm.invalid" class="btn btn-primary" (click)="uppertPendingPayment()">{{ pendingPaymentForm.value.id === 0 ? "Save" : "Update" }}</button>
+        <!-- <button class="btn btn-primary" *ngIf="!pendingPaymentForm.dirty
+        " (click)="patchPendingPayment()">Pending Payment Received</button> -->
+      </div>
+    </app-card>
+  </div>
+</div>

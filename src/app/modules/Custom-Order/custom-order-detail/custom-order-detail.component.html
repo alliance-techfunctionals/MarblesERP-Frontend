@@ -1,0 +1,209 @@
+<div
+  *ngIf="{
+    roleList: (roleList$ | async) ?? [],
+    suppliersList: (suppliersList$ | async) ?? [],
+    personOfContactList: (personOfContactList$ | async) ?? [],
+    customOrderProgressList: (customOrderProgressList$ | async) ?? [],
+  } as group"
+>
+  <div class="col-md-12">
+    <app-card cardTitle="" [hidHeader]="true" [options]="false">
+      <form [formGroup]="customOrderForm">
+        <h5>{{ customOrderForm.value.id === 0 ? "Add" : "Edit" }} Custom Order</h5>
+        <hr />
+        <div class="row">
+          <div class="col-md-4">
+            <!-- orde number -->
+            <div class="form-group">
+              <label for="orderNumber">Order Number</label>
+              <input type="text" class="form-control" id="orderNumber" formControlName="orderNumber">
+              <ul *ngIf="orderNumber.touched && orderNumber.invalid">
+                <li *ngIf="orderNumber.errors?.['required']" class="text-danger">Order Number is required</li>
+                <li *ngIf="orderNumber.errors?.['message']" class="text-danger">{{ orderNumber.errors?.["message"] }}</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <!-- order date -->
+            <div class="form-group">
+              <label for="orderDate">Order Date</label>
+              <input
+                #dateOrder
+                class="form-control"
+                id="edd"
+                placeholder="yyyy-mm-dd"
+                name="dp"
+                ngbDatepicker
+                #d="ngbDatepicker"
+                (click)="d.toggle()"
+                [value]="formatter.format(orderDate1)"
+                (dateSelect)="orderDate1 = dateService.validateInput(orderDate1, dateOrder.value)!"
+                [maxDate]="limitDate!"
+                [disabled]="true"
+              />
+            </div>
+            <ul *ngIf="orderDate.touched && orderDate.invalid">
+              <li *ngIf="orderDate.errors?.['required']" class="text-danger">Order Date is required</li>
+              <li *ngIf="orderDate.errors?.['message']" class="text-danger">{{ orderDate.errors?.["message"] }}</li>
+            </ul>
+          </div>
+
+          <div class="col-md-4">
+            <!-- order description -->
+            <div class="form-group">
+              <label for="orderDescription">Order Description</label>
+              <textarea class="form-control" id="orderDescription" rows="2" formControlName="orderDescription"></textarea>
+            </div>
+            <ul *ngIf="orderDescription.touched && orderDescription.invalid">
+              <li *ngIf="orderDescription.errors?.['required']" class="text-danger">Order Description is required</li>
+              <li *ngIf="orderDescription.errors?.['message']" class="text-danger">{{ orderDescription.errors?.["message"] }}</li>
+            </ul>
+          </div>
+
+          <div class="col-md-4">
+            <!-- select supplier -->
+            <div class="form-group">
+              <label for="supplier">Supplier<span class="required">*</span></label>
+              <select class="form-control" id="supplier" formControlName="supplierId">
+                <option value="0">Select</option>
+                <option *ngFor="let supplier of group.suppliersList" value="{{ supplier.id }}">{{ supplier.name }}</option>
+              </select>
+              <ul *ngIf="supplierId.touched && supplierId.invalid">
+                <li *ngIf="supplierId.errors?.['min']" class="text-danger">Supplier is required</li>
+                <li *ngIf="supplierId.errors?.['message']" class="text-danger">{{ supplierId.errors?.["message"] }}</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <!-- select person of contact -->
+            <div class="form-group">
+              <label for="poc">Person Of Contact<span class="required">*</span></label>
+              <select class="form-control" id="poc" formControlName="pocId">
+                <option value="0">Select</option>
+                <option *ngFor="let poc of group.personOfContactList" value="{{ poc.id }}">{{ poc.name }}</option>
+              </select>
+              <ul *ngIf="pocId.touched && pocId.invalid">
+                <li *ngIf="pocId.errors?.['min']" class="text-danger">Person Of Contact is required</li>
+                <li *ngIf="pocId.errors?.['message']" class="text-danger">{{ pocId.errors?.["message"] }}</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="col-md-4">
+            <!-- expected date of delivery -->
+            <div class="form-group">
+              <label for="edd">Estimated Date of Delivery<span class="required">*</span></label>
+              <input
+                #dateDelivery
+                class="form-control"
+                id="edd"
+                placeholder="yyyy-mm-dd"
+                name="dp"
+                ngbDatepicker
+                #dod="ngbDatepicker"
+                (click)="dod.toggle()"
+                [value]="formatter.format(dateOfDelivery)"
+                (dateSelect)="dateOfDelivery = dateService.validateInput(dateOfDelivery, dateDelivery.value)!"
+                [minDate]="limitDate!"
+              />
+            </div>
+            <ul *ngIf="edd.touched && edd.invalid">
+              <li *ngIf="edd.errors?.['required']" class="text-danger">Expected Date of Delivery is required</li>
+              <li *ngIf="edd.errors?.['message']" class="text-danger">{{ edd.errors?.["message"] }}</li>
+            </ul>
+          </div>
+        </div>
+      </form>
+      <div class="col-md-12">
+        <button type="button" class="btn btn-outline-primary m-r-15" (click)="navigate()">Cancel</button>
+        <button type="button" class="btn btn-primary" [disabled]="customOrderForm.invalid" (click)="uppertCustomOrder()">{{ customOrderForm.value.id === 0 ? 'Save' : 'Update' }}</button>
+      </div>
+    </app-card>
+  </div>
+
+  <!-- input fields for custom order progress add or update -->
+  <div class="col-md-12">
+    <app-card cardTitle="" [hidHeader]="true" [options]="false">
+      <form [formGroup]="customOrderProgressForm">
+        <h6>{{ customOrderProgressForm.value.id === 0 ? "Add" : "Edit" }} Progress</h6>
+        <hr />
+        <div class="row">
+          <div class="col-md-6">
+            <!-- comments -->
+            <div class="form-group">
+              <label for="comments">Comments<span class="required">*</span></label>
+              <textarea id="comments" rows="1" class="form-control" formControlName="comments"></textarea>
+              <ul *ngIf="comments.touched && comments.invalid">
+                <li *ngIf="comments.errors?.['min']" class="text-danger">comments is required</li>
+                <li *ngIf="comments.errors?.['message']" class="text-danger">{{ comments.errors?.["message"] }}</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <!-- image -->
+            <div class="form-group">
+              <label for="image">Photo<span class="required">*</span></label>
+              <input id="image" type="file" class="form-control" (change)="onFileSelect($event)" formControlName="file">
+            </div>
+          </div>
+
+          <div class="col-md-2">
+            <button class="btn btn-outline-primary mt-4" [disabled]="modifyProgress? comments.invalid: customOrderProgressForm.invalid" (click)="uppertCustomOrderProgress()">{{ modifyProgress?'Update': 'Save' }}</button>
+          </div>
+        </div>
+      </form>
+      <div class="col-md-12">
+        <!-- <button type="button" *ngIf="customOrderProgressForm.dirty" class="btn btn-primary" [disabled]="customOrderProgressForm.invalid" (click)="uppertCustomOrderProgress()">{{ customOrderProgressForm.value.id === 0 ? "Save" : "Update" }}</button> -->
+      </div>
+    </app-card>
+  </div>
+
+  <!-- grid for custom order progress -->
+  <div class="col-xl-12">
+    <app-card cardTitle="" [hidHeader]="true" [options]="false" blockClass="table-border-style">
+      <h4 class="d-flex"></h4>
+      <h4 class="text-end d-flex flex-row justify-content-between">
+        <h6>Progress List</h6>
+        <!-- <button class="btn btn-primary" (click)="navigate()">
+          <i class="feather icon-plus"></i>
+          Add
+        </button> -->
+      </h4>
+      <hr />
+      
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Photo</th>
+              <th>Comments</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let order of group.customOrderProgressList | sortDescending: 'desc' | paginate: pagingConfig; let i = index">
+              <!--  | paginate : pagingConfig -->
+              <td>{{ order.createdOn | date: 'mediumDate'}}</td>
+              <td *ngIf="order.imageUrl">
+                <a href="{{ order.imageUrl }}" target="_blank"><i class="feather icon-image"></i></a>
+              </td>
+              <td *ngIf="!order.imageUrl"><i class="feather icon-image"></i></td>
+              <td>{{ order.comments }}</td>
+              <td>
+                <i class="feather icon-edit m-r-15" id="actionsBtn" (click)="progressEdit(order)"></i>
+                <i class="feather icon-trash-2" id="actionsBtn" (click)="openDeleteConfirmationModal(order)"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="d-flex justify-content-center">
+        <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="pagingConfig.currentPage = $event"> </pagination-controls>
+      </div>
+    </app-card>
+  </div>
+</div>

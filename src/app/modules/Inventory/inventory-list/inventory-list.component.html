@@ -1,0 +1,181 @@
+<div
+  *ngIf="{
+    inventoryList: (inventoryList$ | async) ?? [],
+    qualityList: (qualityList$ | async) ?? [],
+    designList: (designList$ | async) ?? []
+  } as group"
+>
+<div class="col-md-12">
+  <app-card cardTitle="" [hidHeader]="true" [options]="false" blockClass="table-border-style">
+    <h4 class="d-flex"></h4>
+    <h4 class="text-end d-flex flex-row justify-content-between">
+      <h4>Inventory List</h4>
+      <button class="btn btn-primary" (click)="navigateInventory()">
+        <i class="feather icon-plus"></i>
+        Add
+      </button>
+    </h4>
+    <hr />
+    <div>
+      <ag-grid-angular 
+        [pagination]="true" 
+        [paginationPageSizeSelector]="paginationPageSize" 
+        [paginationPageSize]="10" 
+        [defaultColDef]="defaultColDef" 
+        domLayout="autoHeight" 
+        style="width: 100%" 
+        class="ag-theme-quartz" 
+        [rowData]="group.inventoryList" 
+        [columnDefs]="colDefs"> 
+      </ag-grid-angular>
+    </div>
+  </app-card>
+</div>
+
+  <!-- <div class="col-md-12">
+    <app-card cardTitle="" [hidHeader]="true" [options]="false" blockClass="table-border-style">
+      <h4 class="d-flex"></h4>
+      <h4 class="text-end d-flex flex-row justify-content-between">
+        <h4>Inventory List</h4>
+        <button class="btn btn-primary" (click)="navigateInventory()">
+          <i class="feather icon-plus"></i>
+          Add
+        </button>
+      </h4>
+      <hr />
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Quality</th>
+              <th>Design</th>
+              <th>Color</th>
+              <th>Size</th>
+              <th class="text-center">Quantity</th>
+              <th>Supplier</th>
+              <th>Image</th>
+              <th>Action</th>
+            </tr>
+            <tr>
+              <td></td>
+              <td>
+                <div class="form-group">
+                  <input type="search" (typeaheadOnSelect)="onQualitySelect($event)" typeaheadOptionField="name" [isAnimated]="true" placeholder="search" class="form-control" [formControl]="qualitySearch" [typeahead]="group.qualityList" (search)="onQualityInputChange()" />
+                </div>
+              </td>
+              <td>
+                <div class="form-group">
+                  <input type="search" (typeaheadOnSelect)="onDesignSelect($event)" typeaheadOptionField="name" [isAnimated]="true" placeholder="search" class="form-control" [formControl]="designSearch" [typeahead]="group.designList" (search)="onDesignInputChange()" />
+                </div>
+              </td>
+              <td colspan="6"></td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let inventory of group.inventoryList | sortDescending: 'desc' | paginate: pagingConfig; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ inventory.qualityId | getQualityById | async | titlecase }}</td>
+              <td>{{ inventory.designId | getDesignById | async | titlecase }}</td>
+              <td>{{ inventory.colorCode | titlecase }}</td>
+              <td>{{ inventory.size }}</td>
+              <td class="text-center">{{ inventory.quantity }}</td>
+              <td class="{{ inventory.supplierId == null ? 'px-4' : '' }}">{{ inventory.supplierId | getUserByRoleId | async | titlecase }}</td>
+              <td *ngIf="inventory.fileKey">
+                <a href="{{ getImageURL(inventory.fileKey) }}" target="_blank"><i class="feather icon-image"></i></a>
+              </td>
+              <td *ngIf="!inventory.fileKey"><i class="feather icon-image"></i></td>
+              <td>
+                <i class="feather icon-edit m-r-15" id="actionBtn" (click)="navigateInventory(inventory.id)"></i>
+                <i class="feather icon-trash-2" id="actionBtn" (click)="openDeleteConfirmationModal(inventory)"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="d-flex justify-content-center">
+        <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="pagingConfig.currentPage = $event"> </pagination-controls>
+      </div>
+    </app-card>
+  </div> -->
+  
+  <!-- <div class="col-xl-12">
+    <app-card cardTitle="" [hidHeader]="true" [options]="false" blockClass="table-border-style">
+      <h4 class="text-end d-flex flex-row justify-content-between">
+        <h4>Inventory List</h4>
+        <button class="btn btn-primary" (click)="navigateInventory()">
+          <i class="feather icon-plus"></i>
+          Add Inventory
+        </button>
+      </h4>
+      <hr />
+
+       Heading Row for ID, Design, and Quality -->
+  <!-- <div class="container row m-l-10">
+        <div class="col-md-1"><b>ID</b></div>
+        <div class="col-md-3"><b>Design</b></div>
+        <div class="col-md-3"><b>Quality</b></div>
+      </div>
+
+      <ng-container *ngFor="let inventory of group.inventoryList | paginate: pagingConfig">
+        <div ngbAccordion class="m-t-15">
+          <div ngbAccordionItem [collapsed]="true">
+            <h2 ngbAccordionHeader>
+              <button ngbAccordionButton> -->
+  <!-- Display ID, Design, and Quality -->
+  <!-- <div class="container row">
+                  <div class="col-md-1">{{ inventory.id }}</div>
+                  <div class="col-md-3">{{ inventory.designId | getDesignById | async }}</div>
+                  <div class="col-md-3">{{ inventory.qualityId | getQualityById | async }}</div>
+                </div>
+              </button>
+            </h2>
+            <div ngbAccordionCollapse>
+              <div ngbAccordionBody>
+                <ng-template>
+                  <div class="table-responsive">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>Id</th>
+                          <th>Image</th>
+                          <th>Color Code</th>
+                          <th>Size</th>
+                          <th>Quantity</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let inventoryDetail of inventory.details">
+                          <td>{{ inventoryDetail.id }}</td>
+                          <td><img [src]="getImageURL(inventoryDetail.fileKey)" [alt]="inventoryDetail.colorCode" width="50" height="50" /></td>
+                          <td>{{ inventoryDetail.colorCode }}</td>
+                          <td>{{ inventoryDetail.size }}</td>
+                          <td>{{ inventoryDetail.quantity }}</td>
+                          <td id="actionBtn">
+                            <i class="feather icon-edit m-r-15" (click)="navigateInventory(inventory.id)"> </i>
+                            <i class="feather icon-trash-2" (click)="openDeleteConfirmationModal(inventory)"></i>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table> -->
+  <!-- <div class="d-flex justify-content-center">
+                      <pagination-controls
+                      previousLabel="Prev"
+                      nextLabel="Next"
+                      (pageChange)="onTableDataChange($event)">
+                      </pagination-controls>
+                    </div> -->
+  <!-- </div>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <div class="d-flex justify-content-center m-t-10">
+        <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="pagingConfig.currentPage = $event"> </pagination-controls>
+      </div>
+    </app-card>
+  </div> -->
+</div>

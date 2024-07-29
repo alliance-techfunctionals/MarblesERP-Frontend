@@ -1,0 +1,24 @@
+$color: red;
+.required{
+  color: $color;
+}
+
+.icon-edit{
+  color: blue;
+}
+
+.icon-trash-2{
+  color: $color;
+}
+
+.icon-edit:hover, .icon-trash-2:hover{
+  cursor: pointer;
+}
+
+ul{
+  padding: 0;
+}
+
+li{
+  list-style-type: none;
+}

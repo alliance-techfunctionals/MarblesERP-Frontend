@@ -1,0 +1,87 @@
+<div
+  *ngIf="{
+    userList: (userList$ | async) ?? [],
+    roleList: (roleList$ | async) ?? []
+  } as group"
+>
+  <div class="col-xl-12">
+    <app-card cardTitle="" [hidHeader]="true" [options]="false" blockClass="table-border-style">
+      <h4 class="text-end d-flex flex-row justify-content-between">
+        <h4>User List</h4>
+        <button class="btn btn-primary" (click)="navigateUser()">
+          <i class="feather icon-plus"></i>
+          Add
+        </button>
+      </h4>
+      <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+        <ng-container *ngFor="let role of group.roleList | sortDescending: 'asc' ">
+          <li [ngbNavItem]="role.id">
+            <button ngbNavLink (click)="tabClick(role.id)">{{ role.role }}</button>
+            <ng-template ngbNavContent>
+              <!-- <ng-container
+                *ngIf="{
+                  UsersListByRole: (selectUserByRoleId(role.id) | async) ?? []
+                } as group1"
+              >
+                <ag-grid-angular 
+                  [pagination]="true" 
+                  [paginationPageSizeSelector]="paginationPageSize" 
+                  [paginationPageSize]="10" 
+                  [defaultColDef]="defaultColDef" 
+                  domLayout="autoHeight" 
+                  style="width: 100%" 
+                  class="ag-theme-quartz" 
+                  [rowData]="group1.UsersListByRole" 
+                  [columnDefs]="colDefs">
+                </ag-grid-angular>
+              </ng-container> -->
+
+              <div class="table-responsive"> 
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Name</th>
+                      <th>E-mail</th>
+                      <th>Mobile</th>
+                      <th>Password</th>
+                      <th>Country</th>
+                      <th>City</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container
+                      *ngIf="{
+                        UsersListByRole: (selectUserByRoleId(role.id) | async) ?? []
+                      } as group1"
+                    >
+                      <tr *ngFor="let user of group1.UsersListByRole | orderBy: 'id': 'desc' | paginate: pagingConfig; let i = index">
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ user.name | titlecase }}</td>
+                        <td>{{ user.emailAddressList && user.emailAddressList[0] ? user.emailAddressList[0]: 'N/A' }}</td>
+                        <td>{{ user.mobileNumberList? user.mobileNumberList[0]: 'N/A' }}</td>
+                        <td>{{ user.password }}</td>
+                        <td>{{ user.country | titlecase }}</td>
+                        <td>{{ user.city | titlecase }}</td>
+                        <td id="actionBtn">
+                          <i class="feather icon-edit m-r-10" (click)="navigateUser(user.id)"></i>
+                          <i class="feather icon-trash-2" (click)="openDeleteConfirmationModal(user)"></i>
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+                <div class="d-flex justify-content-center">
+                  <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="pagingConfig.currentPage = $event"> </pagination-controls>
+                </div>
+              </div> 
+            
+            </ng-template>
+          </li>
+        </ng-container>
+      </ul>
+      <div [ngbNavOutlet]="nav" class="mt-2"></div>
+    </app-card>
+  </div>
+</div>

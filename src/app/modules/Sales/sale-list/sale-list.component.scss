@@ -1,0 +1,75 @@
+.icon-edit{
+  color: blue;
+}
+
+.icon-trash-2{
+  color: red;
+}
+
+.bi-printer{
+  color: darkorange;
+}
+
+#actionsBtn{
+  cursor: pointer;
+}
+
+#isFullPaymentTrue{
+  color: darkgreen;
+}
+
+#isFullPaymentFalse{
+  color: crimson;
+}
+
+.dp-hidden {
+  width: 0;
+  margin: 0;
+  border: none;
+  padding: 0;
+}
+.custom-day {
+  text-align: center;
+  padding: 0.185rem 0.25rem;
+  display: inline-block;
+  height: 2rem;
+  width: 2rem;
+}
+.custom-day.focused {
+  background-color: #e6e6e6;
+}
+.custom-day.range,
+.custom-day:hover {
+  background-color: rgb(2, 117, 216);
+  color: white;
+}
+.custom-day.faded {
+  background-color: rgba(2, 117, 216, 0.5);
+}
+
+
+.order-5, .payment-0{
+  color: crimson;
+}
+.order-6, .payment-1{
+  color: darkorange;
+}
+.order-7{
+  color: yellowgreen
+}
+.order-8, .payment-7{
+  color: rgb(0, 86, 0);
+}
+
+.voucherLink:hover{
+  cursor: pointer;
+  color: blue;
+}
+
+@media screen and (max-width: 768px) {
+  #filterAndResetBtn{
+    width: 25%;
+    margin: 1em 0 0 1em;
+  }
+  
+}
