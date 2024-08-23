@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { EMPTY, Observable, of } from 'rxjs';
 import { catchError, delay, switchMap, take, tap } from 'rxjs/operators';
-import { CarpetInventoryHttpService } from '../../service/carpet-inventory.http.service';
+import { MarbleInventoryHttpService } from '../../service/marble-inventory.http.service';
 import { MessageToastService } from 'src/app/core/service/message-toast.service';
 import { FeedbackModel, feedbackSaveModel } from './feedback-form.model';
 
@@ -11,7 +11,7 @@ export class FeedbackService {
 
   constructor(
     private router: Router,
-    private CarpetInventoryService: CarpetInventoryHttpService,
+    private CarpetInventoryService: MarbleInventoryHttpService,
     private messageService: MessageToastService
   ) { }
 

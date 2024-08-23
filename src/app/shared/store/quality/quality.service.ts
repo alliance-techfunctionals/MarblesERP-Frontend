@@ -4,7 +4,7 @@ import { EMPTY, Observable, of } from "rxjs";
 import { catchError, delay, switchMap, take, tap } from "rxjs/operators";
 import { QualityStoreService } from "./quality.store";
 import { Quality, QualityResponse } from "./quality.model";
-import { CarpetInventoryHttpService } from "../../service/carpet-inventory.http.service";
+import { MarbleInventoryHttpService } from "../../service/marble-inventory.http.service";
 import { MessageToastService } from "src/app/core/service/message-toast.service";
 
 @Injectable({ providedIn: "root" })
@@ -12,7 +12,7 @@ export class QualityService {
   constructor(
     private router: Router,
     protected store: QualityStoreService,
-    private CarpetInventoryService: CarpetInventoryHttpService,
+    private CarpetInventoryService: MarbleInventoryHttpService,
     private messageService: MessageToastService
   ) { }
 

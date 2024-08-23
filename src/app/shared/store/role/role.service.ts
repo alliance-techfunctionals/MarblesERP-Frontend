@@ -4,7 +4,7 @@ import { EMPTY, Observable, of } from 'rxjs';
 import { catchError, delay, switchMap, take, tap } from 'rxjs/operators';
 import { RoleStoreService } from './role.store';
 import { Role } from './role.model';
-import { CarpetInventoryHttpService } from '../../service/carpet-inventory.http.service';
+import { MarbleInventoryHttpService } from '../../service/marble-inventory.http.service';
 import { MessageToastService } from 'src/app/core/service/message-toast.service';
 
 @Injectable({ providedIn: 'root' })
@@ -13,7 +13,7 @@ export class RoleService {
   constructor(
     private router: Router,
     protected store: RoleStoreService,
-    private CarpetInventoryService: CarpetInventoryHttpService,
+    private CarpetInventoryService: MarbleInventoryHttpService,
     private messageService: MessageToastService
   ) { }
 

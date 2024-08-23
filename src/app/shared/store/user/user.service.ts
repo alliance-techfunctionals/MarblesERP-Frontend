@@ -3,7 +3,7 @@ import { EMPTY, Observable, of } from 'rxjs';
 import { catchError, delay, switchMap, take, tap } from 'rxjs/operators';
 import { UserModel } from './user.model';
 import { UserStoreService } from './user.store';
-import { CarpetInventoryHttpService } from '../../service/carpet-inventory.http.service';
+import { MarbleInventoryHttpService } from '../../service/marble-inventory.http.service';
 import { MessageToastService } from 'src/app/core/service/message-toast.service';
 
 @Injectable({ providedIn: 'root' })
@@ -11,7 +11,7 @@ export class UserService {
 
   constructor(
     protected store: UserStoreService,
-    private CarpetInventoryService: CarpetInventoryHttpService,
+    private CarpetInventoryService: MarbleInventoryHttpService,
     private messageService: MessageToastService
   ) { }
 

@@ -3,7 +3,7 @@ import { EMPTY, Observable, of } from 'rxjs';
 import { catchError, delay, map, switchMap, take, tap } from 'rxjs/operators';
 import { VoucherModel } from './voucher.model';
 import { VoucherStoreService } from './voucher.store';
-import { CarpetInventoryHttpService } from '../../service/carpet-inventory.http.service';
+import { MarbleInventoryHttpService } from '../../service/marble-inventory.http.service';
 import { MessageToastService } from 'src/app/core/service/message-toast.service';
 
 @Injectable({ providedIn: 'root' })
@@ -11,7 +11,7 @@ export class VoucherService {
 
   constructor(
     protected store: VoucherStoreService,
-    private CarpetVoucherService: CarpetInventoryHttpService,
+    private CarpetVoucherService: MarbleInventoryHttpService,
     private messageService: MessageToastService
 
   ) { }

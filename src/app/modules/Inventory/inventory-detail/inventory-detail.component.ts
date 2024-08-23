@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { Observable, Subscription, combineLatest, map, of, tap } from 'rxjs';
+import { Observable, Subscription, combineLatest, debounceTime, distinctUntilChanged, map, of, switchMap, tap } from 'rxjs';
 import { ModalConfirmComponent, ModalType } from 'src/app/shared/components/modal-confirm/modal-confirm.component';
 import { ColorService } from 'src/app/shared/store/color/color.service';
 import { ColorStoreService } from 'src/app/shared/store/color/color.store';
@@ -28,17 +28,20 @@ import { UserStoreService } from 'src/app/shared/store/user/user.store';
 })
 export default class InventoryDetailComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
-  // sort qualities by name
-  qualityList$: Observable<Quality[]> = this.qualityStoreService.selectAll().pipe(
-    map(qualities => qualities.sort((a, b) => a.name.localeCompare(b.name)))
+  
+  qualityList$: Observable<string[]> = this.qualityStoreService.selectAll().pipe(
+    map((qualities) => qualities.map((t) => t.name))
   );
-  // sort design by name
-  designList$: Observable<Design[]> = this.designStoreService.selectAll().pipe(
-    map(qualities => qualities.sort((a, b) => a.name.localeCompare(b.name)))
-  );
+
+  qualityList = this.qualityList$.forEach((value) => value);
+
+  designList$: Observable<string[]> = this.designStoreService.selectAll().pipe(
+    map((designs) => designs.map((t) => t.name)));
+
   colorList$: Observable<string[]> = this.colorStoreService.selectAll().pipe(
     map((color) => color.map((t) => t.name))
   );
+
   sizeList$: Observable<string[]> = this.sizeStoreService.selectAll().pipe(
     map((sizes) => sizes.map((t) => t.name))
   );
@@ -51,8 +54,8 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
   inventoryForm: FormGroup<inventoryForm> = this.formBuilder.nonNullable.group({
     masterId: [0],
     id: [0],
-    quality: [0, [Validators.required, Validators.min(1)]],
-    design: [0, [Validators.required, Validators.min(1)]],
+    quality: ['', [Validators.required, Validators.min(1)]],
+    design: ['', [Validators.required, Validators.min(1)]],
     quantity: [1, [Validators.required, Validators.min(1)]],
     color: ['', Validators.required],
     size: ['', Validators.required],
@@ -135,11 +138,12 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
           if (params['id'] != 0) {
             const inventoryId = Number(params['id']);
             const inventory = this.store.getById(inventoryId) ?? createInventoryModel({})
+            // console.log(inventory)
             this.inventoryForm.setValue({
               masterId: inventory.masterId? inventory.masterId: 0,
               id: inventory.id,
-              quality: inventory.qualityId,
-              design: inventory.designId,
+              quality: inventory.qualityName,
+              design: inventory.designName,
               color: inventory.colorCode,
               size: inventory.size,
               quantity: inventory.quantity,
@@ -242,14 +246,59 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
     //  cancel the
   }
 
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
-  }
-
   // get the image file
   onFileSelected(event: Event){
     if(event.target instanceof HTMLInputElement && event.target.files?.length){
       this.file.setValue(event.target.files[0]);
     }  
+  }
+
+  searchQuality = (text$: Observable<string>): Observable<string[]> => {
+    return text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      switchMap(term => this.filterAllList(term, this.qualityList$))
+    );
+  };
+
+  searchDesign = (text$: Observable<string>): Observable<string[]> => {
+    return text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      switchMap(term => this.filterAllList(term, this.designList$))
+    );
+  };
+
+  searchColour = (text$: Observable<string>): Observable<string[]> => {
+    return text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      switchMap(term => this.filterAllList(term, this.colorList$))
+    );
+  };
+
+  searchSize = (text$: Observable<string>): Observable<string[]> => {
+    return text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      switchMap(term => this.filterAllList(term, this.sizeList$))
+    );
+  };
+
+
+  private filterAllList(term: string, list: Observable<string[]>): Observable<string[]> {
+    if (term === '') {
+      return of([]);
+    }
+
+    const filtered = list.pipe(
+      switchMap(list => of(list.filter((v) => v.toLowerCase().startsWith(term.toLocaleLowerCase())).splice(0, 10))),
+    );
+
+    return filtered;
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 }

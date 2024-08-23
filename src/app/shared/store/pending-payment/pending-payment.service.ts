@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { EMPTY, Observable, of } from 'rxjs';
 import { catchError, delay, switchMap, take, tap } from 'rxjs/operators';
-import { CarpetInventoryHttpService } from '../../service/carpet-inventory.http.service';
+import { MarbleInventoryHttpService } from '../../service/marble-inventory.http.service';
 import { MessageToastService } from 'src/app/core/service/message-toast.service';
 import { PendingPaymentStoreService } from './pending-payment.store';
 import { PendingPaymentModel } from './pending-payment.model';
@@ -13,7 +13,7 @@ export class PendingPaymentService {
 
   constructor(
     protected store: PendingPaymentStoreService,
-    private CarpetInventoryService: CarpetInventoryHttpService,
+    private CarpetInventoryService: MarbleInventoryHttpService,
     private messageService: MessageToastService
   ) { }
 

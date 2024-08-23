@@ -7,6 +7,7 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 import { IConfig } from 'ngx-countries-dropdown';
 import { Observable, Subscription, combineLatest, debounceTime, distinctUntilChanged, map, tap } from 'rxjs';
 import { AuthService } from 'src/app/core/service/auth.service';
+import { ImageService } from 'src/app/core/service/Image.service';
 import { MessageToastService } from 'src/app/core/service/message-toast.service';
 import { validateEmailFormat } from 'src/app/core/validators/validators/email.validator';
 import { validatePincodeFormat } from 'src/app/core/validators/validators/pincode.validators';
@@ -403,7 +404,8 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
     public formatter: NgbDateParserFormatter,
     protected dateService: DateService,
     private modalService: BsModalService,
-    private _router: Router
+    private _router: Router,
+    private imageService: ImageService
   ) { }
 
   ngOnInit(): void {
@@ -619,7 +621,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
               tap((invoiceResponse) => {
                 if (invoiceResponse.url) {
                   // show pdf in new tab
-                  window.open(invoiceResponse.url, "_blank");
+                  window.open(this.imageService.getGeneratedURL(invoiceResponse.url), "_blank");
                   // hide the progress bar after showing invoice
                   modalRef.hide()
                 }
@@ -699,7 +701,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
         colour: this.color.value,
         size: this.size.value,
         quantity: Number(this.quantity.value),
-        amount: Number(this.amount.value.toString().replace(/\D/g,'')), // used regular expression to remove all non digits characters
+        amount: Number(this.amount.value?this.amount.value.toString().replace(/\D/g,''): '0'), // used regular expression to remove all non digits characters
         ccyCode: this.currency.value,
         description: this.description.value,
         isCustomized: this.isCustomized.value,

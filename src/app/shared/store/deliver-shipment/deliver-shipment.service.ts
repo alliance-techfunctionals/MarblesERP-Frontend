@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { EMPTY, Observable, of } from 'rxjs';
 import { catchError, delay, switchMap, take, tap } from 'rxjs/operators';
-import { CarpetInventoryHttpService } from '../../service/carpet-inventory.http.service';
+import { MarbleInventoryHttpService } from '../../service/marble-inventory.http.service';
 import { Shipping } from './delivery-shipment.model';
 import { MessageToastService } from 'src/app/core/service/message-toast.service';
 import { DeliveryPartnerStoreService } from '../delivery-partner/delivery-partner.store';
@@ -14,7 +14,7 @@ export class DeliveryShipmentService {
   constructor(
     private router: Router,
     private store: SaleStoreService,
-    private CarpetInventoryService: CarpetInventoryHttpService,
+    private CarpetInventoryService: MarbleInventoryHttpService,
     private messageService: MessageToastService
   ) { }
 

@@ -31,6 +31,7 @@ import { ColDef } from 'ag-grid-community'; // Column Definition Type Interface
 import { AgCustomButtonComponent } from 'src/app/shared/components/Button/ag-custom-button/ag-custom-button.component';
 import { environment } from 'src/environments/environment';
 import { AgGridService } from 'src/app/shared/service/ag-grid.service';
+import { ImageService } from 'src/app/core/service/Image.service';
 
 @Component({
   selector: 'app-sale-list',
@@ -211,7 +212,8 @@ export default class SaleListComponent implements OnInit,OnDestroy {
     protected dateService: DateService,
     private datePipe: DatePipe,
     private messageService: MessageToastService,
-    public agGridService: AgGridService
+    public agGridService: AgGridService,
+    private imageService: ImageService
   ) { }
 
   ngOnInit() {
@@ -283,7 +285,7 @@ export default class SaleListComponent implements OnInit,OnDestroy {
       tap((invoiceResponse) => {
         if (invoiceResponse.url) {
           // show pdf in new tab
-          window.open(invoiceResponse.url, "_blank");
+          window.open(this.imageService.getGeneratedURL(invoiceResponse.url), "_blank");
         }
       })
     ).subscribe()

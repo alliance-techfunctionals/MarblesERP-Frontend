@@ -3,7 +3,7 @@ import { EMPTY, Observable, of } from 'rxjs';
 import { catchError, delay, switchMap, take, tap } from 'rxjs/operators';
 import { CustomOrderProgressModel } from './custom-order-progress.model';
 import { CustomOrderProgressStoreService } from './custom-order-progress.store';
-import { CarpetInventoryHttpService } from '../../service/carpet-inventory.http.service';
+import { MarbleInventoryHttpService } from '../../service/marble-inventory.http.service';
 import { MessageToastService } from 'src/app/core/service/message-toast.service';
 
 @Injectable({ providedIn: 'root' })
@@ -11,7 +11,7 @@ export class CustomOrderProgressService {
 
   constructor(
     protected store: CustomOrderProgressStoreService,
-    private CarpetInventoryService: CarpetInventoryHttpService,
+    private CarpetInventoryService: MarbleInventoryHttpService,
     private messageService: MessageToastService
   ) { }
 

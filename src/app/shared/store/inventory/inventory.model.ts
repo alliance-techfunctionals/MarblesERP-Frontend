@@ -167,8 +167,8 @@ export function createInventoryModel({
 export interface inventoryForm {
   masterId: FormControl<number>,
   id: FormControl<number>,
-  quality: FormControl<number>,
-  design: FormControl<number>,
+  quality: FormControl<string>,
+  design: FormControl<string>,
   quantity: FormControl<number>,
   color: FormControl<string>,
   size: FormControl<string>,

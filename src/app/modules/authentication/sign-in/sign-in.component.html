@@ -1,68 +1,54 @@
-<!-- Section: Design Block -->
-<section class="text-center text-lg-start vh-100">
-  <style>
-    .cascading-right {
-      margin-right: -50px;
-    }
+<section class="outer-section vh-100">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col col-xl-10">
+        <div class="card" style="border-radius: 1rem;">
+          <div class="row g-0">
+            <div class="col-md-6 col-lg-5 d-none d-md-block">
+              <img src="/assets/images/Marble.png"
+                alt="login form" class="img-fluid" style="height: calc(100% - 25px); border-radius: 1rem 0 0 1rem;" />
+            </div>
+            <div class="col-md-6 col-lg-7 d-flex align-items-center">
+              <div class="card-body p-4 p-lg-5 text-black">
 
-    @media (max-width: 1250px) {
-      .container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100%;
-      }
-    }
-    @media (max-width: 991.98px) {
-      .cascading-right {
-        margin-right: 0;
-      }
-    }
-  </style>
+                <form [formGroup]="signInForm">
 
-  <!-- Jumbotron -->
-  <div class="container py-4">
-    <div class="row g-0 align-items-center">
-      <div class="col-lg-6 mb-5 mb-lg-0">
-        <div class="card cascading-right bg-body-tertiary" style="backdrop-filter: blur(30px);">
-          <div class="card-body p-5 shadow-5 text-center">
-            <img src="assets/images/KCI Logo.png" alt="logo" class="img-fluid mb-4" height="50" width="80" style="margin-top: -75px;"/>
-            <h2 class="fw-bold mb-5">Sign In</h2>
-            <form [formGroup]="signInForm">
-              <!-- Email input -->
-               <div class="form-group text-start mb-4">
-                <div class="input-group">
-                  <span class="input-group-text" id="basic-addon1"><i class="bi bi-person"></i></span>
-                  <input type="email" class="form-control" placeholder="Mobile Number" aria-label="Username" aria-describedby="basic-addon1" formControlName="mobileNo"/>
-                </div>
-                <label class="mx-2">Mobile Number</label>
-               </div>
-              
+                  <div class="d-flex align-items-center mb-3 pb-1">
+                    <img src="assets/images/A&L - Favicon.png" alt="" height="100">
+                    <span class="h3 fw-bold mb-0">Arts & Life</span>
+                  </div>
 
-              <!-- Password input -->
-              <div class="form-group text-start mb-4">
-                <div class="input-group">
-                  <span class="input-group-text" id="basic-addon3"><i class="feather icon-lock"></i></span>
-                  <input type="password" class="form-control" placeholder="Password" aria-label="Username" aria-describedby="basic-addon3" formControlName="password"/>
-                </div> 
-                <label class="mx-2">Password</label>
-               </div>
+                  <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Sign into your account</h5>
 
-              <!-- Submit button -->
-              <button type="submit" class="btn btn-primary btn-block mb-4 w-25" (click)="uppertSignIn()">
-                Sign In
-              </button>
-            </form>
+                  <div data-mdb-input-init class="form-outline mb-4">
+                    <label class="form-label" for="form2Example17">Mobile Number</label>
+                    <div class="input-group">
+                      <span class="input-group-text" id="basic-addon1"><i class="bi bi-person"></i></span>
+                      <input type="email" class="form-control" placeholder="Mobile Number" aria-label="Username" aria-describedby="basic-addon1" formControlName="mobileNo"/>
+                    </div>
+                  </div>
+
+                  <div data-mdb-input-init class="form-outline mb-4">
+                    <label class="form-label" for="form2Example27">Password</label>
+                    <div class="input-group">
+                      <span class="input-group-text" id="basic-addon3"><i class="feather icon-lock"></i></span>
+                      <input type="password" class="form-control w-auto" id="password" placeholder="Password" aria-label="Username" aria-describedby="basic-addon3" formControlName="password"/>
+                      <span class="input-group-text">
+                        <button type="form-control" class="btn bi bi-eye" type="button" (click)="showPassword()"></button>
+                      </span> 
+                    </div>
+                  </div>
+
+                  <div class="pt-1 mb-4">
+                    <button data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg btn-block" type="button" (click)="uppertSignIn()">Login</button>
+                  </div>
+                </form>
+
+              </div>
+            </div>
           </div>
         </div>
       </div>
-
-      <div class="col-lg-6 mb-5 mb-lg-0">
-        <img src="assets/images/carpet_image_2.jpeg" class="w-100 rounded-4 shadow-4"
-          alt="" />
-      </div>
     </div>
   </div>
-  <!-- Jumbotron -->
 </section>
-<!-- Section: Design Block -->

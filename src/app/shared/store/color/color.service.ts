@@ -3,14 +3,14 @@ import { EMPTY, Observable, of } from 'rxjs';
 import { catchError, delay, switchMap, take, tap } from 'rxjs/operators';
 import { ColorStoreService } from './color.store';
 import { Color } from './color.model';
-import { CarpetInventoryHttpService } from '../../service/carpet-inventory.http.service';
+import { MarbleInventoryHttpService } from '../../service/marble-inventory.http.service';
 
 @Injectable({ providedIn: 'root' })
 export class ColorService {
 
   constructor(
     protected store: ColorStoreService,
-    private CarpetInventoryService: CarpetInventoryHttpService
+    private CarpetInventoryService: MarbleInventoryHttpService
   ) { }
 
   // get All Color list

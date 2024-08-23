@@ -2,7 +2,7 @@
 // import { Router } from '@angular/router';
 // import { EMPTY, Observable, of } from 'rxjs';
 // import { catchError, delay, switchMap, take, tap } from 'rxjs/operators';
-// import { CarpetInventoryHttpService } from '../../service/carpet-inventory.http.service';
+// import { MarbleInventoryHttpService } from '../../service/marble-inventory.http.service';
 // import { SalesManStoreService } from './salesMan.store';
 // import { SalesMan } from './salesMan.model';
 
@@ -12,7 +12,7 @@
 //   constructor(
 //     private router: Router,
 //     protected store: SalesManStoreService,
-//     private CarpetInventoryService: CarpetInventoryHttpService
+//     private CarpetInventoryService: MarbleInventoryHttpService
 //   ) { }
 
 //   // get All User list

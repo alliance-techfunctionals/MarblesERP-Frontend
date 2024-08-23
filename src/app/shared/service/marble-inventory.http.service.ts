@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, switchMap } from 'rxjs';
-import { UserModel } from '../../shared/store/user/user.model';
-import { Role } from '../../shared/store/role/role.model';
+import { UserModel } from '../store/user/user.model';
+import { Role } from '../store/role/role.model';
 import { environment } from 'src/environments/environment';
-import { CheckInventoryModel, InventoryModel } from '../../shared/store/inventory/inventory.model';
-import { QualityResponse } from '../../shared/store/quality/quality.model';
-import { DesignResponse } from '../../shared/store/design/design.model';
-import { Color } from '../../shared/store/color/color.model';
-import { Size } from '../../shared/store/size/size.model';
-import { VoucherModel } from '../../shared/store/voucher/voucher.model';
-import { SaleModel } from '../../shared/store/sales/sale.model';
+import { CheckInventoryModel, InventoryModel } from '../store/inventory/inventory.model';
+import { QualityResponse } from '../store/quality/quality.model';
+import { DesignResponse } from '../store/design/design.model';
+import { Color } from '../store/color/color.model';
+import { Size } from '../store/size/size.model';
+import { VoucherModel } from '../store/voucher/voucher.model';
+import { SaleModel } from '../store/sales/sale.model';
 import { CustomOrderModel } from '../store/custom-order/custom-order.model';
 import { MasterInventoryModel } from '../store/MasterInventory/masterInventory.model';
 import { PendingPaymentModel } from '../store/pending-payment/pending-payment.model';
@@ -28,7 +28,7 @@ import { head } from 'lodash';
 @Injectable({
   providedIn: 'root'
 })
-export class CarpetInventoryHttpService {
+export class MarbleInventoryHttpService {
   baseUrl = environment.apiUrl;
 
   constructor(
@@ -115,14 +115,14 @@ export class CarpetInventoryHttpService {
   // Inventory API for grid
   getAllInventory(): Observable<InventoryModel[]> {
     const headers = this.getHeaders();
-    return this.http.get<InventoryModel[]>(`${this.baseUrl}Carpets/details`, { headers: headers });
+    return this.http.get<InventoryModel[]>(`${this.baseUrl}inventory/details`, { headers: headers });
   }
 
   insertInventory(inventory: InventoryModel): Observable<InventoryModel> {
 
     const formData = new FormData()
-    formData.append("QualityId", inventory.qualityId.toString());
-    formData.append("DesignId", inventory.designId.toString());
+    formData.append("QualityName", inventory.qualityId.toString());
+    formData.append("DesignName", inventory.designId.toString());
     formData.append("ColorCode", inventory.colorCode);
     formData.append("Quantity", inventory.quantity.toString());
     formData.append("Size", inventory.size);
@@ -132,7 +132,7 @@ export class CarpetInventoryHttpService {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${authToken}`
     });
-    return this.http.post<InventoryModel>(`${this.baseUrl}Carpets`, formData, { headers: headers });
+    return this.http.post<InventoryModel>(`${this.baseUrl}inventory`, formData, { headers: headers });
   }
 
   updateInventory(inventory: InventoryModel): Observable<InventoryModel> {
@@ -153,17 +153,17 @@ export class CarpetInventoryHttpService {
       Authorization: `Bearer ${authToken}`
     });
     
-    return this.http.put<InventoryModel>(`${this.baseUrl}Carpets/${inventory.id}`, formData, { headers: headers });
+    return this.http.put<InventoryModel>(`${this.baseUrl}inventory/${inventory.id}`, formData, { headers: headers });
   }
 
   deleteInventory(inventory: InventoryModel): Observable<InventoryModel> {
     const headers = this.getHeaders();
-    return this.http.delete<InventoryModel>(`${this.baseUrl}Carpets/${inventory.id}`, { headers: headers });
+    return this.http.delete<InventoryModel>(`${this.baseUrl}inventory/${inventory.id}`, { headers: headers });
   }
 
   checkInventory(inventory: CheckInventoryModel): Observable<CheckInventoryModel> {
     const headers = this.getHeaders();
-    return this.http.post<CheckInventoryModel>(`${this.baseUrl}Carpets/checkInventory`,inventory, { headers: headers });
+    return this.http.post<CheckInventoryModel>(`${this.baseUrl}inventory/check-inventory`,inventory, { headers: headers });
   }
 
   // Voucher API

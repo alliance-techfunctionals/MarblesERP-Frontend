@@ -66,6 +66,7 @@ export default class DeliveryShipmentComponent implements OnInit, OnDestroy {
       field: "action",
       headerName: "Actions",
       cellRenderer: AgCustomButtonComponent,
+      minWidth: 250,
       cellRendererParams: {
         buttonsToShow: ['ship', 'delivered'],
         onShipClick: this.onShipClicked.bind(this),

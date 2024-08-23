@@ -6,6 +6,7 @@ import { NgbCalendar, NgbDate, NgbDateParserFormatter } from '@ng-bootstrap/ng-b
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { Observable, Subscription, combineLatest, tap } from 'rxjs';
 import { createPagination, Pagination } from 'src/app/core/models/pagination.model';
+import { ImageService } from 'src/app/core/service/Image.service';
 import { ModalConfirmComponent, ModalType } from 'src/app/shared/components/modal-confirm/modal-confirm.component';
 import { DateService } from 'src/app/shared/service/date.service';
 import { createCustomOrderProgressModel, CustomOrderProgressForm, CustomOrderProgressModel } from 'src/app/shared/store/custom-order-progress/custom-order-progress.model';
@@ -142,7 +143,8 @@ export default class CustomOrderDetailComponent implements OnInit, OnDestroy {
     public formatter: NgbDateParserFormatter,
     protected dateService: DateService,
     private datePipe: DatePipe,
-    private _router: Router
+    private _router: Router,
+    public imageService: ImageService
   ) { }
 
   ngOnInit(): void {

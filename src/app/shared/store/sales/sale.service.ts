@@ -4,7 +4,7 @@ import { EMPTY, Observable, of } from 'rxjs';
 import { catchError, delay, switchMap, take, tap } from 'rxjs/operators';
 import { SaleModel } from './sale.model';
 import { SaleStoreService } from './sale.store';
-import { CarpetInventoryHttpService } from '../../service/carpet-inventory.http.service';
+import { MarbleInventoryHttpService } from '../../service/marble-inventory.http.service';
 import { MessageToastService } from 'src/app/core/service/message-toast.service';
 import { City, Country, State } from '../../service/open-source-data.service';
 
@@ -14,7 +14,7 @@ export class SaleService {
   constructor(
     private router: Router,
     protected store: SaleStoreService,
-    private CarpetInventoryService: CarpetInventoryHttpService,
+    private CarpetInventoryService: MarbleInventoryHttpService,
     private messageService: MessageToastService
   ) { }
 

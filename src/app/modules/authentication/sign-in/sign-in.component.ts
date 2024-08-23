@@ -67,6 +67,15 @@ export default class SignInComponent implements OnInit{
 
   }
 
+  showPassword(){
+    const password = document.getElementById('password');
+    if(password!.getAttribute('type') === 'password'){
+      password!.setAttribute('type','text');
+    }else{
+      password!.setAttribute('type','password');
+    }
+  }
+
   navigate(): void{
     this._router.navigate(['/users']);
   }

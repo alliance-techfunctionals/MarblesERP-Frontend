@@ -3,14 +3,14 @@ import { EMPTY, Observable, of } from 'rxjs';
 import { catchError, delay, switchMap, take, tap } from 'rxjs/operators';
 import { SizeStoreService } from './size.store';
 import { Size } from './size.model';
-import { CarpetInventoryHttpService } from '../../service/carpet-inventory.http.service';
+import { MarbleInventoryHttpService } from '../../service/marble-inventory.http.service';
 
 @Injectable({ providedIn: 'root' })
 export class SizeService {
 
   constructor(
     protected store: SizeStoreService,
-    private CarpetInventoryService: CarpetInventoryHttpService
+    private CarpetInventoryService: MarbleInventoryHttpService
   ) { }
 
   // get All Size list

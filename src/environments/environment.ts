@@ -4,7 +4,7 @@ export const environment = {
   appName:packageInfo.name,
   appVersion: packageInfo.version,
   production: false,
-  apiUrl: 'https://carpetsinventory.atf-labs.com/api/',
+  apiUrl: 'http://server.atf-labs.com:5002/api/',
 
   // HTTP request timeout value in Milliseconds [2mins -> 2 x 60 x 1000 ]
 	requestTimeout: 120000,

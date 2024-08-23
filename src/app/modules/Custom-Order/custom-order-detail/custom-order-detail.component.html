@@ -189,7 +189,7 @@
               <!--  | paginate : pagingConfig -->
               <td>{{ order.createdOn | date: 'mediumDate'}}</td>
               <td *ngIf="order.imageUrl">
-                <a href="{{ order.imageUrl }}" target="_blank"><i class="feather icon-image"></i></a>
+                <a href="{{ imageService.getGeneratedURL(order.imageUrl) }}" target="_blank"><i class="feather icon-image"></i></a>
               </td>
               <td *ngIf="!order.imageUrl"><i class="feather icon-image"></i></td>
               <td>{{ order.comments }}</td>
