@@ -232,14 +232,28 @@ export class MarbleInventoryHttpService {
   }
 
   // Invoice API
-  getInvoice(saleDetail: Invoice): Observable<Invoice> {
-    const headers = this.getHeaders();
-    return this.http.post<Invoice>(`${this.baseUrl}Notification/getInvoice/pushE-mail`, saleDetail, { headers: headers });
+  getInvoice(saleDetail: Invoice): Observable<any> {
+    // const headers = this.getHeaders();
+    // return this.http.post<Invoice>(`${this.baseUrl}Notification/getInvoice/pushE-mail`, saleDetail, { headers: headers });
+
+    const headers = this.getHeaders()
+    const requestOptions: Object = {
+      headers: headers,
+      responseType: 'text'
+    }
+    return this.http.post<any>(`${this.baseUrl}Notification/getInvoice/pushE-mail`, saleDetail,requestOptions);
   }
 
-  printInvoice(saleId: number): Observable<Invoice> {
-    const headers = this.getHeaders();
-    return this.http.get<Invoice>(`${this.baseUrl}sale/invoice/${saleId}`, { headers: headers });
+  printInvoice(saleId: number): Observable<string> {
+    // const headers = this.getHeaders();
+    // return this.http.get<string>(`${this.baseUrl}sale/invoice/${saleId}`, { headers: headers });
+
+    const headers = this.getHeaders()
+    const requestOptions: Object = {
+      headers: headers,
+      responseType: 'text'
+    }
+    return this.http.get<any>(`${this.baseUrl}sale/invoice/${saleId}`, requestOptions);
   }
 
   // Custom Order API

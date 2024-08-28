@@ -145,7 +145,11 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
       ])
     ]),
     mobileList: this.formBuilder.array([
-      this.formBuilder.control('', Validators.required)
+      // this.formBuilder.control('', Validators.required)
+      this.formBuilder.control('', [
+        Validators.required,
+        Validators.pattern(/^(\+\d{1,3}[- ]?)?\d{10}$/) // Adjust the pattern as needed
+      ])
     ]),
     street: ['', Validators.required],
     apartment: [''],
@@ -356,7 +360,11 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
         countryPhoneCode = selectedCountry.country_phone_code;
       } 
     }
-    this.mobileList.push(this.formBuilder.control(`+${countryPhoneCode} `));
+    // this.mobileList.push(this.formBuilder.control(`+${countryPhoneCode} `));
+    this.mobileList.push(this.formBuilder.control(`+${countryPhoneCode} `, [
+      Validators.required,
+      Validators.pattern(/^(\+\d{1,3}[- ]?)?\d{10}$/) // Adjust the pattern as needed
+    ]));
   }
 
   removeMobile(index: number) {
@@ -366,7 +374,11 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
   }
 
   addEmail() {
-    this.emailList.push(this.formBuilder.control(''));
+    // this.emailList.push(this.formBuilder.control(''));
+    this.emailList.push(this.formBuilder.control('', [
+      Validators.required,
+      (control: AbstractControl) => validateEmailFormat(control)
+    ]));
   }
 
   removeEmail(index: number) {
@@ -464,7 +476,11 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
 
             this.mobileList.clear();
             // Add each mobile number as a separate control
-            mobileNumberList.forEach(mobile => this.mobileList.push(this.formBuilder.control(mobile)));
+            // mobileNumberList.forEach(mobile => this.mobileList.push(this.formBuilder.control(mobile)));
+            mobileNumberList.forEach(mobile => this.mobileList.push(this.formBuilder.control(mobile, [
+              Validators.required,
+              Validators.pattern(/^(\+\d{1,3}[- ]?)?\d{10}$/) // Adjust the pattern as needed
+            ])));
 
             // adding client details
             this.clientDetailForm.setValue({
@@ -554,6 +570,10 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
         }
       );
     }
+
+    let orderDateValue = new Date(this.orderDate.value);
+    orderDateValue.setHours(orderDateValue.getHours() - 5);
+    orderDateValue.setMinutes(orderDateValue.getMinutes() - 30);
     
     const sale = createSaleModel({
       id: this.id.value,
@@ -581,7 +601,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
       paymentStatus: this.paymentStatus.value,
       isFullPayment: isFull,
       isHandCarry: this.isHandCarry.value == 'true' ? true : false,
-      orderDate: this.orderDate.value
+      orderDate: orderDateValue
     });
 
     // sale is done
@@ -619,11 +639,37 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
 
             this.invoiceService.upsertInvoice(invoiceModel).pipe(
               tap((invoiceResponse) => {
-                if (invoiceResponse.url) {
-                  // show pdf in new tab
-                  window.open(this.imageService.getGeneratedURL(invoiceResponse.url), "_blank");
-                  // hide the progress bar after showing invoice
-                  modalRef.hide()
+                if (invoiceResponse && invoiceType == 1){
+                  const printWindow = window.open('', '', 'height=1000,width=800');
+                  printWindow?.document.write(invoiceResponse);
+                  printWindow?.document.close();
+                  // printWindow?.print();
+
+                  if(printWindow){
+                    printWindow.onload = () => {
+                      printWindow?.focus();
+                      printWindow?.print();
+                    }
+                  }
+                  // printWindow!.onafterprint = () => {
+                  //   printWindow?.close();
+                  //   modalRef.hide()
+                  // }
+
+                  const closeModalAndSpinner = () => {
+                    console.log("Modal closed");
+                    printWindow?.close();
+                    modalRef.hide(); // Hide the modal and remove the spinner
+                  };
+                  printWindow!.onafterprint = closeModalAndSpinner;
+
+
+                  const interval = setInterval(() => {
+                    if (printWindow && printWindow.closed) {
+                      clearInterval(interval);
+                      closeModalAndSpinner();
+                    }
+                  }, 1000);
                 }
                 else{
                   // hide the progress bar as response received

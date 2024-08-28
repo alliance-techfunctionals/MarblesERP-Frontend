@@ -40,6 +40,7 @@ import { AuthService } from 'src/app/core/service/auth.service';
 import { NgxCountriesDropdownModule } from 'ngx-countries-dropdown';
 import { AgGridService } from 'src/app/shared/service/ag-grid.service';
 import SaleViewComponent from './sale-view/sale-view.component';
+import { ModalPrintShowModule } from 'src/app/shared/components/modal-print-show/modal-print-show.module';
 @NgModule({
   declarations: [
     SaleListComponent,
@@ -91,6 +92,7 @@ import SaleViewComponent from './sale-view/sale-view.component';
     CdkStepperModule,
     TypeaheadModule,
     NgbProgressbarModule,
+    ModalPrintShowModule
     // NgxCountriesDropdownModule
   ],
   exports: [

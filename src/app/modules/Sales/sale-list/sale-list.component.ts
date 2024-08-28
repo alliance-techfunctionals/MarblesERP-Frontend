@@ -283,9 +283,15 @@ export default class SaleListComponent implements OnInit,OnDestroy {
   printInvoice(sale: SaleModel){
     this.invoiceService.printInvoice(sale.id).pipe(
       tap((invoiceResponse) => {
-        if (invoiceResponse.url) {
+        console.log("Here " + typeof invoiceResponse);
+        // console.log("Here " + invoiceResponse.url);
+        
+
+        let invoice = JSON.parse(invoiceResponse);
+        
+        if (invoice.url) {
           // show pdf in new tab
-          window.open(this.imageService.getGeneratedURL(invoiceResponse.url), "_blank");
+          window.open(this.imageService.getGeneratedURL(invoice.url), "_blank");
         }
       })
     ).subscribe()

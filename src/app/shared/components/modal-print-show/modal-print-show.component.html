@@ -1,0 +1,16 @@
+<div class="modal-body text-center">
+  <i [class]="icon"></i>
+  <p>This action will <span class="fw-bold">{{ input.value == "1"? "Print": "Show"}}</span> the invoice</p>
+  <form [formGroup]="inputForm">
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" id="print" value="1" name="input" formControlName="input">
+      <label class="form-check-label" for="print">Print</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" id="show" value="0" name="input" formControlName="input">
+      <label class="form-check-label" for="show">Show</label>
+    </div>
+  </form>
+  <button type="button" class="btn btn-primary m-r-15" (click)="modalConfirm()">OK</button>
+  <button type="button" class="btn btn-outline-primary" (click)="modalDecline()">Cancel</button>
+</div>
