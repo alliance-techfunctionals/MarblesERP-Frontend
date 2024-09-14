@@ -1,25 +1,51 @@
 import { FormControl } from "@angular/forms";
 
 export interface InventoryModel {
-  masterId: number,
-  id: number,
+  // masterId: number,
+  // id: number,
   qualityId: number,
   designId: number,
-  quantity: number,
-  colorCode: string,
+  // quantity: number,
+  // colorCode: string,
+  // size: string,
+  // supplierId: number,
+  // isDeleted: boolean,
+  // createdOn: Date,
+  // file: File,
+  // fileKey: string,
+  // name: string,
+  // isNormalUpdate: boolean
+
+  // // columns for ag-grid
+  // qualityName: string,
+  // designName: string,
+  // supplierName: string
+
+  masterId: number,
+  id: number,
   size: string,
-  supplierId: number,
+  qualityTypeName: string,
+  productName: string,
+  productCode: string,
+  shapeName: string,
+  primaryStoneName: string,
+  designName: string,
+  primaryColorName: string,
+  stoneNb: number,
+  stonesNb: number,
+  rate: number,
+  sadekaar: number,
+  designAmt: number,
+  artisianName: string,
+  artisanId: number,
+  isNormalUpdate: boolean,
   isDeleted: boolean,
   createdOn: Date,
-  file: File,
-  fileKey: string,
-  name: string,
-  isNormalUpdate: boolean
+  costPrice: number,
+  sellingPrice: number,
+  quantity: number
 
-  // columns for ag-grid
-  qualityName: string,
-  designName: string,
-  supplierName: string
+
 }
 
 export interface CheckInventoryModel{
@@ -49,32 +75,48 @@ export function createCheckInventoryModel({
 }
 
 export function createInventoryModel({
-  masterId = 0,
-  id = 0,
-  qualityId = 0,
-  designId = 0,
-  quantity = 0,
-  colorCode = '',
-  size = '',
-  file = new File([], ''),
-  name = '',
-  fileKey = '',
-  supplierId = 0,
-  isNormalUpdate = true,
+  masterId= 0,
+  id= 0,
+  size= "",
+  qualityTypeName= "",
+  productName= "",
+  productCode= "",
+  shapeName= "",
+  primaryStoneName= "",
+  designName= "",
+  primaryColorName= "",
+  stoneNb= 0,
+  rate= 0,
+  sadekaar= 0,
+  designAmt= 0,
+  artisianName= '',
+  artisanId= 0,
+  isNormalUpdate= false,
+  isDeleted= false,
+  createdOn= new Date(),
+  costPrice= 0,
+  sellingPrice= 0,
+  quantity= 0
 }: Partial<InventoryModel>) {
   return {
-    masterId,
     id,
-    qualityId,
-    designId,
-    quantity,
-    colorCode,
+    artisianName,
     size,
-    file,
-    name,
-    fileKey,
-    supplierId,
-    isNormalUpdate,
+    qualityTypeName,
+    productName,
+    productCode,
+    shapeName,
+    primaryStoneName,
+    designName,
+    primaryColorName,
+    stoneNb,
+    // rate,
+    // sadekaar,
+    // designAmt,
+    // costPrice,
+    sellingPrice,
+    // quantity,
+    isDeleted
   } as InventoryModel;
 }
 /***** Below Code were used for Accordian *****/
@@ -167,12 +209,32 @@ export function createInventoryModel({
 export interface inventoryForm {
   masterId: FormControl<number>,
   id: FormControl<number>,
-  quality: FormControl<string>,
-  design: FormControl<string>,
-  quantity: FormControl<number>,
-  color: FormControl<string>,
   size: FormControl<string>,
-  file: FormControl<File | null>,
-  name: FormControl<string>,
-  supplierId: FormControl<number>
+  productType: FormControl<string>,
+  productName: FormControl<string>,
+  productCode: FormControl<string>,
+  shape: FormControl<string>,
+  primaryStone: FormControl<string>,
+  design: FormControl<string>,
+  primaryColor: FormControl<string>,
+  noOfStone: FormControl<number>,
+  // rate: FormControl<number>,
+  // sadekaar: FormControl<number>,
+  // designAmt: FormControl<number>,
+  artisanName: FormControl<string>,
+  artisanId: FormControl<number>,
+  // cp: FormControl<number>,
+  sp: FormControl<number>,
+  // qty : FormControl<number>
+
+
+  // quality: FormControl<string>,
+  // design: FormControl<string>,
+  // quantity: FormControl<number>,
+  // color: FormControl<string>,
+  // file: FormControl<File | null>,
+  // name: FormControl<string>,
+  // supplierId: FormControl<number>
+
+
 }

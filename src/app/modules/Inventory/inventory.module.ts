@@ -24,6 +24,14 @@ import { NgbAccordionDirective, NgbAccordionHeader, NgbAccordionItem, NgbAccordi
 import { TagInputModule } from 'ngx-chips';
 import { UserService } from 'src/app/shared/store/user/user.service';
 import { UserStoreService } from 'src/app/shared/store/user/user.store';
+import { ShapeStoreService } from 'src/app/shared/store/shape/shape.store';
+import { ShapeService } from 'src/app/shared/store/shape/shape.service';
+import { ProductStoreService } from 'src/app/shared/store/product/product.store';
+import { ProductService } from 'src/app/shared/store/product/product.service';
+import { PrimaryColorService } from 'src/app/shared/store/primary-color/primary-color.service';
+import { PrimaryColorStoreService } from 'src/app/shared/store/primary-color/primary-color.store';
+import { ArtisanStoreService } from 'src/app/shared/store/artisan/artisan.store';
+import { ArtisanService } from 'src/app/shared/store/artisan/artisan.service';
 
 @NgModule({
   declarations: [
@@ -40,7 +48,15 @@ import { UserStoreService } from 'src/app/shared/store/user/user.store';
     ColorStoreService,
     ColorService,
     SizeStoreService,
+    ShapeStoreService,
+    ProductStoreService,
+    PrimaryColorStoreService,
+    ArtisanStoreService,
+    ArtisanService,
     SizeService,
+    ShapeService,
+    ProductService,
+    PrimaryColorService,
     UserService,
     UserStoreService,
   ],

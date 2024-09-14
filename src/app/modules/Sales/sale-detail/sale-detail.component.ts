@@ -148,7 +148,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
       // this.formBuilder.control('', Validators.required)
       this.formBuilder.control('', [
         Validators.required,
-        Validators.pattern(/^(\+\d{1,3}[- ]?)?\d{10}$/) // Adjust the pattern as needed
+        // Validators.pattern(/^(\+\d{1,3}[- ]?)?\d{10}$/) // Adjust the pattern as needed
       ])
     ]),
     street: ['', Validators.required],
@@ -363,7 +363,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
     // this.mobileList.push(this.formBuilder.control(`+${countryPhoneCode} `));
     this.mobileList.push(this.formBuilder.control(`+${countryPhoneCode} `, [
       Validators.required,
-      Validators.pattern(/^(\+\d{1,3}[- ]?)?\d{10}$/) // Adjust the pattern as needed
+      // Validators.pattern(/^(\+\d{1,3}[- ]?)?\d{10}$/) // Adjust the pattern as needed
     ]));
   }
 
@@ -430,7 +430,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
         this.userService.getAll(),
         this.roleService.getAll(),
         this.colorService.getAll(),
-        this.sizeService.getAll(),
+        // this.sizeService.getAll(),
         this.qualityService.getAll(),
         this.designService.getAll(),
         this.voucherService.getAll(),
@@ -479,7 +479,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
             // mobileNumberList.forEach(mobile => this.mobileList.push(this.formBuilder.control(mobile)));
             mobileNumberList.forEach(mobile => this.mobileList.push(this.formBuilder.control(mobile, [
               Validators.required,
-              Validators.pattern(/^(\+\d{1,3}[- ]?)?\d{10}$/) // Adjust the pattern as needed
+              // Validators.pattern(/^(\+\d{1,3}[- ]?)?\d{10}$/) // Adjust the pattern as needed
             ])));
 
             // adding client details

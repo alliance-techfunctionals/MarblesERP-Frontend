@@ -36,19 +36,21 @@ export interface AutoCompleteModel {
 })
 export default class InventoryListComponent {
   colDefs: ColDef[] = [
-    { headerName: "#", valueGetter: "node.rowIndex + 1", maxWidth: 60 },
-    { field: "qualityName", filter: true, floatingFilter: true },
-    { field: "designName", filter: true, floatingFilter: true },
-    { field: "colorCode", filter: true, floatingFilter: true},
-    { field: "size", filter: true, floatingFilter: true, maxWidth: 110},
-    { field: "quantity", filter: true, floatingFilter: true, maxWidth: 110},
-    { field: "supplierName", filter: true, floatingFilter: true, valueFormatter: params => params.value ? params.value : "N/A"},
+    { headerName: "#", valueGetter: "node.rowIndex + 1", maxWidth: 60, resizable: true },
+    { field: "artisianName", filter: true, floatingFilter: true },
+    { field: "qualityTypeName", headerName: 'Quality', filter: true, floatingFilter: true},
+    { field: "productName",headerName: 'Product Name', filter: true, floatingFilter: true},
+    { field: "shapeName",headerName: 'Shape', filter: true, floatingFilter: true},
+    { field: "designName",headerName: 'Design', filter: true, floatingFilter: true},
+    { field: "stonesNb",headerName: 'No Of Stones', filter: true, floatingFilter: true},
+    // { field: "supplierName", filter: true, floatingFilter: true, valueFormatter: params => params.value ? params.value : "N/A"},
     {
       field: "action",
       headerName: "Actions",
       cellRenderer: AgCustomButtonComponent,
       cellRendererParams: {
-        buttonsToShow: ['edit', 'delete', 'image'],
+        buttonsToShow: ['edit', 'delete'],
+        onViewClick: this.onViewClicked.bind(this),
         onEditClick: this.onEditClicked.bind(this),
         onDeleteClick: this.onDeleteClicked.bind(this),
         onImageClick: this.onImageClicked.bind(this),
@@ -63,6 +65,11 @@ export default class InventoryListComponent {
   };
 
   paginationPageSize = environment.tableRecordSize;
+  
+
+  onViewClicked(e: any) {
+    this.router.navigate(['sale/view', e.rowData.id]);
+  }
 
   onEditClicked(e: any) {
     this.router.navigate(['inventory', e.rowData.id]);
@@ -79,13 +86,12 @@ export default class InventoryListComponent {
     else{
       this.messageService.error("No Image Found");
     }
-    
   }
 
   // pagination config
   pagingConfig: Pagination = createPagination({});
 
-  // inventorys List
+  // inventories List
   inventoryList$: Observable<InventoryModel[]> = of([]);
   qualityList$: Observable<Quality[]> = this.qualityStoreService.selectAll();
   designList$: Observable<Design[]> = this.designStoreService.selectAll();
@@ -120,44 +126,55 @@ export default class InventoryListComponent {
   ) { }
 
   ngOnInit() {
+    console.log("Init")
+    // this.subscriptions.push(
+    //   this.service.getAll().subscribe(),
+    //   // this.qualityService.getAll().subscribe(),
+    //   // this.designService.getAll().subscribe(),
+    //   this.userSerive.getAll().subscribe()
+    // )
+
+    this.store.resetInventoryStore();
+
     this.subscriptions.push(
-      this.service.getAll().subscribe(),
-      this.qualityService.getAll().subscribe(),
-      this.designService.getAll().subscribe(),
-      this.userSerive.getAll().subscribe()
+      combineLatest([
+        this.service.getAll(),
+        this.userSerive.getAll()
+      ])
+      .subscribe()
     )
 
     this.inventoryList$ = combineLatest([
       this.store.selectAll(),
-      this.designStoreService.selectAll(),
-      this.qualityStoreService.selectAll(),
-      this.userStoreService.selectAll(),
-      this.designSearchId.valueChanges.pipe(
-        startWith(this.designSearchId.value)
-      ),
-      this.qualitySearchId.valueChanges.pipe(
-        startWith(this.qualitySearchId.value)
-      )
+      // this.designStoreService.selectAll(),
+      // this.qualityStoreService.selectAll(),
+      // this.userStoreService.selectAll(),
+      // this.designSearchId.valueChanges.pipe(
+      //   startWith(this.designSearchId.value)
+      // ),
+      // this.qualitySearchId.valueChanges.pipe(
+      //   startWith(this.qualitySearchId.value)
+      // )
     ]).pipe(
-      map(([inventories,designs, qualities, users, designSearchId, qualitySearchId]) => {
+      map(([inventories]) => {
         return inventories.map(inventory => {
-          const design = designs.find(design => design.id == inventory.designId);
-          const quality = qualities.find(quality => quality.id == inventory.qualityId);
-          const user = users.find(user => user.id == inventory.supplierId);
+          // const design = designs.find(design => design.id == inventory.designId);
+          // const quality = qualities.find(quality => quality.id == inventory.qualityId);
+          // const user = users.find(user => user.id == inventory.artisanId);
 
-          if(design){
-            inventory.designName = design.name;
-          }
-          if(quality){
-            inventory.qualityName = quality.name;
-          }
-          if(user){
-            inventory.supplierName = user.name;
-          }
+          // if(design){
+          //   inventory.designName = design.name;
+          // }
+          // if(quality){
+          //   inventory.qualityTypeName = quality.name;
+          // }
+          // if(user){
+          //   inventory.artisianName = user.name;
+          // }
           return inventory;
         }).sort((a, b) => b.id - a.id); // sort desc by id
       })
-    );
+    )
 
   }
 

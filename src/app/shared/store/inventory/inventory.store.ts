@@ -1,5 +1,5 @@
 import { Observable, of, switchMap } from 'rxjs';
-import { selectAllEntities, withEntities, getEntity, addEntities, deleteEntities, upsertEntities, upsertEntitiesById, updateEntities } from '@ngneat/elf-entities';
+import { selectAllEntities, withEntities, getEntity, addEntities, deleteEntities, upsertEntities, upsertEntitiesById, updateEntities, setEntities } from '@ngneat/elf-entities';
 
 import { createStore } from '@ngneat/elf';
 import { InventoryModel } from './inventory.model';
@@ -62,6 +62,10 @@ export class InventoryStoreService {
 
   deleteById(id: number): void {
     inventoryStore.update(deleteEntities(id));
+  }
+
+  resetInventoryStore(): void{
+    inventoryStore.update(setEntities([]));
   }
 
 

@@ -4,6 +4,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { Observable, Subscription, combineLatest, debounceTime, distinctUntilChanged, map, of, switchMap, tap } from 'rxjs';
 import { ModalConfirmComponent, ModalType } from 'src/app/shared/components/modal-confirm/modal-confirm.component';
+import { Artisan, ArtisanResponse } from 'src/app/shared/store/artisan/artisan.model';
+import { ArtisanService } from 'src/app/shared/store/artisan/artisan.service';
+import { ArtisanStoreService } from 'src/app/shared/store/artisan/artisan.store';
 import { ColorService } from 'src/app/shared/store/color/color.service';
 import { ColorStoreService } from 'src/app/shared/store/color/color.store';
 import { Design } from 'src/app/shared/store/design/design.model';
@@ -12,9 +15,15 @@ import { DesignStoreService } from 'src/app/shared/store/design/design.store';
 import { inventoryForm, createInventoryModel, createCheckInventoryModel, InventoryModel, CheckInventoryModel } from 'src/app/shared/store/inventory/inventory.model';
 import { InventoryService } from 'src/app/shared/store/inventory/inventory.service';
 import { InventoryStoreService } from 'src/app/shared/store/inventory/inventory.store';
+import { PrimaryColorService } from 'src/app/shared/store/primary-color/primary-color.service';
+import { PrimaryColorStoreService } from 'src/app/shared/store/primary-color/primary-color.store';
+import { ProductService } from 'src/app/shared/store/product/product.service';
+import { ProductStoreService } from 'src/app/shared/store/product/product.store';
 import { Quality } from 'src/app/shared/store/quality/quality.model';
 import { QualityService } from 'src/app/shared/store/quality/quality.service';
 import { QualityStoreService } from 'src/app/shared/store/quality/quality.store';
+import { ShapeService } from 'src/app/shared/store/shape/shape.service';
+import { ShapeStoreService } from 'src/app/shared/store/shape/shape.store';
 import { SizeService } from 'src/app/shared/store/size/size.service';
 import { SizeStoreService } from 'src/app/shared/store/size/size.store';
 import { UserModel } from 'src/app/shared/store/user/user.model';
@@ -45,24 +54,68 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
   sizeList$: Observable<string[]> = this.sizeStoreService.selectAll().pipe(
     map((sizes) => sizes.map((t) => t.name))
   );
+
+  shapeList$: Observable<string[]> = this.shapeStoreService.selectAll().pipe(
+    map((shape) => shape.map((t) => t.name))
+  );
+
+  productNameList$: Observable<string[]> = this.productStoreService.selectAll().pipe(
+    map((product) => product.map((t) => t.name))
+  );
+
+  primaryColorList$: Observable<string[]> = this.primaryColorStoreService.selectAll().pipe(
+    map((product) => product.map((t) => t.name))
+  );
   // getting suppliers list by sending supplier id 
   // sort suppliers by name
   supplierUserList$: Observable<UserModel[]> = this.userStoreService.selectByRoleId(5000).pipe(
     map(qualities => qualities.sort((a, b) => a.name.localeCompare(b.name)))
   );
 
+  artisanList$: Observable<Artisan[]> = this.artisanStoreService.selectAll();
+
+  artisanNameList$: Observable<string[]> = this.artisanList$.pipe(
+    map((artisans) => artisans.map((t) => t.name))
+  );
+
   inventoryForm: FormGroup<inventoryForm> = this.formBuilder.nonNullable.group({
+    // masterId: [0],
+    // id: [0],
+    // quality: ['', [Validators.required, Validators.min(1)]],
+    // design: ['', [Validators.required, Validators.min(1)]],
+    // quantity: [1, [Validators.required, Validators.min(1)]],
+    // color: ['', Validators.required],
+    // size: ['', Validators.required],
+    // file: [''],
+    // name: [''],
+    // supplierId: [0]
+
     masterId: [0],
     id: [0],
-    quality: ['', [Validators.required, Validators.min(1)]],
-    design: ['', [Validators.required, Validators.min(1)]],
-    quantity: [1, [Validators.required, Validators.min(1)]],
-    color: ['', Validators.required],
     size: ['', Validators.required],
-    file: [''],
-    name: [''],
-    supplierId: [0]
+    productType: ['', Validators.required],
+    productName: ['', Validators.required],
+    productCode: ['', Validators.required],
+    shape: ['', Validators.required],
+    primaryStone: ['', Validators.required],
+    design: ['', Validators.required],
+    primaryColor: ['', Validators.required],
+    noOfStone: ['', Validators.required],
+    // rate: [0],
+    // sadekaar: [0],
+    // designAmt: [0],
+    artisanName: ['', Validators.required],
+    artisanId: [0],
+    // cp : ['', Validators.required],
+    sp : ['', Validators.required]
+    // qty: [1, Validators.required]
   }) as any;
+
+  // variables to hide Rate, sadekaar and designAmt
+  rateField = false;
+  sadekaarField = false;
+  designAmtField = false;
+
 
   get masterId() {
     return this.inventoryForm.get('masterId') as FormControl;
@@ -72,36 +125,103 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
     return this.inventoryForm.get('id') as FormControl;
   }
 
-  get quality() {
-    return this.inventoryForm.get('quality') as FormControl;
-  }
-
-  get design() {
-    return this.inventoryForm.get('design') as FormControl;
-  }
-
-  get quantity() {
-    return this.inventoryForm.get('quantity') as FormControl;
-  }
-  get color() {
-    return this.inventoryForm.get('color') as FormControl;
-  }
-
-  get size() {
+  get size(){
     return this.inventoryForm.get('size') as FormControl;
   }
 
-  get file() {
-    return this.inventoryForm.get('file') as FormControl;
+  get productType(){
+    return this.inventoryForm.get('productType') as FormControl;
   }
 
-  get name() {
-    return this.inventoryForm.get('name') as FormControl;
+  get productName(){
+    return this.inventoryForm.get('productName') as FormControl;
   }
 
-  get supplierId() {
-    return this.inventoryForm.get('supplierId') as FormControl;
+  get productCode(){
+    return this.inventoryForm.get('productCode') as FormControl;
   }
+  get shape(){
+    return this.inventoryForm.get('shape') as FormControl;
+  }
+
+  get primaryStone(){
+    return this.inventoryForm.get('primaryStone') as FormControl;
+  }
+
+  get design(){
+    return this.inventoryForm.get('design') as FormControl;
+  }
+
+  get primaryColor(){
+    return this.inventoryForm.get('primaryColor') as FormControl;
+  }
+
+  get noOfStone(){
+    return this.inventoryForm.get('noOfStone') as FormControl;
+  }
+
+  // get rate(){
+  //   return this.inventoryForm.get('rate') as FormControl;
+  // }
+
+  // get sadekaar(){
+  //   return this.inventoryForm.get('sadekaar') as FormControl;
+  // }
+
+  // get designAmt(){
+  //   return this.inventoryForm.get('designAmt') as FormControl;
+  // }
+
+  get artisanName(){
+    return this.inventoryForm.get('artisanName') as FormControl;
+  }
+
+  get artisanId(){
+    return this.inventoryForm.get('artisanId') as FormControl;
+  }
+
+  // get cp(){
+  //   return this.inventoryForm.get('cp') as FormControl;
+  // }
+
+  get sp(){
+    return this.inventoryForm.get('sp') as FormControl;
+  }
+
+  // get qty(){
+  //   return this.inventoryForm.get('qty') as FormControl;
+  // }
+
+  // get quality() {
+  //   return this.inventoryForm.get('quality') as FormControl;
+  // }
+
+  // get design() {
+  //   return this.inventoryForm.get('design') as FormControl;
+  // }
+
+  // get quantity() {
+  //   return this.inventoryForm.get('quantity') as FormControl;
+  // }
+  // get color() {
+  //   return this.inventoryForm.get('color') as FormControl;
+  // }
+
+  // get size() {
+  //   return this.inventoryForm.get('size') as FormControl;
+  // }
+
+  // get file() {
+  //   return this.inventoryForm.get('file') as FormControl;
+  // }
+
+  // get name() {
+  //   return this.inventoryForm.get('name') as FormControl;
+  // }
+
+  // get supplierId() {
+  //   return this.inventoryForm.get('supplierId') as FormControl;
+  // }
 
   constructor(
     private route: ActivatedRoute,
@@ -116,6 +236,14 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
     private colorStoreService: ColorStoreService,
     private sizeService: SizeService,
     private sizeStoreService: SizeStoreService,
+    private shapeService: ShapeService,
+    private productService: ProductService,
+    private shapeStoreService: ShapeStoreService,
+    private productStoreService: ProductStoreService,
+    private primaryColorService: PrimaryColorService,
+    private primaryColorStoreService: PrimaryColorStoreService,
+    private artisanService: ArtisanService,
+    private artisanStoreService: ArtisanStoreService,
     private userService: UserService,
     private userStoreService: UserStoreService,
     private modalService: BsModalService,
@@ -123,6 +251,7 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    console.log('NgOnInt')
     // get inventory
     this.subscriptions.push(
       combineLatest([
@@ -130,74 +259,123 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
         this.inventoryService.getAll(),
         this.qualityService.getAll(),
         this.colorService.getAll(),
-        this.sizeService.getAll(),
+        // this.sizeService.getAll(),
+        this.shapeService.getAll(),
         this.designService.getAll(),
-        this.userService.getAll()
+        this.productService.getAll(),
+        this.primaryColorService.getAll(),
+        this.artisanService.getAll(),
+        this.userService.getAll(),
+        // this.shapeService
       ]).pipe(
-        tap(([params]) => {
+        tap(([params, inventoryData, qualityData, colorData, shapeData, designData, productData, primaryColorData, artisanData, userData]) => {
           if (params['id'] != 0) {
             const inventoryId = Number(params['id']);
-            const inventory = this.store.getById(inventoryId) ?? createInventoryModel({})
-            // console.log(inventory)
+            const inventory = this.store.getById(inventoryId) ?? createInventoryModel({});
+
+            console.log(inventory);
+
             this.inventoryForm.setValue({
-              masterId: inventory.masterId? inventory.masterId: 0,
+              masterId: inventory.masterId ? inventory.masterId : 0,
               id: inventory.id,
-              quality: inventory.qualityName,
-              design: inventory.designName,
-              color: inventory.colorCode,
               size: inventory.size,
-              quantity: inventory.quantity,
-              supplierId: inventory.supplierId != null? inventory.supplierId: 0,
-              file: new File([],''),
-              name: '',
-            })
+              productType: inventory.qualityTypeName,
+              productName: inventory.productName,
+              productCode: inventory.productCode,
+              shape: inventory.shapeName,
+              primaryStone: inventory.primaryStoneName,
+              design: inventory.designName,
+              primaryColor: inventory.primaryColorName,
+              noOfStone: inventory.stonesNb,
+              // rate: inventory.rate,
+              // sadekaar: inventory.sadekaar,
+              // designAmt: inventory.designAmt,
+              artisanName: inventory.artisianName,
+              artisanId: inventory.artisanId != null ? inventory.artisanId : 0,
+              // cp: inventory.costPrice,
+              sp: inventory.sellingPrice,
+              // qty: inventory.quantity
+            });
           }
         })
       ).subscribe()
     );
-
-  }
+}
 
   // submit button click
   protected uppertInventory(): void {
     const inventory = createInventoryModel({
+      // id: this.id.value,
+      // qualityId: this.quality.value,
+      // designId: this.design.value,
+      // quantity: this.quantity.value,
+      // colorCode: this.color.value,
+      // size: this.size.value,
+      // file: this.file.value,
+      // supplierId: this.supplierId.value
+
       id: this.id.value,
-      qualityId: this.quality.value,
-      designId: this.design.value,
-      quantity: this.quantity.value,
-      colorCode: this.color.value,
+      artisianName: this.artisanName.value,
       size: this.size.value,
-      file: this.file.value,
-      supplierId: this.supplierId.value
+      qualityTypeName: this.productType.value,
+      productName: this.productName.value,
+      productCode: this.productCode.value,
+      shapeName: this.shape.value,
+      primaryStoneName: this.primaryStone.value,
+      designName: this.design.value,
+      primaryColorName: this.primaryColor.value,
+      stoneNb: this.noOfStone.value,
+      sellingPrice: this.sp.value,
+      // rate: this.rate.value,
+      // sadekaar: this.sadekaar.value,
+      // designAmt: this.designAmt.value,
+      // costPrice: this.cp.value,
+      // quantity: this.qty.value
+      
     });
 
     const checkInventory = createCheckInventoryModel({
-      quality: this.quality.value,
+      // quality: this.quality.value,
       design: this.design.value,
-      colorCode: this.color.value,
+      // colorCode: this.color.value,
       size: this.size.value,
-      supplierId: this.supplierId.value
+      // supplierId: this.supplierId.value
     })
 
+    // if (this.inventoryForm.valid || this.inventoryForm.disabled) {
+    //   const checkInventory$ = this.inventoryService.checkInventory(checkInventory);
+    //   this.subscriptions.push(
+    //     combineLatest([checkInventory$]).subscribe(([inventoryExists]) => {
+    //       if (inventoryExists && inventoryExists.totalQuantity > 0 && inventoryExists.firstMatchingId != inventory.id) {
+    //         // view model
+    //         this.openUpdateConfirmationModal(inventory, inventoryExists)
+    //       } else {
+    //         // Inventory does not exist, proceed with upsert
+    //         this.subscriptions.push(
+    //           this.inventoryService.upsertInventory(inventory).pipe(
+    //             tap(() => {
+    //               this.inventoryForm.markAsPristine(),
+    //               this.navigate();
+    //             })
+    //           ).subscribe()
+    //         );
+    //       }
+    //     }))
+    // }
+
+    console.log(inventory)
+
     if (this.inventoryForm.valid || this.inventoryForm.disabled) {
-      const checkInventory$ = this.inventoryService.checkInventory(checkInventory);
       this.subscriptions.push(
-        combineLatest([checkInventory$]).subscribe(([inventoryExists]) => {
-          if (inventoryExists && inventoryExists.totalQuantity > 0 && inventoryExists.firstMatchingId != inventory.id) {
-            // view model
-            this.openUpdateConfirmationModal(inventory, inventoryExists)
-          } else {
-            // Inventory does not exist, proceed with upsert
-            this.subscriptions.push(
-              this.inventoryService.upsertInventory(inventory).pipe(
-                tap(() => {
-                  this.inventoryForm.markAsPristine(),
-                  this.navigate();
-                })
-              ).subscribe()
-            );
-          }
-        }))
+        this.inventoryService.upsertInventory(inventory).pipe(
+          tap(() => {
+            this.inventoryService.getAll();
+            this.inventoryForm.markAsPristine();
+            this.navigate();
+
+          })
+        ).subscribe()
+      );
     }
   }
 
@@ -249,7 +427,7 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
   // get the image file
   onFileSelected(event: Event){
     if(event.target instanceof HTMLInputElement && event.target.files?.length){
-      this.file.setValue(event.target.files[0]);
+      // this.file.setValue(event.target.files[0]);
     }  
   }
 
@@ -282,6 +460,30 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
       debounceTime(200),
       distinctUntilChanged(),
       switchMap(term => this.filterAllList(term, this.sizeList$))
+    );
+  };
+
+  searchShape = (text$: Observable<string>): Observable<string[]> => {
+    return text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      switchMap(term => this.filterAllList(term, this.shapeList$))
+    );
+  };
+
+  searchProductName = (text$: Observable<string>): Observable<string[]> => {
+    return text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      switchMap(term => this.filterAllList(term, this.productNameList$))
+    );
+  };
+
+  searchPrimaryColor = (text$: Observable<string>): Observable<string[]> => {
+    return text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      switchMap(term => this.filterAllList(term, this.primaryColorList$))
     );
   };
 

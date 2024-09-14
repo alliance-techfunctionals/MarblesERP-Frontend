@@ -24,6 +24,10 @@ import { CustomOrderProgressModel } from '../store/custom-order-progress/custom-
 import { DeliveryPartnerModel } from '../store/delivery-partner/delivery-partner.model';
 import { City, Country, OpenSourceDataService, State } from './open-source-data.service';
 import { head } from 'lodash';
+import { Shape } from '../store/shape/shape.model';
+import { Product } from '../store/product/product.model';
+import { PrimaryColor } from '../store/primary-color/primary-color.model';
+import { ArtisanResponse } from '../store/artisan/artisan.model';
 
 @Injectable({
   providedIn: 'root'
@@ -81,23 +85,29 @@ export class MarbleInventoryHttpService {
     return this.http.get<Role[]>(`${this.baseUrl}user/userrole`,{ headers: headers});
   }
 
-  // Quality API
+  // Quality (qualityTypeName) API
   getAllQuality(): Observable<QualityResponse[]> {
     const headers = this.getHeaders();
-    return this.http.get<QualityResponse[]>(`${this.baseUrl}quality`, { headers: headers });
+    return this.http.get<QualityResponse[]>(`${this.baseUrl}Lookups/quality`, { headers: headers });
   }
 
   // Design API
   getAllDesign(): Observable<DesignResponse[]> {
     const headers = this.getHeaders();
-    return this.http.get<DesignResponse[]>(`${this.baseUrl}design`, { headers: headers });
+    return this.http.get<DesignResponse[]>(`${this.baseUrl}Lookups/design`, { headers: headers });
 
   }
 
-  // Color API
+  // Color(Primary Stone) API
   getAllColor(): Observable<Color[]> {
     const headers = this.getHeaders();
-    return this.http.get<Color[]>(`${this.baseUrl}colourSize/colours`, { headers: headers });
+    return this.http.get<Color[]>(`${this.baseUrl}Lookups/primarystone`, { headers: headers });
+  }
+
+  // Color(Primary Color) API
+  getAllPrimaryColor(): Observable<Color[]> {
+    const headers = this.getHeaders();
+    return this.http.get<PrimaryColor[]>(`${this.baseUrl}Lookups/primarycolor`, { headers: headers });
   }
 
   // Size API
@@ -105,6 +115,27 @@ export class MarbleInventoryHttpService {
     const headers = this.getHeaders();
     return this.http.get<Size[]>(`${this.baseUrl}colourSize/size`, { headers: headers });
   }
+
+  // Shape API
+  getAllShape(): Observable<Shape[]> {
+    const headers = this.getHeaders();
+    return this.http.get<Shape[]>(`${this.baseUrl}Lookups/shape`, { headers: headers });
+  }
+
+  // Product API
+  getAllProduct(): Observable<Product[]> {
+    const headers = this.getHeaders();
+    return this.http.get<Product[]>(`${this.baseUrl}Lookups/product`, { headers: headers });
+  }
+
+  // Artisan API
+  getAllArtisan(): Observable<ArtisanResponse[]> {
+    const headers = this.getHeaders();
+    return this.http.get<ArtisanResponse[]>(`${this.baseUrl}Lookups/artisian`, { headers: headers });
+
+  }
+
+
 
   // Inventory API for Accordian
   // getAllInventory(): Observable<InventoryModel[]> {
@@ -115,19 +146,34 @@ export class MarbleInventoryHttpService {
   // Inventory API for grid
   getAllInventory(): Observable<InventoryModel[]> {
     const headers = this.getHeaders();
-    return this.http.get<InventoryModel[]>(`${this.baseUrl}inventory/details`, { headers: headers });
+    return this.http.get<InventoryModel[]>(`${this.baseUrl}inventory?pageNumber=1&pageSize=5000`, { headers: headers });
   }
 
   insertInventory(inventory: InventoryModel): Observable<InventoryModel> {
 
     const formData = new FormData()
-    formData.append("QualityName", inventory.qualityId.toString());
-    formData.append("DesignName", inventory.designId.toString());
-    formData.append("ColorCode", inventory.colorCode);
-    formData.append("Quantity", inventory.quantity.toString());
+    formData.append("id", inventory.id.toString());
+    formData.append("ArtisianName", inventory.artisianName);
     formData.append("Size", inventory.size);
-    formData.append("file", inventory.file);
-    formData.append("supplierId", inventory.supplierId.toString());
+    formData.append("QualityTypeName", inventory.qualityTypeName);
+    formData.append("ProductName", inventory.productName);
+    formData.append("ProductCode", inventory.productCode);
+    formData.append("ShapeName", inventory.shapeName);
+    formData.append("PrimaryStoneName", inventory.primaryStoneName);
+    formData.append("DesignName", inventory.designName);
+    formData.append("PrimaryColorName", inventory.primaryColorName);
+    formData.append("StonesNb", inventory.stoneNb.toString());
+    formData.append("SellingPrice", inventory.sellingPrice.toString());
+    formData.append("IsDeleted", inventory.isDeleted.toString());
+    formData.append("Name", "N/A");
+    // formData.append("Rate", inventory.rate.toString());
+    // formData.append("Sadekaar", inventory.sadekaar.toString());
+    // formData.append("DesignAmt", inventory.designAmt.toString());
+    // formData.append("CostPrice", inventory.costPrice.toString());
+    // formData.append("Quantity", inventory.sellingPrice.toString());
+
+
+    
     const authToken = localStorage.getItem('Token');
     const headers = new HttpHeaders({
       Authorization: `Bearer ${authToken}`
@@ -137,23 +183,23 @@ export class MarbleInventoryHttpService {
 
   updateInventory(inventory: InventoryModel): Observable<InventoryModel> {
     console.log(inventory)
-    const formData = new FormData()
-    formData.append("MasterId", String(inventory.id));
-    formData.append("QualityId", String(inventory.qualityId));
-    formData.append("DesignId", String(inventory.designId));
-    formData.append("ColorCode", inventory.colorCode);
-    formData.append("Quantity", String(inventory.quantity));
-    formData.append("Size", inventory.size);
-    formData.append("file", inventory.file);
-    formData.append("supplierId", inventory.supplierId.toString());
-    formData.append("isNormalUpdate",inventory.isNormalUpdate.toString())
+    // const formData = new FormData()
+    // formData.append("MasterId", String(inventory.id));
+    // formData.append("QualityId", String(inventory.qualityId));
+    // formData.append("DesignId", String(inventory.designId));
+    // formData.append("ColorCode", inventory.colorCode);
+    // formData.append("Quantity", String(inventory.quantity));
+    // formData.append("Size", inventory.size);
+    // formData.append("file", inventory.file);
+    // formData.append("supplierId", inventory.supplierId.toString());
+    // formData.append("isNormalUpdate",inventory.isNormalUpdate.toString())
     
     const authToken = localStorage.getItem('Token');
     const headers = new HttpHeaders({
       Authorization: `Bearer ${authToken}`
     });
     
-    return this.http.put<InventoryModel>(`${this.baseUrl}inventory/${inventory.id}`, formData, { headers: headers });
+    return this.http.put<InventoryModel>(`${this.baseUrl}inventory/${inventory.id}`, inventory, { headers: headers });
   }
 
   deleteInventory(inventory: InventoryModel): Observable<InventoryModel> {
