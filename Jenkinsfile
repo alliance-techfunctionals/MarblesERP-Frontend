@@ -23,9 +23,9 @@ pipeline {
                   script {
                     echo "Branch: ${BRANCH_NAME == 'origin/develop'}"
                     if (BRANCH_NAME == 'origin/develop') {
-                        sh 'sudo npm install; npm run build-dev'
+                        sh 'sudo npm install --force; npm run build-dev'
                     } else {
-                        sh 'sudo npm install; npm run build-prod'
+                        sh 'sudo npm install --force; npm run build-prod'
                     }
                   }
             }
