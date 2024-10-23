@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    environment {
+        CI = false          // do not treat warnings as errors
+    }
      environment {
         BRANCH_NAME = "${env.GIT_BRANCH}"  // Use Jenkins built-in variable for branch
     }
