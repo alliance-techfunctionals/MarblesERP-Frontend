@@ -67,4 +67,5 @@ export interface UserForm {
   state: FormControl<string>;
   password: FormControl<string>;
   emailAddressList: FormArray;
+  supplierCode :FormControl<string>;
 }

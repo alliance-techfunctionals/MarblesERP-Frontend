@@ -1,0 +1,32 @@
+.tiles-container {
+    // display: flex;
+    // justify-content: space-between;
+    margin: 0;
+    margin-bottom: 1rem;
+}
+
+.chart-parent-container {
+    border-radius: 1rem;
+}
+
+.tiles {
+    // width: 100%;
+    padding: 1rem;
+    border-radius: 1rem;
+    -webkit-border-radius: 1rem;
+    -moz-border-radius: 1rem;
+    -ms-border-radius: 1rem;
+    -o-border-radius: 1rem;
+}
+
+.form-field-container {
+    width: 100%;
+}
+
+.chart {
+    border-radius: 1rem;
+    -webkit-border-radius: 1rem;
+    -moz-border-radius: 1rem;
+    -ms-border-radius: 1rem;
+    -o-border-radius: 1rem;
+}

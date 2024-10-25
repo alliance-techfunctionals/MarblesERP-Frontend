@@ -35,6 +35,24 @@ export const NavigationItems: NavigationItem[] = [
         icon: 'bi bi-person-plus',
         roles: ['1000']
       },
+      
+    ],
+    roles: ['1000', '3000', '6000', '7000']
+  },
+  {
+    id: 'inventory',
+    title: 'Inventory',
+    type: 'group',
+    icon: 'icon-group',
+    children: [
+      {
+        id: 'purchaseVoucher',
+        title: 'Purchase Voucher',
+        type: 'item',
+        url: '/purchase-voucher',
+        icon: 'bi bi-bag',
+        roles: ['1000', '3000', '6000', '7000']
+      },
       {
         id: 'Inventory',
         title: 'Inventory Management',
@@ -43,8 +61,7 @@ export const NavigationItems: NavigationItem[] = [
         icon: 'bi bi-diagram-3',
         roles: ['1000', '3000', '6000', '7000']
       }
-    ],
-    roles: ['1000', '3000', '6000', '7000']
+    ]
   },
   {
     id: 'traffic',
@@ -121,6 +138,25 @@ export const NavigationItems: NavigationItem[] = [
     ],
     roles: ['1000','3000', '6000','7000']
   },
+  {
+    id: 'analysis',
+    title: 'Analysis',
+    type: 'group',
+    icon: 'icon-group',
+    children: [
+      {
+        id: 'sale-analysis',
+        title: 'Analysis',
+        type: 'item',
+        url: '/analysis',
+        icon: 'bi bi-graph-up-arrow',
+        roles: ['1000']
+      }
+    ],
+    roles: ['1000']
+  },
+
+
   // {
   //   id: 'sales',
   //   title: 'Sales',

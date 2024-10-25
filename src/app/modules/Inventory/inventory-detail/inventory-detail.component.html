@@ -25,7 +25,7 @@
               </ul>
             </div>
           </div>
-          <div class="col-md-6">
+          <div class="col-md-3">
             <!-- select Product Name -->
             <div class="form-group">
               <label for="productName">Product Name<span class="required">*</span></label>
@@ -33,6 +33,17 @@
               <ul *ngIf="productName.touched && productName.invalid">
                 <li *ngIf="productName.errors?.['required']" class="text-danger">Product Name is required</li>
                 <li *ngIf="productName.errors?.['message']" class="text-danger">{{ productName.errors?.["message"] }}</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <!-- select PC -->
+            <div class="form-group">
+              <label for="pc">PC<span class="required">*</span></label>
+              <input class="form-control text-capitalize" type="text"  id="pc" formControlName="pc" placeholder="Ex: TT">
+              <ul *ngIf="pc.touched && pc.invalid">
+                <li *ngIf="pc.errors?.['required']" class="text-danger">PC is required</li>
+                <li *ngIf="pc.errors?.['message']" class="text-danger">{{ pc.errors?.["message"] }}</li>
               </ul>
             </div>
           </div>
@@ -137,7 +148,7 @@
           </div> -->
 
           <!-- select CP -->
-          <!-- <div class="col-md-6">
+          <div class="col-md-6">
             <div class="form-group">
               <label for="cp">Cost Price<span class="required">*</span></label>
               <input type="number" class="form-control" id="cp" placeholder="Enter Cost Price" formControlName="cp" />
@@ -146,10 +157,10 @@
                 <li *ngIf="cp.errors?.['message']" class="text-danger">{{ cp.errors?.["message"] }}</li>
               </ul>
             </div>
-          </div> -->
+          </div>
 
           <div class="col-md-6">
-            <!-- select CP -->
+            <!-- select SP -->
             <div class="form-group">
               <label for="sp">Selling Price<span class="required">*</span></label>
               <input type="number" class="form-control" id="sp" placeholder="Enter Selling Price" formControlName="sp" />
@@ -160,7 +171,7 @@
             </div>
           </div>
 
-          <div class="col-md-6">
+          <div class="col-md-3">
             <!-- select Product Code -->
             <div class="form-group">
               <label for="sp">Product Code<span class="required">*</span></label>
@@ -171,7 +182,7 @@
               </ul>
             </div>
           </div>
-
+          
           <!-- select Rate -->
           <!-- <div class="col-md-6" *ngIf="rateField">
             <div class="form-group">
@@ -213,6 +224,7 @@
       </form>
       <div class="col-md-12">
         <button type="button" class="btn btn-outline-primary m-r-15" [routerLink]="'/inventory'">Cancel</button>
+        <button type="button" class="btn btn-outline-primary m-r-15" (click)="generateCode()">Generate  Code</button>
         <button type="button" *ngIf="inventoryForm.dirty" class="btn btn-primary" [disabled]="inventoryForm.invalid" (click)="uppertInventory()">{{ inventoryForm.value.id === 0 ? "Save" : "Update" }}</button>
       </div>
     </app-card>

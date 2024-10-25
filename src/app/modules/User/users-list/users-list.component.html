@@ -42,11 +42,11 @@
                     <tr>
                       <th>#</th>
                       <th>Name</th>
-                      <th>E-mail</th>
+                      <!-- <th>E-mail</th> -->
                       <th>Mobile</th>
                       <th>Password</th>
-                      <th>Country</th>
-                      <th>City</th>
+                      <!-- <th>Country</th> -->
+                      <!-- <th>City</th> -->
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -59,11 +59,11 @@
                       <tr *ngFor="let user of group1.UsersListByRole | orderBy: 'id': 'desc' | paginate: pagingConfig; let i = index">
                         <td>{{ i + 1 }}</td>
                         <td>{{ user.name | titlecase }}</td>
-                        <td>{{ user.emailAddressList && user.emailAddressList[0] ? user.emailAddressList[0]: 'N/A' }}</td>
+                        <!-- <td>{{ user.emailAddressList && user.emailAddressList[0] ? user.emailAddressList[0]: 'N/A' }}</td> -->
                         <td>{{ user.mobileNumberList? user.mobileNumberList[0]: 'N/A' }}</td>
                         <td>{{ user.password }}</td>
-                        <td>{{ user.country | titlecase }}</td>
-                        <td>{{ user.city | titlecase }}</td>
+                        <!-- <td>{{ user.country | titlecase }}</td> -->
+                        <!-- <td>{{ user.city | titlecase }}</td> -->
                         <td id="actionBtn">
                           <i class="feather icon-edit m-r-10" (click)="navigateUser(user.id)"></i>
                           <i class="feather icon-trash-2" (click)="openDeleteConfirmationModal(user)"></i>

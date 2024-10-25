@@ -20,9 +20,11 @@ import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 import { FormControl } from '@angular/forms';
 import { Design } from 'src/app/shared/store/design/design.model';
 import { AgCustomButtonComponent } from 'src/app/shared/components/Button/ag-custom-button/ag-custom-button.component';
-import { ColDef } from 'ag-grid-community'; // Column Definition Type Interface
+import { ColDef, GridApi} from 'ag-grid-community'; // Column Definition Type Interface
 import { MessageToastService } from 'src/app/core/service/message-toast.service';
 import { environment } from 'src/environments/environment';
+// import { Component } from '@angular/core';
+import { AgGridAngular } from 'ag-grid-angular';
 
 export interface AutoCompleteModel {
   value: any;
@@ -36,6 +38,7 @@ export interface AutoCompleteModel {
 })
 export default class InventoryListComponent {
   colDefs: ColDef[] = [
+    { field: 'id', headerCheckboxSelection: true, checkboxSelection: true},
     { headerName: "#", valueGetter: "node.rowIndex + 1", maxWidth: 60, resizable: true },
     { field: "artisianName", filter: true, floatingFilter: true },
     { field: "qualityTypeName", headerName: 'Quality', filter: true, floatingFilter: true},
@@ -49,11 +52,12 @@ export default class InventoryListComponent {
       headerName: "Actions",
       cellRenderer: AgCustomButtonComponent,
       cellRendererParams: {
-        buttonsToShow: ['edit', 'delete'],
+        buttonsToShow: ['edit', 'delete' , print],
         onViewClick: this.onViewClicked.bind(this),
         onEditClick: this.onEditClicked.bind(this),
         onDeleteClick: this.onDeleteClicked.bind(this),
         onImageClick: this.onImageClicked.bind(this),
+        // onPrintClick: this.onPrintClicked.bind(this)
       }
     }
   ];
@@ -87,7 +91,16 @@ export default class InventoryListComponent {
       this.messageService.error("No Image Found");
     }
   }
-
+  onRowSelected(): void {
+    // Get the selected rows using the grid API
+    this.selectedRows = this.agGrid.api.getSelectedRows();
+    
+    // Show the button if rows are selected
+    this.showButton = this.selectedRows.length > 0;
+  }
+  // onPrintClicked(e: any) {
+  //   this.printInvoice(e.rowData);
+  // }
   // pagination config
   pagingConfig: Pagination = createPagination({});
 
@@ -124,7 +137,32 @@ export default class InventoryListComponent {
     private messageService: MessageToastService
 
   ) { }
+  private gridApi!: GridApi;
+  
+  
+  onGridReady(params: any) {
+    this.gridApi = params.api;
+  }
+  selectedRows: any[] = []; // Store selected rows
+  showButton: boolean = false; // Initially, show the button
 
+@ViewChild('agGrid') agGrid!: AgGridAngular;
+
+
+  getSelectedRows() {
+    if (this.agGrid && this.agGrid.api) {
+      const selectedRows = this.agGrid.api.getSelectedRows(); // Get selected rows
+      console.log("Selected Rows: ", this.selectedRows);
+
+
+
+    } else {
+      console.error("Grid API is not available yet.");
+    }
+  }
+
+
+  
   ngOnInit() {
     console.log("Init")
     // this.subscriptions.push(
@@ -133,6 +171,7 @@ export default class InventoryListComponent {
     //   // this.designService.getAll().subscribe(),
     //   this.userSerive.getAll().subscribe()
     // )
+
 
     this.store.resetInventoryStore();
 
@@ -177,6 +216,22 @@ export default class InventoryListComponent {
     )
 
   }
+  // printInvoice(sale: SaleModel){
+  //   this.invoiceService.printInvoice(sale.id).pipe(
+  //     tap((invoiceResponse) => {
+  //       console.log("Here " + typeof invoiceResponse);
+        // console.log("Here " + invoiceResponse.url);
+        
+
+        // let invoice = JSON.parse(invoiceResponse);
+        
+        // if (invoice.url) {
+          // show pdf in new tab
+          // window.open(this.imageService.getGeneratedURL(invoice.url), "_blank");
+        // }
+      // })
+    // ).subscribe()
+  // }
 
   // navigate to Inventory
   protected navigateInventory(id: number = 0): void {

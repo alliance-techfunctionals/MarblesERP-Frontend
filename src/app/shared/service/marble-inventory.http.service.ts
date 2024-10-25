@@ -1,33 +1,32 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable, switchMap } from 'rxjs';
-import { UserModel } from '../store/user/user.model';
-import { Role } from '../store/role/role.model';
 import { environment } from 'src/environments/environment';
-import { CheckInventoryModel, InventoryModel } from '../store/inventory/inventory.model';
-import { QualityResponse } from '../store/quality/quality.model';
-import { DesignResponse } from '../store/design/design.model';
-import { Color } from '../store/color/color.model';
-import { Size } from '../store/size/size.model';
-import { VoucherModel } from '../store/voucher/voucher.model';
-import { SaleModel } from '../store/sales/sale.model';
-import { CustomOrderModel } from '../store/custom-order/custom-order.model';
-import { MasterInventoryModel } from '../store/MasterInventory/masterInventory.model';
-import { PendingPaymentModel } from '../store/pending-payment/pending-payment.model';
-import { Invoice } from '../store/invoice/invoice.model';
-import { SubPendingPaymentModel } from '../store/sub-pending-payment/sub-pending-payment.model';
-import { LinkSale } from '../store/link-sale/link-sale.model';
-import { FeedbackModel, feedbackSaveModel } from '../store/feedback-form/feedback-form.model';
-import { Shipping } from '../store/deliver-shipment/delivery-shipment.model';
-import { SignInModel } from '../store/sign-in/sign-in.model';
-import { CustomOrderProgressModel } from '../store/custom-order-progress/custom-order-progress.model';
-import { DeliveryPartnerModel } from '../store/delivery-partner/delivery-partner.model';
-import { City, Country, OpenSourceDataService, State } from './open-source-data.service';
-import { head } from 'lodash';
-import { Shape } from '../store/shape/shape.model';
-import { Product } from '../store/product/product.model';
-import { PrimaryColor } from '../store/primary-color/primary-color.model';
 import { ArtisanResponse } from '../store/artisan/artisan.model';
+import { Color } from '../store/color/color.model';
+import { CustomOrderProgressModel } from '../store/custom-order-progress/custom-order-progress.model';
+import { CustomOrderModel } from '../store/custom-order/custom-order.model';
+import { Shipping } from '../store/deliver-shipment/delivery-shipment.model';
+import { DeliveryPartnerModel } from '../store/delivery-partner/delivery-partner.model';
+import { DesignResponse } from '../store/design/design.model';
+import { FeedbackModel, feedbackSaveModel } from '../store/feedback-form/feedback-form.model';
+import { CheckInventoryModel, InventoryModel } from '../store/inventory/inventory.model';
+import { Invoice } from '../store/invoice/invoice.model';
+import { LinkSale } from '../store/link-sale/link-sale.model';
+import { PendingPaymentModel } from '../store/pending-payment/pending-payment.model';
+import { PrimaryColor } from '../store/primary-color/primary-color.model';
+import { Product } from '../store/product/product.model';
+import { QualityResponse } from '../store/quality/quality.model';
+import { Role } from '../store/role/role.model';
+import { SaleModel } from '../store/sales/sale.model';
+import { Shape } from '../store/shape/shape.model';
+import { SignInModel } from '../store/sign-in/sign-in.model';
+import { Size } from '../store/size/size.model';
+import { SubPendingPaymentModel } from '../store/sub-pending-payment/sub-pending-payment.model';
+import { UserModel } from '../store/user/user.model';
+import { VoucherModel } from '../store/voucher/voucher.model';
+import { City, Country, OpenSourceDataService, State } from './open-source-data.service';
+import {PurchaseModel } from '../store/Purchase-voucher/purchase.model';
 
 @Injectable({
   providedIn: 'root'
@@ -47,6 +46,8 @@ export class MarbleInventoryHttpService {
       Authorization: `Bearer ${authToken}`
     });
   }
+
+
 
   // Sign In API
   signInUser(user: SignInModel): Observable<string>{
@@ -128,11 +129,20 @@ export class MarbleInventoryHttpService {
     return this.http.get<Product[]>(`${this.baseUrl}Lookups/product`, { headers: headers });
   }
 
+
+  
+  
   // Artisan API
   getAllArtisan(): Observable<ArtisanResponse[]> {
     const headers = this.getHeaders();
     return this.http.get<ArtisanResponse[]>(`${this.baseUrl}Lookups/artisian`, { headers: headers });
 
+  }
+
+  // cancele 
+  cancelSale(sale: SaleModel, comment: string): Observable<boolean> {
+    const headers = this.getHeaders();
+    return this.http.delete<boolean>(`${this.baseUrl}sale/deleteTransaction/${sale.id}?type=1&cancelledComment=${comment}`, { headers: headers });
   }
 
 
@@ -180,7 +190,7 @@ export class MarbleInventoryHttpService {
     });
     return this.http.post<InventoryModel>(`${this.baseUrl}inventory`, formData, { headers: headers });
   }
-
+  
   updateInventory(inventory: InventoryModel): Observable<InventoryModel> {
     console.log(inventory)
     // const formData = new FormData()
@@ -201,16 +211,44 @@ export class MarbleInventoryHttpService {
     
     return this.http.put<InventoryModel>(`${this.baseUrl}inventory/${inventory.id}`, inventory, { headers: headers });
   }
-
+  
   deleteInventory(inventory: InventoryModel): Observable<InventoryModel> {
     const headers = this.getHeaders();
     return this.http.delete<InventoryModel>(`${this.baseUrl}inventory/${inventory.id}`, { headers: headers });
   }
-
+  
   checkInventory(inventory: CheckInventoryModel): Observable<CheckInventoryModel> {
     const headers = this.getHeaders();
     return this.http.post<CheckInventoryModel>(`${this.baseUrl}inventory/check-inventory`,inventory, { headers: headers });
   }
+  // Purchase-Voucher Product API
+
+  insertPurchaseVoucher(purchase:PurchaseModel):Observable<PurchaseModel>{
+    const headers = this.getHeaders();
+    return this.http.post<PurchaseModel>(`${this.baseUrl}purchase-voucher`, purchase,{headers:headers});
+  }
+  
+  getPurchaseVoucher():Observable<PurchaseModel[]>{
+    const headers = this.getHeaders();
+    return this.http.get<PurchaseModel[]>(`${this.baseUrl}purchase-voucher` , {headers : headers});
+  }
+  updatePurchaseVoucher(purchase:PurchaseModel):Observable<PurchaseModel>{
+    const headers = this.getHeaders();
+    return this.http.put<PurchaseModel>(`${this.baseUrl}purchase-voucher/${purchase.id}` , purchase ,{headers : headers});
+  }
+  deletePurchaseVoucher(purchase:PurchaseModel): Observable<PurchaseModel> {
+    const headers = this.getHeaders();
+    return this.http.delete<PurchaseModel>(`${this.baseUrl}purchase-voucher/${purchase.id}`,{ headers: headers });
+  }
+
+  getPurchaseVoucherById(purchase:PurchaseModel):Observable<PurchaseModel[]>{
+    const headers = this.getHeaders();
+    return this.http.get<PurchaseModel[]>(`${this.baseUrl}purchase-voucher${purchase.id}`,{headers : headers});
+  }
+  // getPurchaseVoucherByMasterId(purchase:PurchaseModel):Observable<PurchaseModel[]>{
+  //   const headers = this.getHeaders();
+  //   return this.http.get<PurchaseModel[]>(`${this.baseUrl}purchase-voucher/details${purchase.id}`,{headers : headers});
+  // }
 
   // Voucher API
   getAllVoucher(): Observable<VoucherModel[]> {

@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { EMPTY, Observable, of } from 'rxjs';
 import { catchError, delay, switchMap, take, tap } from 'rxjs/operators';
+import { MessageToastService } from 'src/app/core/service/message-toast.service';
+import { MarbleInventoryHttpService } from '../../service/marble-inventory.http.service';
 import { CheckInventoryModel, InventoryModel } from './inventory.model';
 import { InventoryStoreService } from './inventory.store';
-import { MarbleInventoryHttpService } from '../../service/marble-inventory.http.service';
-import { MessageToastService } from 'src/app/core/service/message-toast.service';
 
 @Injectable({ providedIn: 'root' })
 export class InventoryService {
@@ -58,7 +58,7 @@ export class InventoryService {
     if (inventory.id === 0) {
       return this.CarpetInventoryService.insertInventory(inventory).pipe(
         catchError(_error => {
-          this.messageService.error('Error on insert inventory');
+          this.messageService.error('Something Went Wrong');
           return EMPTY;
         }),
         tap((response: InventoryModel) => {
@@ -71,7 +71,7 @@ export class InventoryService {
     else {
       return this.CarpetInventoryService.updateInventory(inventory).pipe(
         catchError(_error => {
-          this.messageService.error('Error on update inventory');
+          this.messageService.error('Something Went Wrong');
           return EMPTY;
         }),
         tap((response) => {

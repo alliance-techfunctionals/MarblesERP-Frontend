@@ -223,8 +223,10 @@ export interface inventoryForm {
   // designAmt: FormControl<number>,
   artisanName: FormControl<string>,
   artisanId: FormControl<number>,
-  // cp: FormControl<number>,
+  cp: FormControl<number>,
   sp: FormControl<number>,
+  userCode: FormControl<string>,
+  pc: FormControl<string>
   // qty : FormControl<number>
 
 

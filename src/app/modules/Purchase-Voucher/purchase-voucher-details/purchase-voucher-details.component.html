@@ -1,0 +1,180 @@
+<div *ngIf="{
+  supplierUserList: (supplierUserList$ | async) ?? [],
+  } as group">
+
+  <div class="col-md-12">
+    <app-card cardTitle="" [hidHeader]="true" [options]="false">
+      <form [formGroup]="purchaseVoucherForm">
+        <h5>Purchase Voucher</h5>
+        <hr />
+        <div class="row">
+          <div class="col-md-4">
+            <!-- select Invoice no  -->
+            <div class="form-group">
+              <label for="invoiceNo">PO No <span class="required text-danger">*</span></label>
+              <input class="form-control text-capitalize" type="text" id="invoiceNo" formControlName="invoiceNo"
+                placeholder="Ex: 151">
+              <ul *ngIf="invoiceNo.touched && invoiceNo.invalid">
+                <li *ngIf="invoiceNo.errors?.['required']" class="text-danger">Invoice No is required</li>
+                <li *ngIf="invoiceNo.errors?.['message']" class="text-danger">{{ invoiceNo.errors?.["message"] }}</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <!-- select Date -->
+            <div class="form-group">
+              <label for="voucherDate">Date <span class="required text-danger">*</span></label>
+              <input class="form-control text-capitalize" type="datetime-local" id="voucherDate"
+                formControlName="voucherDate">
+              <ul *ngIf="voucherDate.touched && voucherDate.invalid">
+                <li *ngIf="voucherDate.errors?.['required']" class="text-danger">Date is required</li>
+                <li *ngIf="voucherDate.errors?.['message']" class="text-danger">{{ voucherDate.errors?.["message"] }}
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <!-- select supplierId -->
+            <div class="form-group">
+              <label for="supplierId">Purchased From <span class="required text-danger">*</span></label>
+              <select id="supplierId" class="form-control" formControlName="supplierId">
+                <option value="0">Select</option>
+                <option *ngFor="let supplier of group.supplierUserList" value="{{ supplier.id }}">{{ supplier.name }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </form>
+      <hr />
+
+      <form [formGroup]="productDetailForm">
+        <div class="row">
+          <div class="col-md-6">
+            <!-- select Product Name -->
+            <div class="form-group">
+              <label for="productDescription">Product Name <span class="required text-danger">*</span></label>
+              <input class="form-control text-capitalize" type="text" id="productDescription"
+                formControlName="productDescription" placeholder="Ex: Bowl">
+              <ul *ngIf="productDescription.touched && productDescription.invalid">
+                <li *ngIf="productDescription.errors?.['required']" class="text-danger">Product Name is required</li>
+                <li *ngIf="productDescription.errors?.['message']" class="text-danger">{{
+                  productDescription.errors?.["message"] }}
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <!-- select HSN  -->
+            <div class="form-group">
+              <label for="hsnCode">HSN Code</label>
+              <input class="form-control text-capitalize" type="text" id="hsnCode" formControlName="hsnCode"
+                placeholder="Ex: 51">
+              <!-- <ul *ngIf="hsnCode.touched && hsnCode.invalid">
+                <li *ngIf="hsnCode.errors?.['required']" class="text-danger">HSN is required</li>
+                <li *ngIf="hsnCode.errors?.['message']" class="text-danger">{{ hsnCode.errors?.["message"] }}</li>
+              </ul> -->
+            </div>
+          </div>
+          <div class="col-md-6">
+            <!-- select quanlity -->
+            <div class="form-group">
+              <label for="quantity">Quantity <span class="required text-danger">*</span></label>
+              <input class="form-control text-capitalize" type="number" id="quantity" formControlName="quantity"
+                placeholder="Ex: 1">
+              <ul *ngIf="quantity.touched && quantity.invalid">
+                <li *ngIf="quantity.errors?.['required']" class="text-danger">Quantity is required</li>
+                <li *ngIf="quantity.errors?.['message']" class="text-danger">{{ quantity.errors?.["message"] }}</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <!-- select rate -->
+            <div class="form-group">
+              <label for="rate">Rate<span class="required text-danger">*</span></label>
+              <input class="form-control text-capitalize" type="text" id="rate" formControlName="rate"
+                placeholder="Ex: 51">
+              <ul *ngIf="rate.touched && rate.invalid">
+                <li *ngIf="rate.errors?.['required']" class="text-danger">Rate is required</li>
+                <li *ngIf="rate.errors?.['message']" class="text-danger">{{ rate.errors?.["message"] }}</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <!-- select Amount -->
+            <div class="form-group">
+              <label for="amount">Amount<span class="required text-danger">*</span></label>
+              <input class="form-control text-capitalize" type="text" id="amount" formControlName="amount"
+                placeholder="Ex: Rs 5000">
+              <ul *ngIf="amount.touched && amount.invalid">
+                <li *ngIf="amount.errors?.['required']" class="text-danger">Amount is required</li>
+                <li *ngIf="amount.errors?.['message']" class="text-danger">{{ amount.errors?.["message"] }}</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <!-- select Any Other Charges If Paid -->
+            <div class="form-group">
+              <label for="otherCharges">Any Other Charges If Paid</label>
+              <input class="form-control text-capitalize" type="text" id="otherCharges" formControlName="otherCharges"
+                placeholder="Ex: 100">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <!-- select Other Detail -->
+            <div class="form-group">
+              <label for="otherDetails">Other Detail</label>
+              <input class="form-control text-capitalize" type="text" id="otherDetails" formControlName="otherDetails"
+                placeholder="Ex: Detail">
+            </div>
+          </div>
+
+        </div>
+      </form>
+      <div class="col-md-12">
+        <button type="button" class="btn btn-outline-primary m-r-15" [routerLink]="'/purchase-voucher'">Cancel</button>
+        <button type="button" class="btn btn-outline-primary m-r-10" [disabled]="purchaseVoucherForm.invalid"
+          (click)="addProduct()">
+          Add More
+        </button>
+        <!-- <button type="button" class="btn btn-outline-primary m-r-15" (click)="generateCode()">Generate  Code</button> -->
+        <button type="button" class="btn btn-primary" (click)="onSubmit()">Save</button>
+      </div>
+    </app-card>
+  </div>
+</div>
+
+
+<div class="col-md-12">
+  <app-card [hidHeader]="true" cardTitle="Added Products Details" [options]="false">
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Product Name</th>
+            <th>HSN Code</th>
+            <th>Quantity</th>
+            <th>Rate</th>
+            <th>Amount</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let product of addedProducts; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ product.productDescription }}</td>
+            <td>{{ product.hsnCode }}</td>
+            <td>{{ product.quantity }}</td>
+            <td>{{ product.rate }}</td>
+            <td>{{ product.amount }}</td>
+            <td id="actionBtn">
+              <i class="feather icon-edit m-r-10" (click)="onEditClick(i)"></i>
+              <i class="feather icon-trash-2" (click)="onDeleteClick(i)"></i>
+            </td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+  </app-card>
+</div>

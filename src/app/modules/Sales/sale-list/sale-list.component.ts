@@ -1,37 +1,36 @@
-import { Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
-import { combineLatest, combineLatestAll, map, Observable, Subscription, tap } from 'rxjs';
-import MessageDialogBoxComponent from '../../components/message-dialog-box/message-dialog-box.component';
-import { Router } from '@angular/router';
-import { SaleStoreService } from 'src/app/shared/store/sales/sale.store';
-import { orderNoForm, SaleModel } from 'src/app/shared/store/sales/sale.model';
-import { SaleService } from 'src/app/shared/store/sales/sale.service';
-import { RoleService } from 'src/app/shared/store/role/role.service';
-import { DesignStoreService } from 'src/app/shared/store/design/design.store';
-import { DesignService } from 'src/app/shared/store/design/design.service';
-import { QualityStoreService } from 'src/app/shared/store/quality/quality.store';
-import { QualityService } from 'src/app/shared/store/quality/quality.service';
-import { VoucherStoreService } from 'src/app/shared/store/voucher/voucher.store';
-import { VoucherService } from 'src/app/shared/store/voucher/voucher.service';
-import { UserStoreService } from 'src/app/shared/store/user/user.store';
-import { UserService } from 'src/app/shared/store/user/user.service';
-import { Pagination, createPagination } from 'src/app/core/models/pagination.model';
-import { ModalConfirmComponent, ModalType } from 'src/app/shared/components/modal-confirm/modal-confirm.component';
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { dateFilterForm } from 'src/app/shared/store/voucher/voucher.model';
-import { NgbCalendar, NgbDate, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { DatePipe } from '@angular/common';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { NgbCalendar, NgbDate, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
+import { ColDef } from 'ag-grid-community'; // Column Definition Type Interface
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { combineLatest, map, Observable, Subscription, tap } from 'rxjs';
+import { createPagination, Pagination } from 'src/app/core/models/pagination.model';
+import { AuthService } from 'src/app/core/service/auth.service';
+import { ImageService } from 'src/app/core/service/Image.service';
+import { MessageToastService } from 'src/app/core/service/message-toast.service';
+import { AgCustomDropdownComponent } from "src/app/shared/components/Button/ag-custom-dropdown/ag-custom-dropdown.component";
+import { ModalCancelConfirmComponent } from "src/app/shared/components/modal-cancel-confirm/modal-cancel-confirm.component";
+import { ModalConfirmComponent, ModalType } from 'src/app/shared/components/modal-confirm/modal-confirm.component';
+import { AgGridService } from 'src/app/shared/service/ag-grid.service';
 import { DateService } from 'src/app/shared/service/date.service';
 import { OrderStatusService } from 'src/app/shared/service/order-status.service';
 import { PaymentStatusService } from 'src/app/shared/service/payment-status.service';
-import { AuthService } from 'src/app/core/service/auth.service';
+import { DesignService } from 'src/app/shared/store/design/design.service';
 import { InvoiceService } from 'src/app/shared/store/invoice/invoice.service';
-import { MessageToastService } from 'src/app/core/service/message-toast.service';
-import { ColDef } from 'ag-grid-community'; // Column Definition Type Interface
-import { AgCustomButtonComponent } from 'src/app/shared/components/Button/ag-custom-button/ag-custom-button.component';
+import { QualityService } from 'src/app/shared/store/quality/quality.service';
+import { RoleService } from 'src/app/shared/store/role/role.service';
+import { orderNoForm, SaleModel } from 'src/app/shared/store/sales/sale.model';
+import { SaleService } from 'src/app/shared/store/sales/sale.service';
+import { SaleStoreService } from 'src/app/shared/store/sales/sale.store';
+import { UserService } from 'src/app/shared/store/user/user.service';
+import { UserStoreService } from 'src/app/shared/store/user/user.store';
+import { dateFilterForm } from 'src/app/shared/store/voucher/voucher.model';
+import { VoucherService } from 'src/app/shared/store/voucher/voucher.service';
+import { VoucherStoreService } from 'src/app/shared/store/voucher/voucher.store';
 import { environment } from 'src/environments/environment';
-import { AgGridService } from 'src/app/shared/service/ag-grid.service';
-import { ImageService } from 'src/app/core/service/Image.service';
+import MessageDialogBoxComponent from '../../components/message-dialog-box/message-dialog-box.component';
 
 @Component({
   selector: 'app-sale-list',
@@ -95,16 +94,20 @@ export default class SaleListComponent implements OnInit,OnDestroy {
     }
    },
     { headerName: "Hand Carry", field: "isHandCarry", valueFormatter: params => params.value ? "Yes" : "No" },
+    { headerName: "Cancel", field: "isHandCarry", valueFormatter: params => params.value ? "Yes" : "No" },
     {
       field: "action",
       headerName: "Actions",
-      cellRenderer: AgCustomButtonComponent,
+      // cellRenderer: AgCustomButtonComponent,
+      cellRenderer: AgCustomDropdownComponent,
+
       cellRendererParams: {
-        buttonsToShow: ['view', 'edit', 'delete', 'print'],
+        buttonsToShow: ['view', 'edit', 'delete', 'print' , 'cancel'],
         onViewClick: this.onViewClicked.bind(this),
         onEditClick: this.onEditClicked.bind(this),
         onDeleteClick: this.onDeleteClicked.bind(this),
-        onPrintClick: this.onPrintClicked.bind(this)
+        onPrintClick: this.onPrintClicked.bind(this),
+        onCancelClick: this.onCancelClicked.bind(this),
       },
       minWidth: 150
     }
@@ -126,6 +129,9 @@ export default class SaleListComponent implements OnInit,OnDestroy {
 
   onPrintClicked(e: any) {
     this.printInvoice(e.rowData);
+  }
+  onCancelClicked(e: any) {
+    this.openCancelConfirmationModal(e.rowData);
   }
 
 
@@ -280,6 +286,9 @@ export default class SaleListComponent implements OnInit,OnDestroy {
     }
   }
 
+
+
+
   printInvoice(sale: SaleModel){
     this.invoiceService.printInvoice(sale.id).pipe(
       tap((invoiceResponse) => {
@@ -296,7 +305,35 @@ export default class SaleListComponent implements OnInit,OnDestroy {
       })
     ).subscribe()
   }
-  
+  // cancel 
+  openCancelConfirmationModal(item: SaleModel) {
+    const initialState = {
+      item,
+      message: `cancel sale: ${item.orderNumber}`,
+      modalType: ModalType.Confirmation,
+    };
+
+    const modalRef = this.modalService.show(ModalCancelConfirmComponent, {
+      initialState,
+      class: "modal-sm modal-dialog-centered",
+    });
+    const sub = modalRef.content?.onClose
+      .pipe(
+        tap((result: any) => {
+          if (result) {
+            let comment = result
+            this.saleService.cancelSale(item, comment);
+            // console.log(comment);
+
+          }
+        })
+      )
+      .subscribe();
+
+    if (sub) {
+      this.subscriptions.push(sub);
+    }
+  }
   // variables for date filter
   hoveredDate: NgbDate | null = null;
 	fromDate1: NgbDate | null = this.calendar.getPrev(this.calendar.getToday(), 'd', 10);
