@@ -1,11 +1,11 @@
-export interface purchaseVoucherDetail{
+export interface PurchaseVoucherDetail{
     id: number;
     invoiceNo:string;
     voucherDate:string;
     supplierId:number;
   }
-  export interface productDetail{
-    masterId:number;
+  export interface ProductDetail{
+    masterId?:number;
     productDescription: string;
     hsnCode:number;
     quantity:number;
@@ -30,7 +30,7 @@ export interface purchaseVoucherDetail{
     amount:number
     otherCharges:number;
     otherDetails:string;
-    details: productDetail[];
+    details: ProductDetail[];
     // productDescription:string;
 
   }

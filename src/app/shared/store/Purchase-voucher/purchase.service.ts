@@ -51,8 +51,8 @@ export class PurchaseVoucherService {
           this.messageService.error('Something Went Wrong');
           return EMPTY;
         }),
-        tap((response: PurchaseModel) => {
-          this.store.upsertById(response);
+        tap((response: any) => {
+          this.store.upsertById(response.data);
           // console.log(response);
           this.messageService.success('Purchase Inserted Successfully');
         })
@@ -64,10 +64,10 @@ export class PurchaseVoucherService {
           this.messageService.error('Something Went Wrong');
           return EMPTY;
         }),
-        tap((response) => {
+        tap((response: any) => {
           this.messageService.success('Purchase Updated Successfully');
           console.log(response);
-          this.store.updatePurchaseVoucher(response);
+          this.store.updatePurchaseVoucher(response.data);
         })
       );
     }

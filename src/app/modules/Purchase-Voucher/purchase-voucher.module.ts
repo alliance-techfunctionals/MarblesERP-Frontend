@@ -29,6 +29,7 @@ import { ShapeStoreService } from 'src/app/shared/store/shape/shape.store';
 import { PurchaseVoucherService } from 'src/app/shared/store/Purchase-voucher/purchase.service';
 import { PurchaseVoucherStoreService } from 'src/app/shared/store/Purchase-voucher/purchase.store';
 import { InventoryStoreService } from 'src/app/shared/store/inventory/inventory.store';
+import { TableModule } from 'primeng/table';
 // import { SharedModule } from 'primeng/api';
 
 
@@ -74,7 +75,8 @@ import { InventoryStoreService } from 'src/app/shared/store/inventory/inventory.
     // TypeaheadModule,
     // NgbAccordionModule,
     // TagInputModule,
-    purchaseVoucherRoutingModules
+    purchaseVoucherRoutingModules,
+    TableModule
   ],
   exports: [
     PurchaseVoucherListComponent,

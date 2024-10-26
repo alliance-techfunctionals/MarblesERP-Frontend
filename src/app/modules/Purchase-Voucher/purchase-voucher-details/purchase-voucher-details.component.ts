@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
 import {
   FormBuilder,
   FormControl,
@@ -16,13 +16,14 @@ import { combineLatest, map, Observable, Subscription, tap } from "rxjs";
 import { DateService } from "src/app/shared/service/date.service";
 import {
   createPurchaseModel,
-  productDetail,
+  ProductDetail,
 } from "src/app/shared/store/Purchase-voucher/purchase.model";
 import { PurchaseVoucherService } from "src/app/shared/store/Purchase-voucher/purchase.service";
 import { PurchaseVoucherStoreService } from "src/app/shared/store/Purchase-voucher/purchase.store";
 import { UserModel } from "src/app/shared/store/user/user.model";
 import { UserService } from "src/app/shared/store/user/user.service";
 import { UserStoreService } from "src/app/shared/store/user/user.store";
+import { GridApi, ColumnApi, GridOptions, ColDef } from 'ag-grid-community';
 
 @Component({
   selector: "app-purchase-voucher-details",
@@ -33,7 +34,7 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
 
   public editProduct: boolean = false;
-  addedProducts: productDetail[] = [];
+  addedProducts: ProductDetail[] = [];
   today: NgbDate = this.calendar.getToday();
 
   supplierUserList$: Observable<UserModel[]> = this.userStoreService
@@ -114,7 +115,8 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
     private PurchaseVoucherStoreService: PurchaseVoucherStoreService,
     private userService: UserService,
     public formatter: NgbDateParserFormatter,
-    private calendar: NgbCalendar
+    private calendar: NgbCalendar,
+    private changeDetectorRef: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -160,7 +162,7 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
               //   this.addedProducts.push(p)
               // })
               console.log(this.addedProducts)
-              this.onEditClick(this.addedProducts.length - 1);
+              // this.onEditClick(this.addedProducts.length - 1);
 
               // set one product in form fields
               // this.onEditClick(this.addedProducts.length - 1, true);
@@ -169,11 +171,13 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
                   new Date(purchase.voucherDate)
                 )
               );
-              this.purchaseVoucherForm.setValue({});
+              // this.purchaseVoucherForm.setValue({});
             } else {
               this.voucherDate.setValue(
                 this.dateService.formatDateToInput(new Date())
               );
+
+              this.addEmptyRow();
             }
           })
         )
@@ -194,8 +198,6 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
     }
 
     let voucherDate = new Date(this.voucherDate.value);
-    voucherDate.setHours(voucherDate.getHours() - 5);
-    voucherDate.setMinutes(voucherDate.getMinutes() - 30);
 
     let date = voucherDate.toISOString();
 
@@ -250,6 +252,8 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
       otherDetails: this.otherDetails.value,
     });
     this.clear();
+
+    this.changeDetectorRef.detectChanges();
   }
 
   // FILL PRODUCT DETAILS TO UPDATE
@@ -280,5 +284,64 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
+  }
+
+
+
+  editingIndex: number | null = null;
+  originalProduct: any = null;
+
+  addEmptyRow(): void {
+    const emptyProduct: ProductDetail = {
+      productDescription: '',
+      hsnCode: 0,
+      quantity: 0,
+      rate: 0,
+      amount: 0,
+      otherCharges: 0,
+      otherDetails: ''
+    };
+    this.addedProducts.push(emptyProduct); // Add the empty product at the end
+    this.editingIndex = this.addedProducts.length - 1; // Set the new row to be in edit mode
+    this.originalProduct = { ...emptyProduct }; // Save the original empty product
+    this.changeDetectorRef.detectChanges();
+  }
+
+  onEditClickNew(index: number): void {
+    this.editingIndex = index;
+    this.originalProduct = { ...this.addedProducts[index] }; // Save the original product values
+    this.changeDetectorRef.detectChanges();
+  }
+
+  onDeleteClickNew(index: number): void {
+    this.addedProducts.splice(index, 1);
+    this.changeDetectorRef.detectChanges();
+  }
+
+  saveEdit(index: number): void {
+    if (this.isProductValid(this.addedProducts[index])) {
+      this.editingIndex = null;
+      this.originalProduct = null; // Clear the original product values
+      this.changeDetectorRef.detectChanges();
+    }
+
+    console.log(this.addedProducts);
+  }
+
+  cancelEdit(): void {
+    if (this.editingIndex !== null) {
+      if (this.isProductValid(this.originalProduct)) {
+        this.addedProducts[this.editingIndex] = this.originalProduct; // Revert to original values
+      } else {
+        this.addedProducts.splice(this.editingIndex, 1); // Remove the invalid row
+      }
+      this.editingIndex = null;
+      this.originalProduct = null; // Clear the original product values
+      this.changeDetectorRef.detectChanges();
+    }
+  }
+
+  isProductValid(product: any): boolean {
+    return product.productDescription && product.quantity && product.rate && product.amount;
   }
 }

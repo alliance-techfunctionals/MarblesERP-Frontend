@@ -40,7 +40,7 @@ export class PurchaseVoucherListComponent implements OnInit {
     },
     {
       field: "voucherDate",
-      headerName: "date",
+      headerName: "Date",
       filter: true,
       minWidth: 300,
       floatingFilter: true,
@@ -79,6 +79,7 @@ export class PurchaseVoucherListComponent implements OnInit {
         // onImageClick: this.onImageClicked.bind(this),
         // onPrintClick: this.onPrintClicked.bind(this),
       },
+      minWidth: 150,
       flex: 1,
     },
   ];
