@@ -15,6 +15,10 @@ import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 import { ModalConfirmComponent, ModalType } from 'src/app/shared/components/modal-confirm/modal-confirm.component';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { formatDate } from '@angular/common';
+import { UserStoreService } from 'src/app/shared/store/user/user.store';
+import { UserService } from 'src/app/shared/store/user/user.service';
+import { InvoiceService } from 'src/app/shared/store/invoice/invoice.service';
+import printJS from "print-js";
 
 
 
@@ -32,7 +36,7 @@ export class PurchaseVoucherListComponent implements OnInit {
       resizable: true,
     },
     {
-      field: "invoiceNo",
+      field: "poNumber",
       headerName: "Purchase Order No",
       filter: true,
       minWidth: 300,
@@ -50,16 +54,16 @@ export class PurchaseVoucherListComponent implements OnInit {
         return date.toLocaleString('en-US', {
           month: 'short', // "Jul"
           day: 'numeric', // "4"
-          year: date.getFullYear() === new Date().getFullYear() ? undefined : 'numeric', // "2024"
-          hour: 'numeric', // "3"
-          minute: 'numeric', // "39"
-          hour12: true // Use 12-hour format
+          year:  'numeric', // "2024"
+          // hour: 'numeric', // "3"
+          // minute: 'numeric', // "39"
+          // hour12: true // Use 12-hour format
         });
       },
     },
 
     {
-      field: "supplierId",
+      field: "supplierName",
       headerName: "Supplier",
       filter: true,
       minWidth: 300,
@@ -72,8 +76,8 @@ export class PurchaseVoucherListComponent implements OnInit {
       headerName: "Actions",
       cellRenderer: AgCustomButtonComponent,
       cellRendererParams: {
-        buttonsToShow: ["edit", "delete", "print"],
-        // onViewClick: this.onViewClicked.bind(this),
+        buttonsToShow: ["view","edit", "delete", "print"],
+        onViewClick: this.onViewClicked.bind(this),
         onEditClick: this.onEditClicked.bind(this),
         onDeleteClick: this.onDeleteClicked.bind(this),
         // onImageClick: this.onImageClicked.bind(this),
@@ -91,7 +95,7 @@ export class PurchaseVoucherListComponent implements OnInit {
   };
 
   onViewClicked(e: any) {
-    this.router.navigate(["sale/view", e.rowData.id]);
+    this.router.navigate(["purchase", e.rowData.id]);
   }
 
   onEditClicked(e: any) {
@@ -104,8 +108,11 @@ export class PurchaseVoucherListComponent implements OnInit {
   onDeleteClicked(e: any) {
     this.openDeleteConfirmationModal(e.rowData);
   }
+  // onPrintClicked(e: any) {
+  //   this.printPurchaseVoucher(e.rowData);
+  // }
 
-  purchaseVoucherList$: Observable<PurchaseModel[]> = this.store.selectAll();
+  // purchaseVoucherList$: Observable<PurchaseModel[]> = this.store.selectAll();
   qualityList$: Observable<Quality[]> = this.qualityStoreService.selectAll();
   designList$: Observable<Design[]> = this.designStoreService.selectAll();
 
@@ -124,39 +131,164 @@ export class PurchaseVoucherListComponent implements OnInit {
     private purchaseVoucherService: PurchaseVoucherService,
     private designStoreService: DesignStoreService,
     private modalService: BsModalService,
-    private qualityStoreService: QualityStoreService
+    private qualityStoreService: QualityStoreService,
+    private userStoreService: UserStoreService,
+    private userService: UserService,
+    private invoiceService: InvoiceService,
   ) {}
+
+  purchaseVoucherList$ = combineLatest([
+    this.store.selectAll(),
+    this.userStoreService.selectAll(),
+    
+  ]).pipe(
+    map(([purchaseVouchers, users]) => {
+      const userMap = new Map(users.map(user => [user.id, user]));
+
+      const result = purchaseVouchers.map((purchaseVoucher) => {
+        const supplier = userMap.get(purchaseVoucher.supplierId);
+
+        return {
+          ...purchaseVoucher,
+          supplierName: supplier?.name || "N/A",
+        };
+      }).sort((a, b) => {
+        const dateA = new Date(a.voucherDate);
+        const dateB = new Date(b.voucherDate);
+        return dateB.getTime() - dateA.getTime();
+      });
+
+      console.timeEnd('Mapping and Sorting Time');
+      return result;
+    })
+  );
+
 
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
 
     console.log("Hi there");
-
+    this.store.resetPurchaseVoucherStore();
+    this.userStoreService.resetUserStore();
     this.subscriptions.push(
-      this.purchaseVoucherService
-        .getAll()
+      combineLatest([
+        this.purchaseVoucherService.getAll(),
+        this.userService.getAll(), // Removed .subscribe()
 
-        .subscribe()
-    );
+      ]) .pipe(
+        tap(
+          ([purchaseVouchers, users]) => {
+            // this.orderNo.setValue(orderNo);
+            // You can now use sales, roles, qualities, designs, vouchers, and users as needed
+          }
+        )
+      )
+      .subscribe()
+  );
 
-    this.purchaseVoucherList$ = combineLatest([this.store.selectAll()]).pipe(
-      map(([purchase]) => {
-        return purchase
-          .map((purchase) => {
-            // const design = designs.find(design => design.id == inventory.designId);
 
-            return purchase;
-          })
-          .sort((a, b) => b.id - a.id); // sort desc by id
-      })
-    );
+    // this.subscriptions.push(
+      
+
+    //   this.purchaseVoucherService
+    //     .getAll()
+
+    //     .subscribe()
+    // );
+
+
+    
+
+
+
+    // this.purchaseVoucherList$ = combineLatest([this.store.selectAll()]).pipe(
+    //   map(([purchase]) => {
+    //     return purchase
+    //       .map((purchase) => {
+    //         // const design = designs.find(design => design.id == inventory.designId);
+
+    //         return purchase;
+    //       })
+    //       .sort((a, b) => b.id - a.id); // sort desc by id
+    //   })
+    // );
 
     this.purchaseVoucherList$.subscribe((res) => {
       console.log(res);
     });
   }
 
+  showInvoice(purchase: PurchaseModel) {
+    this.invoiceService
+      .printInvoice(purchase.id)
+      .pipe(
+        tap((invoiceResponse) => {
+          if (invoiceResponse) {
+          
+            this.router.navigate(["sale/view"], {
+              state: { invoiceHtml: invoiceResponse },
+            });
+          }
+        })
+      )
+      .subscribe();
+  }
+
+  printHTML(htmlContent: string) {
+    printJS({
+      printable: htmlContent,
+      type: "raw-html",
+      targetStyles: ["*"], // This ensures that all styles are included
+    });
+  }
+
+  printInvoice(sale: PurchaseModel) {
+    this.invoiceService
+      .printInvoice(sale.id)
+      .pipe(
+        tap((invoiceResponse) => {
+          // if (invoiceResponse) {
+          //   const iframe = document.createElement('iframe');
+          //   iframe.style.position = 'absolute';
+          //   iframe.style.width = '0';
+          //   iframe.style.height = '0';
+          //   iframe.style.border = 'none';
+
+          //   document.body.appendChild(iframe);
+          //   const contentWindow = iframe.contentWindow;
+          //   const doc = iframe.contentWindow?.document;
+          //   if (doc) {
+          //     doc.open();
+          //     doc.write(invoiceResponse);
+          //     doc.close();
+
+          //     if(contentWindow){
+          //       contentWindow.onafterprint = () => {
+          //         iframe.remove(); // Remove iframe after the user has interacted with the print dialog
+          //       };
+          //     }
+
+          //     if(iframe.contentWindow){
+          //       iframe.contentWindow.onload = () => {
+          //         iframe.contentWindow?.focus();
+          //         iframe.contentWindow?.print();
+          //       }
+          //     }
+
+          //     // Remove the iframe after printing
+          //     // iframe.remove();
+          //   }
+          // }
+
+          if (invoiceResponse) {
+            this.printHTML(invoiceResponse);
+          }
+        })
+      )
+      .subscribe();
+  }
+ 
   protected navigatePurchaseVoucherDetail(id: number = 0): void {
     console.log("hi");
     this.router.navigate(["purchase-voucher/purchase-voucher-detail", id]);

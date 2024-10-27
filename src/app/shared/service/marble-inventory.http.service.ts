@@ -245,6 +245,16 @@ export class MarbleInventoryHttpService {
     const headers = this.getHeaders();
     return this.http.get<PurchaseModel[]>(`${this.baseUrl}purchase-voucher${purchase.id}`,{headers : headers});
   }
+
+
+  printPurchaseVoucher(id: number, invoiceType: number): Observable<string> {
+    const headers = this.getHeaders()
+    const requestOptions: Object = {
+      headers: headers,
+      responseType: 'text'
+    }
+    return this.http.get<string>(`${this.baseUrl}purchase-voucher/generate-purchaseVoucher${id}?invoiceType=1`, requestOptions);
+  }
   // getPurchaseVoucherByMasterId(purchase:PurchaseModel):Observable<PurchaseModel[]>{
   //   const headers = this.getHeaders();
   //   return this.http.get<PurchaseModel[]>(`${this.baseUrl}purchase-voucher/details${purchase.id}`,{headers : headers});

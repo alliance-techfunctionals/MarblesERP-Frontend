@@ -45,20 +45,20 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
 
   purchaseVoucherForm: FormGroup = this.formBuilder.nonNullable.group({
     id: [0],
-    invoiceNo: ["", Validators.required],
+    poNumber: ["", Validators.required],
     voucherDate: ["", Validators.required],
     supplierId: ["", Validators.required],
+    otherCharges: [""],
   }) as any;
 
   productDetailForm: FormGroup = this.formBuilder.nonNullable.group({
-    masterId: [0],
+    purchaseOrderId: [0],
     productDescription: ["", Validators.required],
     hsnCode: [""],
     quantity: ["", Validators.required],
     rate: ["", Validators.required],
     amount: ["", Validators.required],
-    otherCharges: [""],
-    otherDetails: [""],
+  
   }) as any;
 
   // variables to hide Rate, sadekaar and designAmt
@@ -70,8 +70,8 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
     return this.purchaseVoucherForm.get("id") as FormControl;
   }
 
-  get invoiceNo() {
-    return this.purchaseVoucherForm.get("invoiceNo") as FormControl;
+  get poNumber() {
+    return this.purchaseVoucherForm.get("poNumber") as FormControl;
   }
   get voucherDate() {
     return this.purchaseVoucherForm.get("voucherDate") as FormControl;
@@ -79,9 +79,12 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
   get supplierId() {
     return this.purchaseVoucherForm.get("supplierId") as FormControl;
   }
+  get otherCharges() {
+    return this.purchaseVoucherForm.get("otherCharges") as FormControl;
+  }
 
-  get masterId() {
-    return this.productDetailForm.get("masterId") as FormControl;
+  get purchaseOrderId() {
+    return this.productDetailForm.get("purchaseOrderId") as FormControl;
   }
   get productDescription() {
     return this.productDetailForm.get("productDescription") as FormControl;
@@ -98,12 +101,10 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
   get amount() {
     return this.productDetailForm.get("amount") as FormControl;
   }
-  get otherCharges() {
-    return this.productDetailForm.get("otherCharges") as FormControl;
-  }
-  get otherDetails() {
-    return this.productDetailForm.get("otherDetails") as FormControl;
-  }
+  
+  // get otherDetails() {
+  //   return this.productDetailForm.get("otherDetails") as FormControl;
+  // }
 
   constructor(
     private route: ActivatedRoute,
@@ -143,16 +144,17 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
                 this.PurchaseVoucherStoreService.getById(purchaseId) ??
                 createPurchaseModel({});
                 console.log(purchase)
-              const productId = Number(params["masterId"]);
+              const productId = Number(params["purchaseOrderId"]);
               const products =
                 this.PurchaseVoucherStoreService.getById(productId) ??
                 createPurchaseModel({});
 
               this.purchaseVoucherForm.setValue({
                 id: purchase.id,
-                invoiceNo: purchase.invoiceNo,
+                poNumber: purchase.poNumber,
                 voucherDate: purchase.voucherDate,
                 supplierId: purchase.supplierId,
+                otherCharges:purchase.otherCharges
               });
               
 
@@ -203,9 +205,10 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
 
     const purchase = createPurchaseModel({
       id: this.id.value,
-      invoiceNo: this.invoiceNo.value,
+      poNumber: this.poNumber.value,
       voucherDate: date,
       supplierId: this.supplierId.value,
+      otherCharges: this.otherCharges.value,
       details: this.addedProducts,
     });
 
@@ -226,14 +229,12 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
 
   clear(): void {
     this.productDetailForm = this.formBuilder.nonNullable.group({
-      masterId: [0],
+      purchaseOrderId: [0],
       productDescription: ["", Validators.required],
       hsnCode: [""],
       quantity: ["", Validators.required],
       rate: ["", Validators.required],
-      amount: ["", Validators.required],
-      otherCharges: [""],
-      otherDetails: [""],
+      amount: ["", Validators.required]
     });
     this.editProduct = false;
   }
@@ -242,14 +243,14 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
   // ADD OR UPDATE PRODUCT
   addProduct() {
     this.addedProducts.push({
-      masterId: this.masterId.value,
+      purchaseOrderId: this.purchaseOrderId.value,
       productDescription: this.productDescription.value,
       hsnCode: this.hsnCode.value,
       quantity: this.quantity.value,
       rate: this.rate.value,
       amount: this.amount.value,
-      otherCharges: this.otherCharges.value,
-      otherDetails: this.otherDetails.value,
+      
+      
     });
     this.clear();
 
@@ -261,15 +262,15 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
     if (!initial && !this.productDetailForm.invalid) {
       this.addProduct();
     }
-    this.masterId.setValue(this.addedProducts[index].masterId);
+    this.purchaseOrderId.setValue(this.addedProducts[index].purchaseOrderId);
     this.productDescription.setValue(
     this.addedProducts[index].productDescription);
     this.hsnCode.setValue(this.addedProducts[index].hsnCode);
     this.quantity.setValue(this.addedProducts[index].quantity);
     this.rate.setValue(this.addedProducts[index].rate);
     this.amount.setValue(this.addedProducts[index].amount);
-    this.otherCharges.setValue(this.addedProducts[index].otherCharges);
-    this.otherDetails.setValue(this.addedProducts[index].otherDetails);
+    
+
 
     // remove product from list before edit
     this.addedProducts.splice(index, 1);
@@ -297,9 +298,8 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
       hsnCode: 0,
       quantity: 0,
       rate: 0,
-      amount: 0,
-      otherCharges: 0,
-      otherDetails: ''
+      amount: 0     
+      
     };
     this.addedProducts.push(emptyProduct); // Add the empty product at the end
     this.editingIndex = this.addedProducts.length - 1; // Set the new row to be in edit mode

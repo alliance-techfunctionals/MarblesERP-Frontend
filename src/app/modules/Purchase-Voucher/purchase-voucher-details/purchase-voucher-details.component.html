@@ -8,19 +8,19 @@
         <h5>Purchase Voucher</h5>
         <hr />
         <div class="row">
-          <div class="col-md-4">
+          <div class="col-md-6">
             <!-- select Invoice no  -->
             <div class="form-group">
-              <label for="invoiceNo">PO No <span class="required text-danger">*</span></label>
-              <input class="form-control text-capitalize" type="text" id="invoiceNo" formControlName="invoiceNo"
+              <label for="poNumber">PO No <span class="required text-danger">*</span></label>
+              <input class="form-control text-capitalize" type="text" id="poNumber" formControlName="poNumber"
                 placeholder="Ex: 151">
-              <ul *ngIf="invoiceNo.touched && invoiceNo.invalid">
-                <li *ngIf="invoiceNo.errors?.['required']" class="text-danger">Invoice No is required</li>
-                <li *ngIf="invoiceNo.errors?.['message']" class="text-danger">{{ invoiceNo.errors?.["message"] }}</li>
+              <ul *ngIf="poNumber.touched && poNumber.invalid">
+                <li *ngIf="poNumber.errors?.['required']" class="text-danger">Invoice No is required</li>
+                <li *ngIf="poNumber.errors?.['message']" class="text-danger">{{ poNumber.errors?.["message"] }}</li>
               </ul>
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-6">
             <!-- select Date -->
             <div class="form-group">
               <label for="voucherDate">Date <span class="required text-danger">*</span></label>
@@ -33,7 +33,7 @@
               </ul>
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-6">
             <!-- select supplierId -->
             <div class="form-group">
               <label for="supplierId">Purchased From <span class="required text-danger">*</span></label>
@@ -42,6 +42,14 @@
                 <option *ngFor="let supplier of group.supplierUserList" value="{{ supplier.id }}">{{ supplier.name }}
                 </option>
               </select>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <!-- select otherCharges -->
+            <div class="form-group">
+              <label for="otherCharges">Other Charges <span class="required text-danger">*</span></label>
+              <input class="form-control text-capitalize" type="number" id="otherCharges"
+              formControlName="otherCharges">
             </div>
           </div>
         </div>
@@ -55,13 +63,11 @@
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>Product Name</th>
+                  <th>Product Name <span class="required text-danger">*</span></th>
                   <th>HSN Code</th>
-                  <th>Quantity</th>
-                  <th>Rate</th>
-                  <th>Amount</th>
-                  <th>Other Charges</th>
-                  <th>Other Details</th>
+                  <th>Quantity<span class="required text-danger">*</span></th>
+                  <th>Rate<span class="required text-danger">*</span></th>
+                  <th>Amount<span class="required text-danger">*</span></th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -85,8 +91,6 @@
                     <td><input [(ngModel)]="product.quantity" type="number" required /></td>
                     <td><input [(ngModel)]="product.rate" type="number" required /></td>
                     <td><input [(ngModel)]="product.amount" type="number" required /></td>
-                    <td><input [(ngModel)]="product.otherCharges" type="number" /></td>
-                    <td><input [(ngModel)]="product.otherDetails" type="text" /></td>
                     <td class="d-flex gap-2">
                       <button (click)="saveEdit(i)" [disabled]="!isProductValid(product)">Save</button>
                       <button (click)="cancelEdit()">Cancel</button>
@@ -99,8 +103,6 @@
                     <td>{{ product.quantity }}</td>
                     <td>{{ product.rate }}</td>
                     <td>{{ product.amount }}</td>
-                    <td>{{ product.otherCharges }}</td>
-                    <td class="otherDetailTab">{{ product.otherDetails }}</td>
                     <td id="actionBtn">
                       <i class="feather icon-edit m-r-10" (click)="onEditClickNew(i)"></i>
                       <i class="feather icon-trash-2" (click)="onDeleteClickNew(i)"></i>
@@ -120,7 +122,7 @@
           Add More
         </button>
         <!-- <button type="button" class="btn btn-outline-primary m-r-15" (click)="generateCode()">Generate  Code</button> -->
-        <button type="button" class="btn btn-primary" (click)="onSubmit()" [disabled]="editingIndex !== null || purchaseVoucherForm.invalid">Save</button>
+        <button type="button" class="btn btn-primary" (click)="onSubmit()" [disabled]="editingIndex !== null || purchaseVoucherForm.invalid || addedProducts.length == 0">Save</button>
       </div>
     </app-card>
   </div>

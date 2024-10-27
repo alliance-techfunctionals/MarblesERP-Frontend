@@ -1,52 +1,54 @@
 export interface PurchaseVoucherDetail{
     id: number;
-    invoiceNo:string;
+    poNumber:string;
     voucherDate:string;
     supplierId:number;
+    otherCharges:number;
   }
   export interface ProductDetail{
-    masterId?:number;
+    purchaseOrderId?:number;
     productDescription: string;
     hsnCode:number;
     quantity:number;
     rate:number;
-    amount:number
-    otherCharges:number;
-    otherDetails:string;
+    amount:number;
+    
+    
     // 
   }
   
   
   export interface PurchaseModel{
     id: number;
-    invoiceNo:string;
+    poNumber:string;
     voucherDate:string;
+    otherCharges:number;
     supplierId:number;
-    masterId:number;
+    purchaseOrderId:number;
     productDescription: string;
     hsnCode:number;
     quantity:number;
     rate:number;
-    amount:number
-    otherCharges:number;
-    otherDetails:string;
+    amount:number;
     details: ProductDetail[];
     // productDescription:string;
 
   }
 export function createPurchaseModel({
   id= 0,
-  invoiceNo="",
+  poNumber="",
   voucherDate="",
   supplierId=0,
+  otherCharges=0,
   details=[]
   
 }: Partial< PurchaseModel>) {
   return {
     id,
-    invoiceNo,
+    poNumber,
     voucherDate,
     supplierId,
+    otherCharges,
     details,
     
 

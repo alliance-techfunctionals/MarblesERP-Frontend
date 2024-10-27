@@ -32,6 +32,7 @@ import { VoucherStoreService } from 'src/app/shared/store/voucher/voucher.store'
 import { environment } from 'src/environments/environment';
 import MessageDialogBoxComponent from '../../components/message-dialog-box/message-dialog-box.component';
 
+
 @Component({
   selector: 'app-sale-list',
   templateUrl: './sale-list.component.html',
