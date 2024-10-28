@@ -74,6 +74,10 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
     .selectAll()
     .pipe(map((color) => color.map((t) => t.name)));
 
+  primaryStoneList$: Observable<string[]> = this.colorStoreService
+    .selectAll()
+    .pipe(map((primaryStone) => primaryStone.map((t) => t.name)));
+
   sizeList$: Observable<string[]> = this.sizeStoreService
     .selectAll()
     .pipe(map((sizes) => sizes.map((t) => t.name)));
@@ -82,7 +86,7 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
     .selectAll()
     .pipe(map((shape) => shape.map((t) => t.name)));
 
-  productNameList$: Observable<string[]> = this.productStoreService
+  productList$: Observable<string[]> = this.productStoreService
     .selectAll()
     .pipe(map((product) => product.map((t) => t.name)));
   productCodeList$: Observable<string[]> = this.productStoreService
@@ -102,7 +106,7 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
 
   artisanList$: Observable<Artisan[]> = this.artisanStoreService.selectAll();
 
-  artisanNameList$: Observable<string[]> = this.artisanList$.pipe(
+  supplierIdList$: Observable<string[]> = this.artisanList$.pipe(
     map((artisans) => artisans.map((t) => t.name))
   );
 
@@ -118,24 +122,24 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
     // name: [''],
     // supplierId: [0]
 
-    masterId: [0],
+    // masterId: [0],
     id: [0],
     size: ["", Validators.required],
-    productType: ["", Validators.required],
-    productName: ["", Validators.required],
-    productCode: ["", Validators.required],
+    qualityType: ["", Validators.required],
+    product: ["", Validators.required],
+    productCode: ["",],
     shape: ["", Validators.required],
     primaryStone: ["", Validators.required],
     design: ["", Validators.required],
     primaryColor: ["", Validators.required],
-    noOfStone: ["", Validators.required],
+    stonesNb: ["", Validators.required],
     // rate: [0],
     // sadekaar: [0],
     // designAmt: [0],
-    artisanName: ["", Validators.required],
-    artisanId: [0],
-    cp: ["", Validators.required],
-    sp: ["", Validators.required],
+    supplierId: ["", Validators.required],
+    // supplierId: [0],
+    costPrice: ["", Validators.required],
+    sellingPrice: ["", Validators.required],
     pc: [""],
     userCode: [""],
     // qty: [1, Validators.required]
@@ -146,9 +150,7 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
   sadekaarField = false;
   designAmtField = false;
 
-  get masterId() {
-    return this.inventoryForm.get("masterId") as FormControl;
-  }
+  
 
   get id() {
     return this.inventoryForm.get("id") as FormControl;
@@ -158,12 +160,12 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
     return this.inventoryForm.get("size") as FormControl;
   }
 
-  get productType() {
-    return this.inventoryForm.get("productType") as FormControl;
+  get qualityType() {
+    return this.inventoryForm.get("qualityType") as FormControl;
   }
 
-  get productName() {
-    return this.inventoryForm.get("productName") as FormControl;
+  get product() {
+    return this.inventoryForm.get("product") as FormControl;
   }
 
   get productCode() {
@@ -185,8 +187,8 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
     return this.inventoryForm.get("primaryColor") as FormControl;
   }
 
-  get noOfStone() {
-    return this.inventoryForm.get("noOfStone") as FormControl;
+  get stonesNb() {
+    return this.inventoryForm.get("stonesNb") as FormControl;
   }
 
   get userCode() {
@@ -209,20 +211,20 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
   //   return this.inventoryForm.get('designAmt') as FormControl;
   // }
 
-  get artisanName() {
-    return this.inventoryForm.get("artisanName") as FormControl;
+  // get supplierId() {
+  //   return this.inventoryForm.get("supplierId") as FormControl;
+  // }
+
+  get supplierId() {
+    return this.inventoryForm.get("supplierId") as FormControl;
   }
 
-  get artisanId() {
-    return this.inventoryForm.get("artisanId") as FormControl;
+  get costPrice() {
+    return this.inventoryForm.get("costPrice") as FormControl;
   }
 
-  get cp() {
-    return this.inventoryForm.get("cp") as FormControl;
-  }
-
-  get sp() {
-    return this.inventoryForm.get("sp") as FormControl;
+  get sellingPrice() {
+    return this.inventoryForm.get("sellingPrice") as FormControl;
   }
 
   // get qty(){
@@ -260,51 +262,53 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
   //   return this.inventoryForm.get('supplierId') as FormControl;
   // }
 
-  generateCode() {
-    // Fetch the values from the form controls
-    const supplierCode = this.inventoryForm.get("supplierCode")?.value || "SC";
-    const pc = this.inventoryForm.get("pc")?.value || "";
-    const primaryColor = this.inventoryForm.get("primaryColor")?.value || "";
+  // generateCode() {
+  //   // Fetch the values from the form controls
 
-    // Subscribe to supplierUserList$ to get the supplier data
-    this.artisanList$.subscribe(
-      (data) => {
-        console.log(data);
-        // Filter the supplier data to find supplier with id == 4 (replace 4 with the correct supplier ID if needed)
-        const artisan = data?.find(
-          (artisan) => artisan.name == this.artisanName.value
-        ); // Update artisan ID accordingly
-        console.log(artisan);
-        if (artisan) {
-          // Log artisan details (for debugging purposes)
-          console.log(artisan);
-          const artisanCode = artisan.name.substring(0, 2);
+  //   console.log(this.inventoryForm.value)
+  //   const supplierCode = this.inventoryForm.get("supplierCode")?.value || "SC";
+  //   const pc = this.inventoryForm.get("pc")?.value || "";
+  //   const primaryColor = this.inventoryForm.get("primaryColor")?.value || "";
 
-          // Example code generation logic
-          const generatedCode = `A&L-${artisanCode.substring(
-            0,
-            3
-          )}${primaryColor.substring(0, 1)}${pc.substring(
-            0,
-            4
-          )}001`.toUpperCase();
+  //   // Subscribe to supplierUserList$ to get the supplier data
+  //   this.artisanList$.subscribe(
+  //     (data) => {
+  //       console.log(data);
+  //       // Filter the supplier data to find supplier with id == 4 (replace 4 with the correct supplier ID if needed)
+  //       const artisan = data?.find(
+  //         (artisan) => artisan.name == this.supplierId.value
+  //       ); // Update artisan ID accordingly
+  //       console.log(artisan);
+  //       if (artisan) {
+  //         // Log artisan details (for debugging purposes)
+  //         console.log(artisan);
+  //         const artisanCode = artisan.name.substring(0, 2);
 
-          // Set the generated code into the productCode form control
-          this.inventoryForm.get("productCode")?.setValue(generatedCode);
-        } else {
-          console.error("artisan with ID 4 not found");
-        }
-      },
-      (error) => {
-        // Handle any errors that occur
-        console.error("Error while fetching artisan data:", error);
-      },
-      () => {
-        // Handle the completion of the Observable
-        console.log("Observable completed");
-      }
-    );
-  }
+  //         // Example code generation logic
+  //         const generatedCode = `A&L-${artisanCode.substring(
+  //           0,
+  //           3
+  //         )}${primaryColor.substring(0, 1)}${pc.substring(
+  //           0,
+  //           4
+  //         )}001`.toUpperCase();
+
+  //         // Set the generated code into the productCode form control
+  //         this.inventoryForm.get("productCode")?.setValue(generatedCode);
+  //       } else {
+  //         console.error("artisan with ID 4 not found");
+  //       }
+  //     },
+  //     (error) => {
+  //       // Handle any errors that occur
+  //       console.error("Error while fetching artisan data:", error);
+  //     },
+  //     () => {
+  //       // Handle the completion of the Observable
+  //       console.log("Observable completed");
+  //     }
+  //   );
+  // }
 
   constructor(
     private route: ActivatedRoute,
@@ -373,27 +377,26 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
                 console.log(inventory);
 
                 this.inventoryForm.setValue({
-                  masterId: inventory.masterId ? inventory.masterId : 0,
                   id: inventory.id,
                   size: inventory.size,
-                  productType: inventory.qualityTypeName,
-                  productName: inventory.productName,
+                  qualityType: inventory.qualityType,
+                  product: inventory.product,
                   productCode: inventory.productCode,
                   pc: "", // Set PC later when recieved from backend
-                  shape: inventory.shapeName,
-                  primaryStone: inventory.primaryStoneName,
-                  design: inventory.designName,
-                  primaryColor: inventory.primaryColorName,
-                  noOfStone: inventory.stonesNb,
+                  shape: inventory.shape,
+                  primaryStone: inventory.primaryStone,
+                  design: inventory.design,
+                  primaryColor: inventory.primaryColor,
+                  stonesNb: inventory.stonesNb,
+                  // supplierId: inventory.supplierId,
+                  supplierId:
+                  inventory.supplierId != null ? inventory.supplierId : 0,
+                  costPrice: inventory.costPrice,
+                  sellingPrice: inventory.sellingPrice,
+                  
                   // rate: inventory.rate,
                   // sadekaar: inventory.sadekaar,
                   // designAmt: inventory.designAmt,
-                  artisanName: inventory.artisianName,
-                  artisanId:
-                    inventory.artisanId != null ? inventory.artisanId : 0,
-                  cp: 0,
-                  sp: inventory.sellingPrice,
-
                   // qty: inventory.quantity
                   userCode: "",
                 });
@@ -418,21 +421,21 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
       // supplierId: this.supplierId.value
 
       id: this.id.value,
-      artisianName: this.artisanName.value,
+      supplierId: this.supplierId.value,
       size: this.size.value,
-      qualityTypeName: this.productType.value,
-      productName: this.productName.value,
+      qualityType: this.qualityType.value,
+      product: this.product.value,
       productCode: this.productCode.value,
-      shapeName: this.shape.value,
-      primaryStoneName: this.primaryStone.value,
-      designName: this.design.value,
-      primaryColorName: this.primaryColor.value,
-      stoneNb: this.noOfStone.value,
-      sellingPrice: this.sp.value,
+      shape: this.shape.value,
+      primaryStone: this.primaryStone.value,
+      design: this.design.value,
+      primaryColor: this.primaryColor.value,
+      stonesNb: this.stonesNb.value,
+      sellingPrice: this.sellingPrice.value,
       // rate: this.rate.value,
       // sadekaar: this.sadekaar.value,
       // designAmt: this.designAmt.value,
-      // costPrice: this.cp.value,
+      // costPrice: this.costPrice.value,
       // quantity: this.qty.value
     });
 
@@ -505,7 +508,7 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
               // set Inventory Id
               item.id = existedItem.firstMatchingId;
               // it will increase the inventory to existing
-              item.isNormalUpdate = false;
+              // item.isNormalUpdate = false;
               this.subscriptions.push(
                 this.inventoryService
                   .upsertInventory(item)
@@ -569,6 +572,13 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
       switchMap((term) => this.filterAllList(term, this.colorList$))
     );
   };
+  searchPrimaryStone = (text$: Observable<string>): Observable<string[]> => {
+    return text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      switchMap((term) => this.filterAllList(term, this.primaryStoneList$))
+    );
+  };
 
   searchSize = (text$: Observable<string>): Observable<string[]> => {
     return text$.pipe(
@@ -590,7 +600,7 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
     return text$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
-      switchMap((term) => this.filterAllList(term, this.productNameList$))
+      switchMap((term) => this.filterAllList(term, this.productList$))
     );
   };
   searchProductCode = (text$: Observable<string>): Observable<string[]> => {

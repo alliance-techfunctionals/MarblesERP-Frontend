@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, switchMap } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -156,26 +156,26 @@ export class MarbleInventoryHttpService {
   // Inventory API for grid
   getAllInventory(): Observable<InventoryModel[]> {
     const headers = this.getHeaders();
-    return this.http.get<InventoryModel[]>(`${this.baseUrl}inventory?pageNumber=1&pageSize=5000`, { headers: headers });
+    return this.http.get<InventoryModel[]>(`${this.baseUrl}inventory`, { headers: headers });
   }
 
   insertInventory(inventory: InventoryModel): Observable<InventoryModel> {
 
-    const formData = new FormData()
-    formData.append("id", inventory.id.toString());
-    formData.append("ArtisianName", inventory.artisianName);
-    formData.append("Size", inventory.size);
-    formData.append("QualityTypeName", inventory.qualityTypeName);
-    formData.append("ProductName", inventory.productName);
-    formData.append("ProductCode", inventory.productCode);
-    formData.append("ShapeName", inventory.shapeName);
-    formData.append("PrimaryStoneName", inventory.primaryStoneName);
-    formData.append("DesignName", inventory.designName);
-    formData.append("PrimaryColorName", inventory.primaryColorName);
-    formData.append("StonesNb", inventory.stoneNb.toString());
-    formData.append("SellingPrice", inventory.sellingPrice.toString());
-    formData.append("IsDeleted", inventory.isDeleted.toString());
-    formData.append("Name", "N/A");
+    // const formData = new FormData()
+    // formData.append("id", inventory.id.toString());
+    // formData.append("ArtisianName", inventory.supplierId.toString());
+    // formData.append("Size", inventory.size);
+    // formData.append("QualityTypeName", inventory.qualityType);
+    // formData.append("ProductName", inventory.product);
+    // formData.append("ProductCode", inventory.productCode);
+    // formData.append("ShapeName", inventory.shape);
+    // formData.append("PrimaryStoneName", inventory.primaryStone);
+    // formData.append("DesignName", inventory.design);
+    // formData.append("PrimaryColorName", inventory.primaryColor);
+    // formData.append("StonesNb", inventory.stonesNb.toString());
+    // formData.append("SellingPrice", inventory.sellingPrice.toString());
+    // formData.append("IsDeleted", inventory.isDeleted.toString());
+    // formData.append("Name", "N/A");
     // formData.append("Rate", inventory.rate.toString());
     // formData.append("Sadekaar", inventory.sadekaar.toString());
     // formData.append("DesignAmt", inventory.designAmt.toString());
@@ -188,7 +188,7 @@ export class MarbleInventoryHttpService {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${authToken}`
     });
-    return this.http.post<InventoryModel>(`${this.baseUrl}inventory`, formData, { headers: headers });
+    return this.http.post<InventoryModel>(`${this.baseUrl}inventory`, inventory, { headers: headers });
   }
   
   updateInventory(inventory: InventoryModel): Observable<InventoryModel> {
@@ -221,6 +221,38 @@ export class MarbleInventoryHttpService {
     const headers = this.getHeaders();
     return this.http.post<CheckInventoryModel>(`${this.baseUrl}inventory/check-inventory`,inventory, { headers: headers });
   }
+
+  // printInventoryBarcode(ids: number[]): Observable<string> {
+  //   const headers = this.getHeaders()
+  //   const requestOptions: Object = {
+  //     headers: headers,
+  //     responseType: 'text',
+  //   }
+  //   return this.http.get<string>(`${this.baseUrl}inventory/generate-barcode`, ids, requestOptions);
+  // }
+
+  printInventoryBarcode(ids: number[]): Observable<string> {
+    const headers = this.getHeaders();
+
+    // Convert the array into query parameters
+    let params = new HttpParams();
+    ids.forEach(id => {
+        params = params.append('ids', id.toString());
+    });
+
+    const requestOptions = {
+        headers: headers,
+        params: params,
+        responseType: 'text' as 'json' // Set response type to text
+    };
+
+    return this.http.get<string>(`${this.baseUrl}inventory/generate-barcode`, requestOptions);
+}
+
+
+
+
+
   // Purchase-Voucher Product API
 
   insertPurchaseVoucher(purchase:PurchaseModel):Observable<PurchaseModel>{
@@ -247,13 +279,13 @@ export class MarbleInventoryHttpService {
   }
 
 
-  printPurchaseVoucher(id: number, invoiceType: number): Observable<string> {
+  printPurchaseVoucher(id: number): Observable<string> {
     const headers = this.getHeaders()
     const requestOptions: Object = {
       headers: headers,
       responseType: 'text'
     }
-    return this.http.get<string>(`${this.baseUrl}purchase-voucher/generate-purchaseVoucher${id}?invoiceType=1`, requestOptions);
+    return this.http.get<string>(`${this.baseUrl}purchase-voucher/generate-purchaseVoucher/${id}`, requestOptions);
   }
   // getPurchaseVoucherByMasterId(purchase:PurchaseModel):Observable<PurchaseModel[]>{
   //   const headers = this.getHeaders();

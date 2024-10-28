@@ -96,5 +96,22 @@ export class InventoryService {
       })
     ).subscribe();
   }
-
+  printInventoryBarcode(inventoryIds: number[]): Observable<string> {
+    return this.CarpetInventoryService.printInventoryBarcode(inventoryIds).pipe(
+      catchError(error => {
+        console.error('Error caught:', error)
+        if (error.status === 204) {
+          this.messageService.error('No Invoice Found');
+        } else {
+          this.messageService.error('Error on Getting Invoice:', error.error.message);
+        }
+        return EMPTY;
+      }),
+      tap((response: string) => {
+        if (!response) {
+          this.messageService.error('No Invoice Found');
+        }
+      })
+    );
+  }
 }

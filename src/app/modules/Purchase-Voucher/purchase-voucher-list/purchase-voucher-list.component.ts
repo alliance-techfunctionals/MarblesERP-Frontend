@@ -76,12 +76,12 @@ export class PurchaseVoucherListComponent implements OnInit {
       headerName: "Actions",
       cellRenderer: AgCustomButtonComponent,
       cellRendererParams: {
-        buttonsToShow: ["view","edit", "delete", "print"],
-        onViewClick: this.onViewClicked.bind(this),
+        buttonsToShow: ["edit", "delete", "print"],
+        // onViewClick: this.onViewClicked.bind(this),
         onEditClick: this.onEditClicked.bind(this),
         onDeleteClick: this.onDeleteClicked.bind(this),
         // onImageClick: this.onImageClicked.bind(this),
-        // onPrintClick: this.onPrintClicked.bind(this),
+        onPrintClick: this.onPrintClicked.bind(this),
       },
       minWidth: 150,
       flex: 1,
@@ -94,9 +94,9 @@ export class PurchaseVoucherListComponent implements OnInit {
     minWidth: 100,
   };
 
-  onViewClicked(e: any) {
-    this.router.navigate(["purchase", e.rowData.id]);
-  }
+  // onViewClicked(e: any) {
+  //   this.router.navigate(["purchase", e.rowData.id]);
+  // }
 
   onEditClicked(e: any) {
     this.router.navigate([
@@ -108,9 +108,9 @@ export class PurchaseVoucherListComponent implements OnInit {
   onDeleteClicked(e: any) {
     this.openDeleteConfirmationModal(e.rowData);
   }
-  // onPrintClicked(e: any) {
-  //   this.printPurchaseVoucher(e.rowData);
-  // }
+  onPrintClicked(e: any) {
+    this.printPurchaseVoucher(e.rowData);
+  }
 
   // purchaseVoucherList$: Observable<PurchaseModel[]> = this.store.selectAll();
   qualityList$: Observable<Quality[]> = this.qualityStoreService.selectAll();
@@ -243,46 +243,14 @@ export class PurchaseVoucherListComponent implements OnInit {
     });
   }
 
-  printInvoice(sale: PurchaseModel) {
-    this.invoiceService
-      .printInvoice(sale.id)
+  printPurchaseVoucher(purchaseVoucher: PurchaseModel) {
+    this.purchaseVoucherService
+      .printPurchaseVoucher(purchaseVoucher.id)
       .pipe(
-        tap((invoiceResponse) => {
-          // if (invoiceResponse) {
-          //   const iframe = document.createElement('iframe');
-          //   iframe.style.position = 'absolute';
-          //   iframe.style.width = '0';
-          //   iframe.style.height = '0';
-          //   iframe.style.border = 'none';
-
-          //   document.body.appendChild(iframe);
-          //   const contentWindow = iframe.contentWindow;
-          //   const doc = iframe.contentWindow?.document;
-          //   if (doc) {
-          //     doc.open();
-          //     doc.write(invoiceResponse);
-          //     doc.close();
-
-          //     if(contentWindow){
-          //       contentWindow.onafterprint = () => {
-          //         iframe.remove(); // Remove iframe after the user has interacted with the print dialog
-          //       };
-          //     }
-
-          //     if(iframe.contentWindow){
-          //       iframe.contentWindow.onload = () => {
-          //         iframe.contentWindow?.focus();
-          //         iframe.contentWindow?.print();
-          //       }
-          //     }
-
-          //     // Remove the iframe after printing
-          //     // iframe.remove();
-          //   }
-          // }
-
-          if (invoiceResponse) {
-            this.printHTML(invoiceResponse);
+        tap((purchaseVoucherResponse) => {
+          if (purchaseVoucherResponse) {
+            
+            this.printHTML(purchaseVoucherResponse);
           }
         })
       )

@@ -86,7 +86,28 @@ export class PurchaseVoucherService {
       })
     ).subscribe();
   }
+
+  printPurchaseVoucher(purchaseVoucherId: number): Observable<string> {
+    return this.MarbleHttpService.printPurchaseVoucher(purchaseVoucherId).pipe(
+      catchError(error => {
+        console.error('Error caught:', error)
+        if(error.status === 204){
+          this.messageService.error('No Invoice Found');
+        }
+        else{
+          this.messageService.error('Error on Getting Invoice:', error.error.message);
+        }
+        return EMPTY;
+      }),
+      tap((response: string) => {
+        if(!response){
+          // getting null when there is no inovice found
+          this.messageService.error('No Invoice Found');
+        }
+      })
+    );
+  }
   
-      }
+}
     
 

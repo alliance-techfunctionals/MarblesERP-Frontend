@@ -25,6 +25,9 @@ import { MessageToastService } from 'src/app/core/service/message-toast.service'
 import { environment } from 'src/environments/environment';
 // import { Component } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
+import { SaleModel } from 'src/app/shared/store/sales/sale.model';
+import { InventoryModule } from '../inventory.module';
+import printJS from 'print-js';
 
 export interface AutoCompleteModel {
   value: any;
@@ -52,7 +55,7 @@ export default class InventoryListComponent {
       headerName: "Actions",
       cellRenderer: AgCustomButtonComponent,
       cellRendererParams: {
-        buttonsToShow: ['edit', 'delete' , print],
+        buttonsToShow: ['edit', 'delete' , 'print'],
         onViewClick: this.onViewClicked.bind(this),
         onEditClick: this.onEditClicked.bind(this),
         onDeleteClick: this.onDeleteClicked.bind(this),
@@ -160,6 +163,30 @@ export default class InventoryListComponent {
       console.error("Grid API is not available yet.");
     }
   }
+  printHTML(htmlContent: string) {
+    printJS({
+      printable: htmlContent,
+      type: "raw-html",
+      targetStyles: ["*"], // This ensures that all styles are included
+    });
+  }
+
+  printInventoryBarcode(productIds:number[]){
+
+    this.service
+      .printInventoryBarcode(productIds)
+      .pipe(
+        tap((productBarcodeResponse) => {
+          if (productBarcodeResponse) {
+            
+            this.printHTML(productBarcodeResponse);
+          }
+        })
+      )
+      .subscribe();
+
+  }
+
 
 
   
@@ -220,17 +247,17 @@ export default class InventoryListComponent {
   //   this.invoiceService.printInvoice(sale.id).pipe(
   //     tap((invoiceResponse) => {
   //       console.log("Here " + typeof invoiceResponse);
-        // console.log("Here " + invoiceResponse.url);
+  //       console.log("Here " + invoiceResponse.url);
         
 
-        // let invoice = JSON.parse(invoiceResponse);
+  //       let invoice = JSON.parse(invoiceResponse);
         
-        // if (invoice.url) {
-          // show pdf in new tab
-          // window.open(this.imageService.getGeneratedURL(invoice.url), "_blank");
-        // }
-      // })
-    // ).subscribe()
+  //       if (invoice.url) {
+  //         show pdf in new tab
+  //         window.open(this.imageService.getGeneratedURL(invoice.url), "_blank");
+  //       }
+  //     })
+  //   ).subscribe()
   // }
 
   // navigate to Inventory

@@ -23,7 +23,7 @@ import { PurchaseVoucherStoreService } from "src/app/shared/store/Purchase-vouch
 import { UserModel } from "src/app/shared/store/user/user.model";
 import { UserService } from "src/app/shared/store/user/user.service";
 import { UserStoreService } from "src/app/shared/store/user/user.store";
-import { GridApi, ColumnApi, GridOptions, ColDef } from 'ag-grid-community';
+import { GridApi, ColumnApi, GridOptions, ColDef } from "ag-grid-community";
 
 @Component({
   selector: "app-purchase-voucher-details",
@@ -58,7 +58,6 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
     quantity: ["", Validators.required],
     rate: ["", Validators.required],
     amount: ["", Validators.required],
-  
   }) as any;
 
   // variables to hide Rate, sadekaar and designAmt
@@ -101,7 +100,7 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
   get amount() {
     return this.productDetailForm.get("amount") as FormControl;
   }
-  
+
   // get otherDetails() {
   //   return this.productDetailForm.get("otherDetails") as FormControl;
   // }
@@ -117,20 +116,10 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
     private userService: UserService,
     public formatter: NgbDateParserFormatter,
     private calendar: NgbCalendar,
-    private changeDetectorRef: ChangeDetectorRef,
+    private changeDetectorRef: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    console.log("NgOnInt");
-
-    const voucherDate = new Date().toISOString();
-    this.maxDate = voucherDate;
-    console.log(voucherDate);
-    this.purchaseVoucherForm.get("voucherDate")?.setValue(voucherDate);
-    console.log(this.purchaseVoucherForm.value.voucherDate);
-    this.purchaseVoucherForm.valueChanges.subscribe((res) => {
-      console.log(res);
-    });
 
     this.subscriptions.push(this.userService.getAll().subscribe());
     // get Product
@@ -143,7 +132,7 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
               const purchase =
                 this.PurchaseVoucherStoreService.getById(purchaseId) ??
                 createPurchaseModel({});
-                console.log(purchase)
+              console.log(purchase);
               const productId = Number(params["purchaseOrderId"]);
               const products =
                 this.PurchaseVoucherStoreService.getById(productId) ??
@@ -152,32 +141,35 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
               this.purchaseVoucherForm.setValue({
                 id: purchase.id,
                 poNumber: purchase.poNumber,
-                voucherDate: purchase.voucherDate,
+                voucherDate: this.dateService.formatDateToInput(
+                  new Date(purchase.voucherDate)
+                ),
                 supplierId: purchase.supplierId,
-                otherCharges:purchase.otherCharges
+                otherCharges: purchase.otherCharges,
               });
-              
 
               this.addedProducts = purchase.details;
 
               // purchase.Details.forEach(product => {
               //   this.addedProducts.push(p)
               // })
-              console.log(this.addedProducts)
+              console.log(this.addedProducts);
               // this.onEditClick(this.addedProducts.length - 1);
 
               // set one product in form fields
               // this.onEditClick(this.addedProducts.length - 1, true);
-              this.voucherDate.setValue(
-                this.dateService.formatDateToInput(
-                  new Date(purchase.voucherDate)
-                )
-              );
+              // this.voucherDate.setValue(
+              //   // this.dateService.formatDateToInput(
+              //   //   new Date(purchase.voucherDate)
+              //   // )
+              // );
               // this.purchaseVoucherForm.setValue({});
             } else {
               this.voucherDate.setValue(
                 this.dateService.formatDateToInput(new Date())
               );
+
+              this.maxDate = this.dateService.formatDateToInput(new Date())
 
               this.addEmptyRow();
             }
@@ -234,12 +226,11 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
       hsnCode: [""],
       quantity: ["", Validators.required],
       rate: ["", Validators.required],
-      amount: ["", Validators.required]
+      amount: ["", Validators.required],
     });
     this.editProduct = false;
   }
 
-  
   // ADD OR UPDATE PRODUCT
   addProduct() {
     this.addedProducts.push({
@@ -249,8 +240,6 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
       quantity: this.quantity.value,
       rate: this.rate.value,
       amount: this.amount.value,
-      
-      
     });
     this.clear();
 
@@ -264,13 +253,12 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
     }
     this.purchaseOrderId.setValue(this.addedProducts[index].purchaseOrderId);
     this.productDescription.setValue(
-    this.addedProducts[index].productDescription);
+      this.addedProducts[index].productDescription
+    );
     this.hsnCode.setValue(this.addedProducts[index].hsnCode);
     this.quantity.setValue(this.addedProducts[index].quantity);
     this.rate.setValue(this.addedProducts[index].rate);
     this.amount.setValue(this.addedProducts[index].amount);
-    
-
 
     // remove product from list before edit
     this.addedProducts.splice(index, 1);
@@ -287,19 +275,16 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
-
-
   editingIndex: number | null = null;
   originalProduct: any = null;
 
   addEmptyRow(): void {
     const emptyProduct: ProductDetail = {
-      productDescription: '',
+      productDescription: "",
       hsnCode: 0,
       quantity: 0,
       rate: 0,
-      amount: 0     
-      
+      amount: 0,
     };
     this.addedProducts.push(emptyProduct); // Add the empty product at the end
     this.editingIndex = this.addedProducts.length - 1; // Set the new row to be in edit mode
@@ -342,6 +327,11 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
   }
 
   isProductValid(product: any): boolean {
-    return product.productDescription && product.quantity && product.rate && product.amount;
+    return (
+      product.productDescription &&
+      product.quantity &&
+      product.rate &&
+      product.amount
+    );
   }
 }
