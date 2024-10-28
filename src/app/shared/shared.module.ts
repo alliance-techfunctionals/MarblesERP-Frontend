@@ -1,6 +1,6 @@
 // Angular Import
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // project import
@@ -9,13 +9,15 @@ import { CardComponent } from './components/card/card.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 
 // third party
-import { NgScrollbarModule } from 'ngx-scrollbar';
-import { NgClickOutsideDirective } from 'ng-click-outside2';
 import 'hammerjs';
 import 'mousetrap';
+import { NgClickOutsideDirective } from 'ng-click-outside2';
+import { NgScrollbarModule } from 'ngx-scrollbar';
 
 // bootstrap import
-import { NgbDropdownModule, NgbNavModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule, NgbModule, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
+import { BsDropdownConfig, BsDropdownModule } from "ngx-bootstrap/dropdown";
+import { AgCustomDropdownComponent } from "./components/Button/ag-custom-dropdown/ag-custom-dropdown.component";
 
 @NgModule({
   imports: [
@@ -24,6 +26,7 @@ import { NgbDropdownModule, NgbNavModule, NgbModule } from '@ng-bootstrap/ng-boo
     ReactiveFormsModule,
     CardComponent,
     BreadcrumbComponent,
+    BsDropdownModule.forRoot(),
     NgbDropdownModule,
     NgbNavModule,
     NgbModule,
@@ -41,8 +44,17 @@ import { NgbDropdownModule, NgbNavModule, NgbModule } from '@ng-bootstrap/ng-boo
     NgbDropdownModule,
     NgbNavModule,
     NgScrollbarModule,
-    NgClickOutsideDirective
+    NgClickOutsideDirective,
+    AgCustomDropdownComponent,
+    
   ],
-  declarations: [ SpinnerComponent]
+
+  declarations: [ SpinnerComponent, AgCustomDropdownComponent],
+  providers: [
+    {
+      provide: BsDropdownConfig,
+      useValue: { isAnimated: true, autoClose: true },
+    },
+  ],
 })
 export class SharedModule {}

@@ -1,0 +1,57 @@
+<!-- <i *ngIf="params.buttonsToShow.includes('view')" class="bi bi-eye m-r-10" (click)="onViewClick($event)"> </i>
+<i *ngIf="params.buttonsToShow.includes('edit')" class="feather icon-edit m-r-10" (click)="onEditClick($event)"> </i>
+<i *ngIf="params.buttonsToShow.includes('cancel')" class="feather icon-x-circle m-r-10" (click)="onCancelClick($event)"> </i>
+<i *ngIf="params.buttonsToShow.includes('delete')" class="feather icon-trash-2 m-r-10" (click)="onDeleteClick($event)"></i>
+<i *ngIf="params.buttonsToShow.includes('print')" class="bi bi-printer" (click)="onPrintClick($event)"></i>
+<i *ngIf="params.buttonsToShow.includes('image')" class="feather icon-image" (click)="onImageClick($event)"></i>
+<i *ngIf="params.buttonsToShow.includes('check')" class="bi bi-check2-circle" (click)="onCheckClick($event)"></i>
+<button *ngIf="params.buttonsToShow.includes('ship')" class="btn btn-outline-primary py-1 m-r-10" (click)="onShipClick($event)">Ship Now</button>
+<button *ngIf="params.buttonsToShow.includes('delivered')" class="btn btn-outline-primary py-1" (click)="onDeliveredClick($event)">Delivered</button> -->
+<!-- 
+<div class="btn-group" dropdown>
+    <button id="button-basic" dropdownToggle type="button" class="btn btn-primary dropdown-toggle"
+            aria-controls="dropdown-basic">
+      Button <span class="caret"></span>
+    </button>
+    <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu"
+        role="menu" aria-labelledby="button-basic">
+      <li role="menuitem"><a class="dropdown-item" href="#">Action</a></li>
+      <li role="menuitem"><a class="dropdown-item" href="#">Another action</a></li>
+      <li role="menuitem"><a class="dropdown-item" href="#">Something else here</a></li>
+      <li class="divider dropdown-divider"></li>
+      <li role="menuitem"><a class="dropdown-item" href="#">Separated link</a>
+      </li>
+    </ul>
+  </div> -->
+
+  <!-- <div class="btn-group" dropdown container="body">
+    <button id="button-animated" dropdownToggle type="button" class="btn btn-primary dropdown-toggle"
+            aria-controls="dropdown-animated">
+      Button <span class="caret"></span>
+    </button>
+    <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu"
+        role="menu" aria-labelledby="button-animated">
+
+
+
+      
+    </ul>
+  </div> -->
+
+  <div class="btn-group" dropdown container="body">
+    <button id="button-container" dropdownToggle type="button" class="btn dropdown-toggle"
+            aria-controls="dropdown-container">
+            <i class="bi bi-three-dots-vertical"></i>
+    </button>
+    <ul id="dropdown-container" *dropdownMenu class="dropdown-menu"
+        role="menu" aria-labelledby="button-container">
+        <li role="menuitem" (click)="onViewClick($event)" class="drp-btn-list-item" *ngIf="params.buttonsToShow.includes('view')"><a class="dropdown-item"><i  class="bi bi-eye m-r-10" ></i> View</a></li>
+        <li role="menuitem" (click)="onEditClick($event)" class="drp-btn-list-item" *ngIf="params.buttonsToShow.includes('edit')"><a class="dropdown-item"><i  class="feather icon-edit m-r-10" ></i> Edit</a></li>
+  
+        <li role="menuitem" (click)="onCancelClick($event)" class="drp-btn-list-item" *ngIf="params.buttonsToShow.includes('cancel')"><a class="dropdown-item"><i  class="feather icon-x-circle m-r-10" ></i> Cancel</a></li>
+  
+        <li role="menuitem" (click)="onDeleteClick($event)" class="drp-btn-list-item" *ngIf="params.buttonsToShow.includes('delete')"><a class="dropdown-item"><i  class="feather icon-trash-2 m-r-10" ></i> Delete</a></li>
+  
+        <li role="menuitem" (click)="onPrintClick($event)" class="drp-btn-list-item" *ngIf="params.buttonsToShow.includes('print')"><a class="dropdown-item"><i  class="bi bi-printer m-r-10" ></i> Print</a></li>
+    </ul>
+  </div>

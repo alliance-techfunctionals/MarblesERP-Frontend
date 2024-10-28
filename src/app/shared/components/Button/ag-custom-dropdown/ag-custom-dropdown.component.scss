@@ -1,0 +1,51 @@
+.icon-trash-2{
+    color: red;
+    cursor: pointer;
+  }
+  
+  .icon-edit{
+    color: blue;
+    cursor: pointer;
+  }
+  
+  .icon-x-circle {
+    cursor: pointer;
+  }
+  
+  .bi-printer{
+    color: darkorange;
+    cursor: pointer;
+  }
+  
+  .icon-image{
+    color: skyblue;
+    cursor: pointer;
+  }
+  
+  .bi-check2-circle{
+    color: green;
+    cursor: pointer;
+  }
+  
+  .bi-eye{
+    color: darkcyan;
+    cursor: pointer;
+  }
+  
+  .dropdown-menu {
+    width: auto;
+    min-width: 120px;
+    min-height: 230px;
+  }
+  
+  .drp-btn-list-item {
+    cursor: pointer;
+  }
+  
+  a.dropdown-item {
+    padding: 10px 0;
+  }
+  
+  .btn.dropdown-toggle::after {
+    display: none;
+  }

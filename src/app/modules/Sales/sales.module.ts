@@ -1,52 +1,52 @@
-import { NgModule } from '@angular/core';
-import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
-import { SharedModule } from 'src/app/shared/shared.module';
-import MessageDialogBoxComponent from '../components/message-dialog-box/message-dialog-box.component';
-import { NgxPaginationModule } from 'ngx-pagination';
-import { CardComponent } from 'src/app/shared/components/card/card.component';
-import { RoleService } from 'src/app/shared/store/role/role.service';
-import { RoleStoreService } from 'src/app/shared/store/role/role.store';
-import { PipesModule } from 'src/app/core/pipes/pipes.module';
-import { AgGridAngular } from 'ag-grid-angular'; // AG Grid Component
-import { ColDef } from 'ag-grid-community'; // Column Definition Type Interface
-import SaleDetailComponent from './sale-detail/sale-detail.component';
-import SaleListComponent from './sale-list/sale-list.component';
-import { SaleRoutingModule } from './sales.routing.module';
-import { SaleStoreService } from 'src/app/shared/store/sales/sale.store';
-import { SaleService } from 'src/app/shared/store/sales/sale.service';
-import { TabsModule } from 'ngx-bootstrap/tabs';
-import { QualityService } from 'src/app/shared/store/quality/quality.service';
-import { QualityStoreService } from 'src/app/shared/store/quality/quality.store';
-import { ColorService } from 'src/app/shared/store/color/color.service';
-import { ColorStoreService } from 'src/app/shared/store/color/color.store';
-import { SizeService } from 'src/app/shared/store/size/size.service';
-import { SizeStoreService } from 'src/app/shared/store/size/size.store';
-import { DesignService } from 'src/app/shared/store/design/design.service';
-import { DesignStoreService } from 'src/app/shared/store/design/design.store';
-import { UserStoreService } from 'src/app/shared/store/user/user.store';
-import { UserService } from 'src/app/shared/store/user/user.service';
-import {NgStepperModule} from 'angular-ng-stepper';
-import {CdkStepperModule} from '@angular/cdk/stepper';
-import { VoucherStoreService } from 'src/app/shared/store/voucher/voucher.store';
-import { VoucherService } from 'src/app/shared/store/voucher/voucher.service';
-import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
-import { GetClientNameByIdPipe } from 'src/app/core/pipes/get-client-name-by-id.pipe';
-import { GetClientNumberByIdPipe } from 'src/app/core/pipes/get-client-number-by-id.pipe';
-import { GetClientCountryByIdPipe } from 'src/app/core/pipes/get-client-country-by-id.pipe';
-import { NgbDatepickerModule, NgbModalModule, NgbProgressbarModule, NgbRatingModule } from '@ng-bootstrap/ng-bootstrap';
-import { OrderStatusService } from 'src/app/shared/service/order-status.service';
-import { PaymentStatusService } from 'src/app/shared/service/payment-status.service';
-import { AuthService } from 'src/app/core/service/auth.service';
-import { NgxCountriesDropdownModule } from 'ngx-countries-dropdown';
-import { AgGridService } from 'src/app/shared/service/ag-grid.service';
-import SaleViewComponent from './sale-view/sale-view.component';
-import { ModalPrintShowModule } from 'src/app/shared/components/modal-print-show/modal-print-show.module';
+import { CdkStepperModule } from "@angular/cdk/stepper";
+import { CommonModule, CurrencyPipe, DatePipe } from "@angular/common";
+import { NgModule } from "@angular/core";
+import {
+  NgbDatepickerModule,
+  NgbModalModule,
+  NgbProgressbarModule,
+  NgbRatingModule,
+} from "@ng-bootstrap/ng-bootstrap";
+import { AgGridAngular } from "ag-grid-angular"; // AG Grid Component
+import { NgStepperModule } from "angular-ng-stepper";
+import { TabsModule } from "ngx-bootstrap/tabs";
+import { TypeaheadModule } from "ngx-bootstrap/typeahead";
+import { NgxPaginationModule } from "ngx-pagination";
+import { GetClientCountryByIdPipe } from "src/app/core/pipes/get-client-country-by-id.pipe";
+import { GetClientNameByIdPipe } from "src/app/core/pipes/get-client-name-by-id.pipe";
+import { GetClientNumberByIdPipe } from "src/app/core/pipes/get-client-number-by-id.pipe";
+import { PipesModule } from "src/app/core/pipes/pipes.module";
+import { AuthService } from "src/app/core/service/auth.service";
+import { CardComponent } from "src/app/shared/components/card/card.component";
+import { ModalCancelConfirmModule } from "src/app/shared/components/modal-cancel-confirm/modal-cancel-confirm.module";
+import { ModalPrintShowModule } from "src/app/shared/components/modal-print-show/modal-print-show.module";
+import { AgGridService } from "src/app/shared/service/ag-grid.service";
+import { OrderStatusService } from "src/app/shared/service/order-status.service";
+import { PaymentStatusService } from "src/app/shared/service/payment-status.service";
+import { SharedModule } from "src/app/shared/shared.module";
+import { ColorService } from "src/app/shared/store/color/color.service";
+import { ColorStoreService } from "src/app/shared/store/color/color.store";
+import { DesignService } from "src/app/shared/store/design/design.service";
+import { DesignStoreService } from "src/app/shared/store/design/design.store";
+import { QualityService } from "src/app/shared/store/quality/quality.service";
+import { QualityStoreService } from "src/app/shared/store/quality/quality.store";
+import { RoleService } from "src/app/shared/store/role/role.service";
+import { RoleStoreService } from "src/app/shared/store/role/role.store";
+import { SaleService } from "src/app/shared/store/sales/sale.service";
+import { SaleStoreService } from "src/app/shared/store/sales/sale.store";
+import { SizeService } from "src/app/shared/store/size/size.service";
+import { SizeStoreService } from "src/app/shared/store/size/size.store";
+import { UserService } from "src/app/shared/store/user/user.service";
+import { UserStoreService } from "src/app/shared/store/user/user.store";
+import { VoucherService } from "src/app/shared/store/voucher/voucher.service";
+import { VoucherStoreService } from "src/app/shared/store/voucher/voucher.store";
+import MessageDialogBoxComponent from "../components/message-dialog-box/message-dialog-box.component";
+import SaleDetailComponent from "./sale-detail/sale-detail.component";
+import SaleListComponent from "./sale-list/sale-list.component";
+import SaleViewComponent from "./sale-view/sale-view.component";
+import { SaleRoutingModule } from "./sales.routing.module";
 @NgModule({
-  declarations: [
-    SaleListComponent,
-    SaleDetailComponent,
-    SaleViewComponent
-  ],
+  declarations: [SaleListComponent, SaleDetailComponent, SaleViewComponent],
   providers: [
     SaleStoreService,
     SaleService,
@@ -92,7 +92,8 @@ import { ModalPrintShowModule } from 'src/app/shared/components/modal-print-show
     CdkStepperModule,
     TypeaheadModule,
     NgbProgressbarModule,
-    ModalPrintShowModule
+    ModalPrintShowModule,
+    ModalCancelConfirmModule
     // NgxCountriesDropdownModule
   ],
   exports: [
@@ -100,6 +101,6 @@ import { ModalPrintShowModule } from 'src/app/shared/components/modal-print-show
     SaleDetailComponent,
     SaleViewComponent,
     CardComponent,
-  ]
+  ],
 })
-export class SaleModule { }
+export class SaleModule {}

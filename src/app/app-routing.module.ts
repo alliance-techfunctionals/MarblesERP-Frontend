@@ -1,9 +1,9 @@
 // Angular Import
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
 import { AdminComponent } from './theme/layout/admin/admin.component';
 import { GuestComponent } from './theme/layout/guest/guest.component';
-import { authGuard } from './core/guards/auth.guard';
 
 // project import
 
@@ -49,6 +49,18 @@ const routes: Routes = [
         data: { expectedRole: ['1000','3000', '6000', '7000'] }
       },
       {
+        path: 'purchase-voucher',
+        loadChildren: () => import('./modules/Purchase-Voucher/purchase-voucher.module').then((m) => m.PurchaseVoucherModule),
+        canActivate: [authGuard],
+        data: { expectedRole: ['1000','3000', '6000', '7000'] }
+      },
+      // {
+      //   path: 'purchase-voucher-detail',
+      //   loadChildren: () => import('./modules/Purchase-Voucher/purchase-voucher.module').then((m) => m.PurchaseVoucherModule),
+      //   canActivate: [authGuard],
+      //   data: { expectedRole: ['1000','3000', '6000', '7000'] }
+      // },
+      {
         path: 'voucher',
         loadChildren: () => import('./modules/Voucher/voucher.module').then((m) => m.VoucherModule),
         canActivate: [authGuard],
@@ -84,6 +96,16 @@ const routes: Routes = [
         canActivate: [authGuard],
         data: { expectedRole: ['1000','3000', '6000', '7000'] }
       },
+      {
+        path: "analysis",
+        loadChildren: () =>
+          import("./modules/analysis/analysis.module").then(
+            (m) => m.AnalysisModule
+          ),
+        canActivate: [authGuard],
+        data: { expectedRole: ["1000"] },
+      },
+
       {
         path: '**',
         redirectTo: 'users',
