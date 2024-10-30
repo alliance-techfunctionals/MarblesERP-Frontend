@@ -21,7 +21,9 @@ export interface InventoryModel {
   sellingPrice: number,
   isSold: boolean,
   soldDate: Date,
-  guid: string
+  // guid: string,
+  quantity:number,
+  productNameCode: string
 }
 
 export interface CheckInventoryModel{
@@ -39,14 +41,17 @@ export function createCheckInventoryModel({
   design = 0,
   colorCode = '',
   size = '',
-  supplierId = 0
+  supplierId = 0,
+  
+
+  
 }: Partial<CheckInventoryModel>) {
   return {
     quality,
     design,
     colorCode,
     size,
-    supplierId
+    supplierId,
   } as CheckInventoryModel;
 }
 
@@ -66,6 +71,9 @@ export function createInventoryModel({
   soldDate=new Date(),
   costPrice= 0,
   sellingPrice= 0,
+  quantity=0,
+  productNameCode='',
+  // guid= ''
 }: Partial<InventoryModel>) {
   return {
     id,
@@ -82,7 +90,10 @@ export function createInventoryModel({
     costPrice,
     sellingPrice,
     isSold,
-    soldDate
+    soldDate,
+    quantity,
+    productNameCode,
+    // guid
 
   } as InventoryModel;
 }
@@ -174,6 +185,7 @@ export function createInventoryModel({
 // }
 
 export interface inventoryForm {
+  // guid:FormControl<string>,
   id: FormControl<number>,
   supplierId: FormControl<number>,
   size: FormControl<string>,
@@ -192,12 +204,12 @@ export interface inventoryForm {
   // sadekaar: FormControl<number>,
   // designAmt: FormControl<number>,
   userCode: FormControl<string>,
-  pc: FormControl<string>
+  productNameCode: FormControl<string>,
   // qty : FormControl<number>
 
 
   // design: FormControl<string>,
-  // quantity: FormControl<number>,
+  quantity: FormControl<number>,
   // color: FormControl<string>,
   // file: FormControl<File | null>,
   // name: FormControl<string>,

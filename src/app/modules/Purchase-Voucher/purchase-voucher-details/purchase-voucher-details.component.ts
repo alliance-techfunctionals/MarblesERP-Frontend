@@ -65,6 +65,7 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
   sadekaarField = false;
   designAmtField = false;
 
+
   get id() {
     return this.purchaseVoucherForm.get("id") as FormControl;
   }
@@ -101,6 +102,7 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
     return this.productDetailForm.get("amount") as FormControl;
   }
 
+ 
   // get otherDetails() {
   //   return this.productDetailForm.get("otherDetails") as FormControl;
   // }
@@ -179,6 +181,21 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
     );
   }
 
+// Add this function to your PurchaseVoucherDetailsComponent
+calculateAmount(idx: number) {
+  console.log("Calculation Called")
+  const quantity = this.addedProducts[idx].quantity;
+  const rate = this.addedProducts[idx].rate;
+  const amount = quantity * rate;
+  
+  this.addedProducts[idx].amount = amount;
+
+  console.log(this.addedProducts[idx].amount)
+  this.changeDetectorRef.markForCheck();
+}
+
+
+    
   maxDate: string = "";
   // navigate to list page
   navigate() {

@@ -39,11 +39,11 @@
           <div class="col-md-3">
             <!-- select PC -->
             <div class="form-group">
-              <label for="pc">PC<span class="required">*</span></label>
-              <input class="form-control text-capitalize" type="text"  id="pc" formControlName="pc" placeholder="Ex: TT">
-              <ul *ngIf="pc.touched && pc.invalid">
-                <li *ngIf="pc.errors?.['required']" class="text-danger">PC is required</li>
-                <li *ngIf="pc.errors?.['message']" class="text-danger">{{ pc.errors?.["message"] }}</li>
+              <label for="productNameCode">PC<span class="required">*</span></label>
+              <input class="form-control text-capitalize" type="text"  id="productNameCode" formControlName="productNameCode" placeholder="Ex: TT">
+              <ul *ngIf="productNameCode.touched && productNameCode.invalid">
+                <li *ngIf="productNameCode.errors?.['required']" class="text-danger">productNameCode is required</li>
+                <li *ngIf="productNameCode.errors?.['message']" class="text-danger">{{ productNameCode.errors?.["message"] }}</li>
               </ul>
             </div>
           </div>
@@ -105,16 +105,16 @@
           </div>
           
           <!-- select quantity -->
-          <!-- <div class="col-md-6">
+          <div class="col-md-6">
             <div class="form-group">
               <label for="quantity">Quantity<span class="required">*</span></label>
-              <input type="number" class="form-control" id="quantity" placeholder="Ex: 1" formControlName="qty" />
-              <ul *ngIf="qty.touched && qty.invalid">
-                <li *ngIf="qty.errors?.['required']" class="text-danger">qty is required</li>
-                <li *ngIf="qty.errors?.['message']" class="text-danger">{{ qty.errors?.["message"] }}</li>
+              <input type="number" class="form-control" id="quantity" placeholder="Ex: 1" formControlName="quantity" />
+              <ul *ngIf="quantity.touched && quantity.invalid">
+                <li *ngIf="quantity.errors?.['required']" class="text-danger">quantity is required</li>
+                <li *ngIf="quantity.errors?.['message']" class="text-danger">{{ quantity.errors?.["message"] }}</li>
               </ul>
             </div>
-          </div> -->
+          </div>
 
           <div class="col-md-6">
             <!-- select quantity -->

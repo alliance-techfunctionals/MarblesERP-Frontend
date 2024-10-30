@@ -33,8 +33,8 @@ export class InventoryService {
               return EMPTY;
             }
           }),
-          tap((records: InventoryModel[]) => {
-            this.store.upsertInventories(records)
+          tap((records: any) => {
+            this.store.upsertInventories(records.data)
           })
         );
         return hasCache ? of([]) : request;
