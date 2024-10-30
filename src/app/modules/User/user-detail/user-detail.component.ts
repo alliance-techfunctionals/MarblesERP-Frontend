@@ -37,7 +37,7 @@ export default class UserDetailComponent implements OnInit, OnDestroy {
     pinCode: [''],
     state: ['UP'],
     password: [''],
-    supplierCode: ['']
+    userCode: ['',Validators.required]
     
   });
 
@@ -95,8 +95,8 @@ export default class UserDetailComponent implements OnInit, OnDestroy {
   get password() {
     return this.userForm.get('password') as FormControl;
   }
-  get supplierCode(){
-    return this.userForm.get('supplierCode') as FormControl;
+  get userCode(){
+    return this.userForm.get('userCode') as FormControl;
   }
  
 
@@ -171,7 +171,7 @@ export default class UserDetailComponent implements OnInit, OnDestroy {
               state: 'UP',
               emailAddressList: user.emailAddressList,
               password: user.password,
-              supplierCode: ''
+              userCode: user.userCode
             })
           }
         })
@@ -203,7 +203,8 @@ export default class UserDetailComponent implements OnInit, OnDestroy {
       residentialAddress: this.residentialAddress.value,
       roleId: this.roleId.value,
       state: "UP",
-      password: this.password.value
+      password: this.password.value,
+      userCode: this.userCode.value
     });
 
     if (this.userForm.valid || this.userForm.disabled) {

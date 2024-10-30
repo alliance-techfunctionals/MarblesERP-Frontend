@@ -145,7 +145,7 @@ export class PurchaseVoucherListComponent implements OnInit {
     map(([purchaseVouchers, users]) => {
       const userMap = new Map(users.map(user => [user.id, user]));
 
-      const result = purchaseVouchers.map((purchaseVoucher) => {
+        const result = purchaseVouchers.map((purchaseVoucher) => {
         const supplier = userMap.get(purchaseVoucher.supplierId);
 
         return {

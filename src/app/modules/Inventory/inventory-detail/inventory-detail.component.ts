@@ -113,7 +113,6 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
   inventoryForm: FormGroup<inventoryForm> = this.formBuilder.nonNullable.group({
     // masterId: [0],
     // id: [0],
-    // quality: ['', [Validators.required, Validators.min(1)]],
     // design: ['', [Validators.required, Validators.min(1)]],
     // quantity: [1, [Validators.required, Validators.min(1)]],
     // color: ['', Validators.required],
@@ -124,10 +123,11 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
 
     // masterId: [0],
     id: [0],
+    // guid:[""],
     size: ["", Validators.required],
     qualityType: ["", Validators.required],
     product: ["", Validators.required],
-    productCode: ["",],
+    productCode: [""],
     shape: ["", Validators.required],
     primaryStone: ["", Validators.required],
     design: ["", Validators.required],
@@ -140,8 +140,9 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
     // supplierId: [0],
     costPrice: ["", Validators.required],
     sellingPrice: ["", Validators.required],
-    pc: [""],
+    productNameCode: ["",Validators.required],
     userCode: [""],
+    quantity: [""]
     // qty: [1, Validators.required]
   }) as any;
 
@@ -155,6 +156,9 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
   get id() {
     return this.inventoryForm.get("id") as FormControl;
   }
+  // get guid() {
+  //   return this.inventoryForm.get("guid") as FormControl;
+  // }
 
   get size() {
     return this.inventoryForm.get("size") as FormControl;
@@ -195,8 +199,8 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
     return this.inventoryForm.get("userCode") as FormControl;
   }
 
-  get pc() {
-    return this.inventoryForm.get("pc") as FormControl;
+  get productNameCode() {
+    return this.inventoryForm.get("productNameCode") as FormControl;
   }
 
   // get rate(){
@@ -231,9 +235,9 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
   //   return this.inventoryForm.get('qty') as FormControl;
   // }
 
-  // get quality() {
-  //   return this.inventoryForm.get('quality') as FormControl;
-  // }
+  get quantity() {
+    return this.inventoryForm.get('quantity') as FormControl;
+  }
 
   // get design() {
   //   return this.inventoryForm.get('design') as FormControl;
@@ -382,69 +386,66 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
                   qualityType: inventory.qualityType,
                   product: inventory.product,
                   productCode: inventory.productCode,
-                  pc: "", // Set PC later when recieved from backend
+                  productNameCode: inventory.productNameCode, // Set PC later when recieved from backend
                   shape: inventory.shape,
                   primaryStone: inventory.primaryStone,
                   design: inventory.design,
                   primaryColor: inventory.primaryColor,
                   stonesNb: inventory.stonesNb,
-                  // supplierId: inventory.supplierId,
                   supplierId:
                   inventory.supplierId != null ? inventory.supplierId : 0,
                   costPrice: inventory.costPrice,
                   sellingPrice: inventory.sellingPrice,
-                  
+                  quantity: 1,
+                  userCode: ""
+                  // guid:inventory.guid,
                   // rate: inventory.rate,
                   // sadekaar: inventory.sadekaar,
                   // designAmt: inventory.designAmt,
-                  // qty: inventory.quantity
-                  userCode: "",
                 });
               }
             }
           )
         )
         .subscribe()
-    );
-  }
+      );
 
-  // submit button click
-  protected uppertInventory(): void {
-    const inventory = createInventoryModel({
-      // id: this.id.value,
-      // qualityId: this.quality.value,
-      // designId: this.design.value,
-      // quantity: this.quantity.value,
-      // colorCode: this.color.value,
-      // size: this.size.value,
-      // file: this.file.value,
-      // supplierId: this.supplierId.value
+      this.inventoryForm.get('product')?.valueChanges.subscribe((res) => {
+        let fullProductList$ = this.productStoreService.selectAll()
+        fullProductList$.subscribe((productList) => {
+          let product: any = productList.find(product => product.name == res);
 
-      id: this.id.value,
-      supplierId: this.supplierId.value,
-      size: this.size.value,
-      qualityType: this.qualityType.value,
-      product: this.product.value,
-      productCode: this.productCode.value,
-      shape: this.shape.value,
-      primaryStone: this.primaryStone.value,
-      design: this.design.value,
-      primaryColor: this.primaryColor.value,
-      stonesNb: this.stonesNb.value,
-      sellingPrice: this.sellingPrice.value,
-      // rate: this.rate.value,
-      // sadekaar: this.sadekaar.value,
-      // designAmt: this.designAmt.value,
-      // costPrice: this.costPrice.value,
-      // quantity: this.qty.value
+          if(product) this.inventoryForm.get('productNameCode')?.setValue(product.code);
+        })
+      })
+    }
+    
+    // submit button click
+    protected uppertInventory(): void {
+      const inventory = createInventoryModel({      
+        id: this.id.value,
+        supplierId: this.supplierId.value,
+        size: this.size.value,
+        qualityType: this.qualityType.value,
+        product: this.product.value,
+        productCode: this.productCode.value,
+        shape: this.shape.value,
+        primaryStone: this.primaryStone.value,
+        design: this.design.value,
+        primaryColor: this.primaryColor.value,
+        stonesNb: this.stonesNb.value,
+        sellingPrice: this.sellingPrice.value,
+        productNameCode:this.productNameCode.value,
+        costPrice: this.costPrice.value,
+        // guid:this.guid.value,
+     
+      quantity: this.quantity.value
     });
 
     const checkInventory = createCheckInventoryModel({
-      // quality: this.quality.value,
+      
       design: this.design.value,
-      // colorCode: this.color.value,
       size: this.size.value,
-      // supplierId: this.supplierId.value
     });
 
     // if (this.inventoryForm.valid || this.inventoryForm.disabled) {

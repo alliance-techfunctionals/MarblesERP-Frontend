@@ -188,7 +188,16 @@ export class MarbleInventoryHttpService {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${authToken}`
     });
-    return this.http.post<InventoryModel>(`${this.baseUrl}inventory`, inventory, { headers: headers });
+
+    // Convert the array into query parameters
+    let params = new HttpParams();
+    params = params.append('quantity', inventory.quantity);
+    
+    const requestOptions = {
+      headers: headers,
+      params: params,
+    };
+    return this.http.post<InventoryModel>(`${this.baseUrl}inventory`, inventory, requestOptions);
   }
   
   updateInventory(inventory: InventoryModel): Observable<InventoryModel> {
@@ -204,17 +213,41 @@ export class MarbleInventoryHttpService {
     // formData.append("supplierId", inventory.supplierId.toString());
     // formData.append("isNormalUpdate",inventory.isNormalUpdate.toString())
     
+    let params = new HttpParams();
     const authToken = localStorage.getItem('Token');
     const headers = new HttpHeaders({
       Authorization: `Bearer ${authToken}`
     });
     
-    return this.http.put<InventoryModel>(`${this.baseUrl}inventory/${inventory.id}`, inventory, { headers: headers });
+    
+    params = params.append('id', inventory.id);
+    // params = params.append('guid', inventory.guid);
+
+    console.log(params)
+    const requestOptions = {
+      headers: headers,
+      params: params,
+    };
+    return this.http.put<InventoryModel>(`${this.baseUrl}inventory`, inventory, requestOptions);
   }
   
   deleteInventory(inventory: InventoryModel): Observable<InventoryModel> {
-    const headers = this.getHeaders();
-    return this.http.delete<InventoryModel>(`${this.baseUrl}inventory/${inventory.id}`, { headers: headers });
+
+    const authToken = localStorage.getItem('Token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${authToken}`
+    });
+    let params = new HttpParams();
+    params = params.append('id', inventory.id);
+    // params = params.append('guid', inventory.guid);
+
+    console.log(params)
+    const requestOptions = {
+      headers: headers,
+      params: params,
+    };
+    
+    return this.http.delete<InventoryModel>(`${this.baseUrl}inventory`, requestOptions);
   }
   
   checkInventory(inventory: CheckInventoryModel): Observable<CheckInventoryModel> {

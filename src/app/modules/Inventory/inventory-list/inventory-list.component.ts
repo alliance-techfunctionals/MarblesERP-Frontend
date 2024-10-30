@@ -43,11 +43,11 @@ export default class InventoryListComponent {
   colDefs: ColDef[] = [
     { field: 'id', headerCheckboxSelection: true, checkboxSelection: true},
     { headerName: "#", valueGetter: "node.rowIndex + 1", maxWidth: 60, resizable: true },
-    { field: "artisianName", filter: true, floatingFilter: true },
-    { field: "qualityTypeName", headerName: 'Quality', filter: true, floatingFilter: true},
-    { field: "productName",headerName: 'Product Name', filter: true, floatingFilter: true},
-    { field: "shapeName",headerName: 'Shape', filter: true, floatingFilter: true},
-    { field: "designName",headerName: 'Design', filter: true, floatingFilter: true},
+    { field: "supplierName", headerName: 'Supplier', filter: true, floatingFilter: true },
+    { field: "qualityType", headerName: 'Quality', filter: true, floatingFilter: true},
+    { field: "product",headerName: 'Product Name', filter: true, floatingFilter: true},
+    { field: "shape",headerName: 'Shape', filter: true, floatingFilter: true},
+    { field: "design",headerName: 'Design', filter: true, floatingFilter: true},
     { field: "stonesNb",headerName: 'No Of Stones', filter: true, floatingFilter: true},
     // { field: "supplierName", filter: true, floatingFilter: true, valueFormatter: params => params.value ? params.value : "N/A"},
     {
@@ -56,11 +56,11 @@ export default class InventoryListComponent {
       cellRenderer: AgCustomButtonComponent,
       cellRendererParams: {
         buttonsToShow: ['edit', 'delete' , 'print'],
-        onViewClick: this.onViewClicked.bind(this),
+        // onViewClick: this.onViewClicked.bind(this),
         onEditClick: this.onEditClicked.bind(this),
         onDeleteClick: this.onDeleteClicked.bind(this),
-        onImageClick: this.onImageClicked.bind(this),
-        // onPrintClick: this.onPrintClicked.bind(this)
+        // onImageClick: this.onImageClicked.bind(this),
+        onPrintClick: this.onPrintClicked.bind(this)
       }
     }
   ];
@@ -74,26 +74,27 @@ export default class InventoryListComponent {
   paginationPageSize = environment.tableRecordSize;
   
 
-  onViewClicked(e: any) {
-    this.router.navigate(['sale/view', e.rowData.id]);
-  }
+  // onViewClicked(e: any) {
+  //   this.router.navigate(['sale/view', e.rowData.id]);
+  // }
 
   onEditClicked(e: any) {
     this.router.navigate(['inventory', e.rowData.id]);
   }
 
   onDeleteClicked(e: any) {
+    console.log("Deleted")
     this.openDeleteConfirmationModal(e.rowData);
   }
 
-  onImageClicked(e: any) {
-    if(e.rowData.fileKey != null){
-      window.open(this.imageService.getGeneratedURL(e.rowData.fileKey), "_blank");
-    }
-    else{
-      this.messageService.error("No Image Found");
-    }
-  }
+  // onImageClicked(e: any) {
+  //   if(e.rowData.fileKey != null){
+  //     window.open(this.imageService.getGeneratedURL(e.rowData.fileKey), "_blank");
+  //   }
+  //   else{
+  //     this.messageService.error("No Image Found");
+  //   }
+  // }
   onRowSelected(): void {
     // Get the selected rows using the grid API
     this.selectedRows = this.agGrid.api.getSelectedRows();
@@ -101,14 +102,16 @@ export default class InventoryListComponent {
     // Show the button if rows are selected
     this.showButton = this.selectedRows.length > 0;
   }
-  // onPrintClicked(e: any) {
-  //   this.printInvoice(e.rowData);
-  // }
+  onPrintClicked(e: any) {
+    const idsArray: number[] = []
+    idsArray.push(e.rowData.id);
+    this.printInventoryBarcode(idsArray);
+  }
   // pagination config
   pagingConfig: Pagination = createPagination({});
 
   // inventories List
-  inventoryList$: Observable<InventoryModel[]> = of([]);
+  inventoryList$: Observable<any> = of([]);
   qualityList$: Observable<Quality[]> = this.qualityStoreService.selectAll();
   designList$: Observable<Design[]> = this.designStoreService.selectAll();
 
@@ -152,13 +155,16 @@ export default class InventoryListComponent {
 @ViewChild('agGrid') agGrid!: AgGridAngular;
 
 
-  getSelectedRows() {
+  printAll() {
     if (this.agGrid && this.agGrid.api) {
       const selectedRows = this.agGrid.api.getSelectedRows(); // Get selected rows
       console.log("Selected Rows: ", this.selectedRows);
+      const idsArray: number[] = []
+      selectedRows.forEach((row) => {
+        idsArray.push(row.id);
+      })
 
-
-
+      this.printInventoryBarcode(idsArray);
     } else {
       console.error("Grid API is not available yet.");
     }
@@ -187,17 +193,13 @@ export default class InventoryListComponent {
 
   }
 
+  
 
 
   
   ngOnInit() {
     console.log("Init")
-    // this.subscriptions.push(
-    //   this.service.getAll().subscribe(),
-    //   // this.qualityService.getAll().subscribe(),
-    //   // this.designService.getAll().subscribe(),
-    //   this.userSerive.getAll().subscribe()
-    // )
+    
 
 
     this.store.resetInventoryStore();
@@ -210,38 +212,32 @@ export default class InventoryListComponent {
       .subscribe()
     )
 
+    
     this.inventoryList$ = combineLatest([
       this.store.selectAll(),
-      // this.designStoreService.selectAll(),
-      // this.qualityStoreService.selectAll(),
-      // this.userStoreService.selectAll(),
-      // this.designSearchId.valueChanges.pipe(
-      //   startWith(this.designSearchId.value)
-      // ),
-      // this.qualitySearchId.valueChanges.pipe(
-      //   startWith(this.qualitySearchId.value)
-      // )
+      this.userStoreService.selectAll(),
     ]).pipe(
-      map(([inventories]) => {
-        return inventories.map(inventory => {
-          // const design = designs.find(design => design.id == inventory.designId);
-          // const quality = qualities.find(quality => quality.id == inventory.qualityId);
-          // const user = users.find(user => user.id == inventory.artisanId);
+      map(([inventories, users]) => {
+        const userMap = new Map(users.map((user) => [user.id, user]));
 
-          // if(design){
-          //   inventory.designName = design.name;
-          // }
-          // if(quality){
-          //   inventory.qualityTypeName = quality.name;
-          // }
-          // if(user){
-          //   inventory.artisianName = user.name;
-          // }
-          return inventory;
-        }).sort((a, b) => b.id - a.id); // sort desc by id
+        const result = inventories
+          .map((inventory) => {
+            const supplier = userMap.get(inventory.supplierId);
+
+            return {
+              ...inventory,
+              supplierName: supplier?.name || "N/A",
+            };
+          })
+          .sort((a, b) => {
+            const dateA = new Date(a.createdOn);
+            const dateB = new Date(b.createdOn);
+            return dateB.getTime() - dateA.getTime();
+          });
+
+          return result;
       })
-    )
-
+    );
   }
   // printInvoice(sale: SaleModel){
   //   this.invoiceService.printInvoice(sale.id).pipe(
