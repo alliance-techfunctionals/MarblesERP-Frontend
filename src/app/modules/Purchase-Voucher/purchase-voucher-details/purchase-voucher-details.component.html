@@ -92,7 +92,7 @@
                   <ng-container *ngIf="editingIndex === i; else viewMode">
                     <td>{{ i + 1 }}</td>
                     <td><input [(ngModel)]="product.productDescription" required /></td>
-                    <td><input [(ngModel)]="product.hsnCode" /></td>
+                    <td><input [(ngModel)]="product.hsnCode" type="number" /></td>
                     <td><input [(ngModel)]="product.quantity" type="number" (ngModelChange)="calculateAmount(i)" required /></td>
                     <td><input [(ngModel)]="product.rate" type="number" (ngModelChange)="calculateAmount(i)" required /></td>
                     <td><input [(ngModel)]="product.amount" type="number" required readonly /></td>
