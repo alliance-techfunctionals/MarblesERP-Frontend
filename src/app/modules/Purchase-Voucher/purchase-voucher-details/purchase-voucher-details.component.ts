@@ -54,7 +54,7 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
   productDetailForm: FormGroup = this.formBuilder.nonNullable.group({
     purchaseOrderId: [0],
     productDescription: ["", Validators.required],
-    hsnCode: [""],
+    hsnCode: [null],
     quantity: ["", Validators.required],
     rate: ["", Validators.required],
     amount: ["", Validators.required],
