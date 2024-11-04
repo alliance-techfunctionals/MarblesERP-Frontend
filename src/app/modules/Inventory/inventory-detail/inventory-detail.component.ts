@@ -51,6 +51,7 @@ import { SizeStoreService } from "src/app/shared/store/size/size.store";
 import { UserModel } from "src/app/shared/store/user/user.model";
 import { UserService } from "src/app/shared/store/user/user.service";
 import { UserStoreService } from "src/app/shared/store/user/user.store";
+import { InventoryModule } from "../inventory.module";
 
 @Component({
   selector: "app-inventory-detail",
@@ -59,6 +60,7 @@ import { UserStoreService } from "src/app/shared/store/user/user.store";
 })
 export default class InventoryDetailComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
+  checkbox: boolean = false; 
 
   qualityList$: Observable<string[]> = this.qualityStoreService
     .selectAll()
@@ -111,19 +113,9 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
   );
 
   inventoryForm: FormGroup<inventoryForm> = this.formBuilder.nonNullable.group({
-    // masterId: [0],
-    // id: [0],
-    // design: ['', [Validators.required, Validators.min(1)]],
-    // quantity: [1, [Validators.required, Validators.min(1)]],
-    // color: ['', Validators.required],
-    // size: ['', Validators.required],
-    // file: [''],
-    // name: [''],
-    // supplierId: [0]
-
-    // masterId: [0],
+   
     id: [0],
-    // guid:[""],
+    guid:[""],
     size: ["", Validators.required],
     qualityType: ["", Validators.required],
     product: ["", Validators.required],
@@ -133,11 +125,7 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
     design: ["", Validators.required],
     primaryColor: ["", Validators.required],
     stonesNb: ["", Validators.required],
-    // rate: [0],
-    // sadekaar: [0],
-    // designAmt: [0],
     supplierId: ["", Validators.required],
-    // supplierId: [0],
     costPrice: ["", Validators.required],
     sellingPrice: ["", Validators.required],
     productNameCode: ["",Validators.required],
@@ -151,14 +139,13 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
   sadekaarField = false;
   designAmtField = false;
 
-  
 
   get id() {
     return this.inventoryForm.get("id") as FormControl;
   }
-  // get guid() {
-  //   return this.inventoryForm.get("guid") as FormControl;
-  // }
+  get guid() {
+    return this.inventoryForm.get("guid") as FormControl;
+  }
 
   get size() {
     return this.inventoryForm.get("size") as FormControl;
@@ -203,21 +190,7 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
     return this.inventoryForm.get("productNameCode") as FormControl;
   }
 
-  // get rate(){
-  //   return this.inventoryForm.get('rate') as FormControl;
-  // }
-
-  // get sadekaar(){
-  //   return this.inventoryForm.get('sadekaar') as FormControl;
-  // }
-
-  // get designAmt(){
-  //   return this.inventoryForm.get('designAmt') as FormControl;
-  // }
-
-  // get supplierId() {
-  //   return this.inventoryForm.get("supplierId") as FormControl;
-  // }
+  
 
   get supplierId() {
     return this.inventoryForm.get("supplierId") as FormControl;
@@ -374,11 +347,13 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
               userData,
             ]) => {
               if (params["id"] != 0) {
+
                 const inventoryId = Number(params["id"]);
                 const inventory =
                   this.store.getById(inventoryId) ?? createInventoryModel({});
 
                 console.log(inventory);
+              
 
                 this.inventoryForm.setValue({
                   id: inventory.id,
@@ -397,32 +372,84 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
                   costPrice: inventory.costPrice,
                   sellingPrice: inventory.sellingPrice,
                   quantity: 1,
-                  userCode: ""
-                  // guid:inventory.guid,
+                  userCode: "",
+                  guid:""
                   // rate: inventory.rate,
                   // sadekaar: inventory.sadekaar,
                   // designAmt: inventory.designAmt,
                 });
+
+                if(inventory.guid){
+                  this.inventoryForm.get('guid')?.setValue(inventory.guid)
+                }
+                let fullProductList$ = this.productStoreService.selectAll()
+                fullProductList$.subscribe((productList) => {
+                  let product: any = productList.find(product => product.name == inventory.product);
+        
+                  if(product) {
+                    this.inventoryForm.get('productNameCode')?.setValue(product.code)
+        
+                  }else{
+                    this.inventoryForm.get('productNameCode')?.setValue('')
+                  }
+                })
               }
             }
           )
         )
         .subscribe()
       );
+      
 
       this.inventoryForm.get('product')?.valueChanges.subscribe((res) => {
         let fullProductList$ = this.productStoreService.selectAll()
         fullProductList$.subscribe((productList) => {
           let product: any = productList.find(product => product.name == res);
 
-          if(product) this.inventoryForm.get('productNameCode')?.setValue(product.code);
+          if(product) {
+            this.inventoryForm.get('productNameCode')?.setValue(product.code)
+
+          }else{
+            this.inventoryForm.get('productNameCode')?.setValue('')
+          }
         })
       })
+      
+      // this.inventoryForm.get('product')?.valueChanges.subscribe((res) => {
+      //   this.productStoreService.selectAll().subscribe((productList) => {
+      //     const product = productList.find(product => product.name === res);
+      //     if (product) {
+      //       this.inventoryForm.get('productNameCode')?.setValue(product.code);
+      //     } else {
+      //       this.inventoryForm.get('productNameCode')?.setValue('');
+      //     }
+      //   });
+      // });
     }
     
+  
+
+
+    // protected editAllSimilarGuidData(): void {
+    //   const currentGuid = this.guid.value; // Get the current GUID
+    
+    //   this.inventoryService.getAll().subscribe(inventories => {
+    //     const similarItems = inventories.filter(item => item.guid === currentGuid);
+    
+    //     similarItems.forEach(item => {
+    //       // Edit the item as needed
+    //       item.quantity = this.quantity.value; // Example of updating quantity
+    //       // Call the upsert service for each item
+    //       this.inventoryService.upsertInventory(item).subscribe();
+    //     });
+    
+    //     // Optionally navigate or perform additional logic here
+    //   });
+    // }
+
     // submit button click
-    protected uppertInventory(): void {
-      const inventory = createInventoryModel({      
+    protected updateInventory(): void {
+      const inventory = createInventoryModel({
         id: this.id.value,
         supplierId: this.supplierId.value,
         size: this.size.value,
@@ -435,13 +462,12 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
         primaryColor: this.primaryColor.value,
         stonesNb: this.stonesNb.value,
         sellingPrice: this.sellingPrice.value,
-        productNameCode:this.productNameCode.value,
+        productNameCode: this.productNameCode.value,
         costPrice: this.costPrice.value,
-        // guid:this.guid.value,
-     
-      quantity: this.quantity.value
-    });
-
+        guid: this.guid.value,
+        quantity: this.quantity.value
+      });
+    
     const checkInventory = createCheckInventoryModel({
       
       design: this.design.value,
@@ -472,21 +498,56 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
     console.log(inventory);
 
     if (this.inventoryForm.valid || this.inventoryForm.disabled) {
-      this.subscriptions.push(
-        this.inventoryService
-          .upsertInventory(inventory)
-          .pipe(
-            tap(() => {
-              this.inventoryService.getAll();
-              this.inventoryForm.markAsPristine();
-              this.navigate();
-            })
-          )
-          .subscribe()
-      );
+      if(this.checkbox){
+        this.subscriptions.push(
+          this.inventoryService
+            .upsertInventory(inventory, true)
+            .pipe(
+              tap(() => {
+                this.store.resetInventoryStore();
+                this.inventoryService.getAll();
+                this.inventoryForm.markAsPristine();
+                this.navigate();
+              })
+            )
+            .subscribe()
+        );
+      }
+      else{
+
+        this.subscriptions.push(
+          this.inventoryService
+            .upsertInventory(inventory, false)
+            .pipe(
+              tap(() => {
+                this.inventoryService.getAll();
+                this.inventoryForm.markAsPristine();
+                this.navigate();
+              })
+            )
+            .subscribe()
+        );
+      }
     }
   }
+  // protected editSimilarGuidItems(): void {
+  //   const currentGuid = this.guid.value; // Get the current GUID
 
+  //   this.inventoryService.getAll().subscribe(inventories => {
+  //     const similarItems = inventories.filter(item => item.guid === currentGuid);
+
+  //     similarItems.forEach(item => {
+  //       // Example logic to update similar items
+  //       item.quantity = this.quantity.value; // Update quantity
+  //       // Call the upsert service for each item
+  //       this.inventoryService.upsertInventory(item).subscribe(updatedItem => {
+  //         console.log(`Updated item: ${updatedItem.id}`); // Log or handle the updated item
+  //       });
+  //     });
+  //   });
+  // }
+
+ 
   protected openUpdateConfirmationModal(
     item: InventoryModel,
     existedItem: CheckInventoryModel
@@ -540,6 +601,12 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
     //  cancel the
   }
 
+  // onEditSameGuidChange(): void {
+  //   if (this.editSameGuid) {
+  //     this.editSimilarGuidItems();
+  //   }
+  // }
+
   // get the image file
   onFileSelected(event: Event) {
     if (
@@ -549,6 +616,15 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
       // this.file.setValue(event.target.files[0]);
     }
   }
+  editInventoryByGuid(event:any){
+    if(event.target.checked){
+       this.checkbox = true;
+    }else{
+      this.checkbox = false;
+    }
+    console.log(this.checkbox)
+  }
+  
 
   searchQuality = (text$: Observable<string>): Observable<string[]> => {
     return text$.pipe(

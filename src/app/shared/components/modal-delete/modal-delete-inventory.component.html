@@ -1,0 +1,23 @@
+<div class="modal-body text-center">
+    <i [class]="icon"></i>
+    <h5> Are you sure? </h5>
+    <p class="m-b-0">This action will <span>{{ message }}.</span></p>
+    <p>This process cannot be undone.</p>
+<div class='form-check d-inline-flex ' >
+    <!-- Select All Checkbox -->
+    <input class="form-check-input" type="checkbox" (click)="onCheckboxClick($event)" id="checkbox"/>
+    <label class="form-check-label ms-2 text-start" for="checkbox">Delete all items with the same attributes
+    </label>
+</div>
+    <!-- List of Inventory Items with Individual Checkboxes -->
+    <!-- <div>
+        <input type="checkbox" [(ngModel)]="checkbox" (change)="onCheckboxChange(item.guid)" />
+        <label>
+            {{ item.name }} - {{ item.guid }}
+        </label>
+    </div> -->
+<div>
+    <button type="button" class="btn btn-primary m-r-15" (click)="modalConfirm()">Delete</button>
+    <button type="button" class="btn btn-outline-primary" (click)="modalDecline()">Cancel</button>
+</div>
+</div>

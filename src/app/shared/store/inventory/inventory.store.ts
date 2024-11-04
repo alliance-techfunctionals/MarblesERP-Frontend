@@ -64,10 +64,14 @@ export class InventoryStoreService {
     inventoryStore.update(deleteEntities(id));
   }
 
-  resetInventoryStore(): void{
+  // resetInventoryStore(): void{
+  //   inventoryStore.update(setEntities([]));
+  // }
+
+        
+  resetInventoryStore(): Observable<void> {
     inventoryStore.update(setEntities([]));
+    return of(void 0); // Return an observable that emits a single value
   }
-
-
 }
 

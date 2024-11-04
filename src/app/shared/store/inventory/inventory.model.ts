@@ -21,7 +21,7 @@ export interface InventoryModel {
   sellingPrice: number,
   isSold: boolean,
   soldDate: Date,
-  // guid: string,
+  guid?: string,
   quantity:number,
   productNameCode: string
 }
@@ -73,7 +73,7 @@ export function createInventoryModel({
   sellingPrice= 0,
   quantity=0,
   productNameCode='',
-  // guid= ''
+  guid= ''
 }: Partial<InventoryModel>) {
   return {
     id,
@@ -93,7 +93,7 @@ export function createInventoryModel({
     soldDate,
     quantity,
     productNameCode,
-    // guid
+    guid
 
   } as InventoryModel;
 }
@@ -185,7 +185,7 @@ export function createInventoryModel({
 // }
 
 export interface inventoryForm {
-  // guid:FormControl<string>,
+  guid:FormControl<string>,
   id: FormControl<number>,
   supplierId: FormControl<number>,
   size: FormControl<string>,

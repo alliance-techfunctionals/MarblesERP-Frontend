@@ -1,0 +1,40 @@
+.modal-footer {
+    border-top: 0 !important;
+}
+
+.modal-content {
+    padding: 12px 20px;
+}
+
+.modal-body {
+    p {
+        span {
+            color: #0472e1;
+            font-weight: 700;
+        }
+
+        color: #000000;
+    }
+
+    h5 {
+        color: #291c1c;
+    }
+
+    i {
+        width: 50px;
+    }
+}
+
+.icon-trash-2 {
+    border-radius: 36px;
+    padding: 18px 22px;
+    color: #d44040;
+    font-size: 24px;
+}
+
+.icon-alert-triangle{
+    border-radius: 36px;
+    padding: 18px 22px;
+    color: #9e920b;
+    font-size: 24px;
+}

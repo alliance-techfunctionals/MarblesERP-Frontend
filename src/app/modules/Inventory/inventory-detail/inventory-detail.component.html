@@ -1,13 +1,11 @@
-<div
-  *ngIf="{
+<div *ngIf="{
     qualityList: (qualityList$ | async) ?? [],
     designList: (designList$ | async) ?? [],
     primaryStoneList: (primaryStoneList$ | async) ?? [],
     sizeList: (sizeList$ | async) ?? [],
     supplierUserList: (supplierUserList$ | async) ?? [],
     artisanList: (artisanList$ | async) ?? []
-  } as group"
->
+  } as group">
   <div class="col-md-12">
     <app-card cardTitle="" [hidHeader]="true" [options]="false">
       <form [formGroup]="inventoryForm">
@@ -18,10 +16,12 @@
             <!-- select quality -->
             <div class="form-group">
               <label for="qualityType">Quality<span class="required">*</span></label>
-              <input class="form-control text-capitalize" type="text" [ngbTypeahead]="searchQuality" id="qualityType" formControlName="qualityType" placeholder="Ex: Pachekaari">
+              <input class="form-control text-capitalize" type="text" [ngbTypeahead]="searchQuality" id="qualityType"
+                formControlName="qualityType" placeholder="Ex: Pachekaari">
               <ul *ngIf="qualityType.touched && qualityType.invalid">
                 <li *ngIf="qualityType.errors?.['required']" class="text-danger">Quality is required</li>
-                <li *ngIf="qualityType.errors?.['message']" class="text-danger">{{ qualityType.errors?.["message"] }}</li>
+                <li *ngIf="qualityType.errors?.['message']" class="text-danger">{{ qualityType.errors?.["message"] }}
+                </li>
               </ul>
             </div>
           </div>
@@ -29,7 +29,8 @@
             <!-- select Product Name -->
             <div class="form-group">
               <label for="product">Product Name<span class="required">*</span></label>
-              <input class="form-control text-capitalize" type="text" [ngbTypeahead]="searchProductName" id="product" formControlName="product" placeholder="Ex: Table Top">
+              <input class="form-control text-capitalize" type="text" [ngbTypeahead]="searchProductName" id="product"
+                formControlName="product" placeholder="Ex: Table Top">
               <ul *ngIf="product.touched && product.invalid">
                 <li *ngIf="product.errors?.['required']" class="text-danger">Product Name is required</li>
                 <li *ngIf="product.errors?.['message']" class="text-danger">{{ product.errors?.["message"] }}</li>
@@ -39,11 +40,13 @@
           <div class="col-md-3">
             <!-- select PC -->
             <div class="form-group">
-              <label for="productNameCode">PC<span class="required">*</span></label>
-              <input class="form-control text-capitalize" type="text"  id="productNameCode" formControlName="productNameCode" placeholder="Ex: TT">
+              <label for="productNameCode">Product Name Code<span class="required">*</span></label>
+              <input class="form-control text-capitalize" type="text" id="productNameCode"
+                formControlName="productNameCode" placeholder="Ex: TT">
               <ul *ngIf="productNameCode.touched && productNameCode.invalid">
-                <li *ngIf="productNameCode.errors?.['required']" class="text-danger">productNameCode is required</li>
-                <li *ngIf="productNameCode.errors?.['message']" class="text-danger">{{ productNameCode.errors?.["message"] }}</li>
+                <li *ngIf="productNameCode.errors?.['required']" class="text-danger">product Name Code is required</li>
+                <li *ngIf="productNameCode.errors?.['message']" class="text-danger">{{
+                  productNameCode.errors?.["message"] }}</li>
               </ul>
             </div>
           </div>
@@ -51,7 +54,8 @@
             <!-- select design -->
             <div class="form-group">
               <label for="design">Design<span class="required">*</span></label>
-              <input class="form-control text-capitalize" type="text" [ngbTypeahead]="searchDesign" id="design" formControlName="design" placeholder="Ex: Flower Border">
+              <input class="form-control text-capitalize" type="text" [ngbTypeahead]="searchDesign" id="design"
+                formControlName="design" placeholder="Ex: Flower Border">
               <ul *ngIf="design.touched && design.invalid">
                 <li *ngIf="design.errors?.['required']" class="text-danger">Design is required</li>
                 <li *ngIf="design.errors?.['message']" class="text-danger">{{ design.errors?.["message"] }}</li>
@@ -62,7 +66,8 @@
             <!-- select size -->
             <div class="form-group">
               <label for="size">Size<span class="required">*</span></label>
-              <input type="text" class="form-control" id="size" placeholder="Ex: 24*48" formControlName="size" [ngbTypeahead]="searchSize" />
+              <input type="text" class="form-control" id="size" placeholder="Ex: 24*48" formControlName="size"
+                [ngbTypeahead]="searchSize" />
               <ul *ngIf="size.touched && size.invalid">
                 <li *ngIf="size.errors?.['required']" class="text-danger">Size is required</li>
                 <li *ngIf="size.errors?.['message']" class="text-danger">{{ size.errors?.["message"] }}</li>
@@ -73,7 +78,8 @@
             <!-- select Shape -->
             <div class="form-group">
               <label for="shape">Shape<span class="required">*</span></label>
-              <input type="text" class="form-control" id="shape" placeholder="Ex: REC" formControlName="shape" [ngbTypeahead]="searchShape" />
+              <input type="text" class="form-control" id="shape" placeholder="Ex: REC" formControlName="shape"
+                [ngbTypeahead]="searchShape" />
               <ul *ngIf="shape.touched && shape.invalid">
                 <li *ngIf="shape.errors?.['required']" class="text-danger">Shape is required</li>
                 <li *ngIf="shape.errors?.['message']" class="text-danger">{{ shape.errors?.["message"] }}</li>
@@ -84,10 +90,12 @@
             <!-- select primaryStone -->
             <div class="form-group">
               <label for="primaryStone">Colour<span class="required">*</span></label>
-              <input type="text" class="form-control text-capitalize" id="primaryStone" placeholder="Ex: White" formControlName="primaryStone" [ngbTypeahead]="searchColour" />
+              <input type="text" class="form-control text-capitalize" id="primaryStone" placeholder="Ex: White"
+                formControlName="primaryStone" [ngbTypeahead]="searchColour" />
               <ul *ngIf="primaryStone.touched && primaryStone.invalid">
                 <li *ngIf="primaryStone.errors?.['required']" class="text-danger">Colour is required</li>
-                <li *ngIf="primaryStone.errors?.['message']" class="text-danger">{{ primaryStone.errors?.["message"] }}</li>
+                <li *ngIf="primaryStone.errors?.['message']" class="text-danger">{{ primaryStone.errors?.["message"] }}
+                </li>
               </ul>
             </div>
           </div>
@@ -96,14 +104,16 @@
             <!-- select primaryColor -->
             <div class="form-group">
               <label for="primaryColor">Primary Colour<span class="required">*</span></label>
-              <input type="text" class="form-control text-capitalize" id="primaryColor" placeholder="Ex: Mix" formControlName="primaryColor" [ngbTypeahead]="searchPrimaryColor" />
+              <input type="text" class="form-control text-capitalize" id="primaryColor" placeholder="Ex: Mix"
+                formControlName="primaryColor" [ngbTypeahead]="searchPrimaryColor" />
               <ul *ngIf="primaryColor.touched && primaryColor.invalid">
                 <li *ngIf="primaryColor.errors?.['required']" class="text-danger">Colour is required</li>
-                <li *ngIf="primaryColor.errors?.['message']" class="text-danger">{{ primaryColor.errors?.["message"] }}</li>
+                <li *ngIf="primaryColor.errors?.['message']" class="text-danger">{{ primaryColor.errors?.["message"] }}
+                </li>
               </ul>
             </div>
           </div>
-          
+
           <!-- select quantity -->
           <div class="col-md-6">
             <div class="form-group">
@@ -117,7 +127,7 @@
           </div>
 
           <div class="col-md-6">
-            <!-- select quantity -->
+            <!-- select No Of Stones -->
             <div class="form-group">
               <label for="stonesNb">No Of Stones<span class="required">*</span></label>
               <input type="number" class="form-control" id="stonesNb" placeholder="Ex: 1" formControlName="stonesNb" />
@@ -134,7 +144,8 @@
               <label for="supplierId">Supplier<span class="required">*</span></label>
               <select id="supplierId" class="form-control" formControlName="supplierId">
                 <option value="0">Select</option>
-                <option *ngFor="let supplier of group.supplierUserList" value="{{ supplier.id }}">{{ supplier.name }}</option>
+                <option *ngFor="let supplier of group.supplierUserList" value="{{ supplier.id }}">{{ supplier.name }}
+                </option>
               </select>
             </div>
           </div>
@@ -151,7 +162,8 @@
           <div class="col-md-6">
             <div class="form-group">
               <label for="costPrice">Cost Price<span class="required">*</span></label>
-              <input type="number" class="form-control" id="costPrice" placeholder="Enter Cost Price" formControlName="costPrice" />
+              <input type="number" class="form-control" id="costPrice" placeholder="Enter Cost Price"
+                formControlName="costPrice" />
               <ul *ngIf="costPrice.touched && costPrice.invalid">
                 <li *ngIf="costPrice.errors?.['required']" class="text-danger">Cost Price is required</li>
                 <li *ngIf="costPrice.errors?.['message']" class="text-danger">{{ costPrice.errors?.["message"] }}</li>
@@ -163,10 +175,12 @@
             <!-- select SP -->
             <div class="form-group">
               <label for="sellingPrice">Selling Price<span class="required">*</span></label>
-              <input type="number" class="form-control" id="sellingPrice" placeholder="Enter Selling Price" formControlName="sellingPrice" />
+              <input type="number" class="form-control" id="sellingPrice" placeholder="Enter Selling Price"
+                formControlName="sellingPrice" />
               <ul *ngIf="sellingPrice.touched && sellingPrice.invalid">
                 <li *ngIf="sellingPrice.errors?.['required']" class="text-danger">Selling Price is required</li>
-                <li *ngIf="sellingPrice.errors?.['message']" class="text-danger">{{ sellingPrice.errors?.["message"] }}</li>
+                <li *ngIf="sellingPrice.errors?.['message']" class="text-danger">{{ sellingPrice.errors?.["message"] }}
+                </li>
               </ul>
             </div>
           </div>
@@ -175,14 +189,16 @@
             <!-- select Product Code -->
             <div class="form-group">
               <label for="sp">Product Code<span class="required">*</span></label>
-              <input type="text" class="form-control" id="productCode" placeholder="Ex: 1" formControlName="productCode" />
+              <input type="text" class="form-control" id="productCode" placeholder="Ex: 1"
+                formControlName="productCode" />
               <ul *ngIf="productCode.touched && productCode.invalid">
                 <li *ngIf="productCode.errors?.['required']" class="text-danger">Product Code is required</li>
-                <li *ngIf="productCode.errors?.['message']" class="text-danger">{{ productCode.errors?.["message"] }}</li>
+                <li *ngIf="productCode.errors?.['message']" class="text-danger">{{ productCode.errors?.["message"] }}
+                </li>
               </ul>
             </div>
           </div>
-          
+
           <!-- select Rate -->
           <!-- <div class="col-md-6" *ngIf="rateField">
             <div class="form-group">
@@ -219,13 +235,20 @@
             </div>
           </div> -->
 
-          
+
         </div>
       </form>
       <div class="col-md-12">
+
+
+        <div class="form-group">
+          <input type="checkbox" id="editSameGuid" (click)="editInventoryByGuid($event)" />
+          <label for="editSameGuid">Edit all items with same  attribute</label>
+        </div>
         <button type="button" class="btn btn-outline-primary m-r-15" [routerLink]="'/inventory'">Cancel</button>
         <!-- <button type="button" class="btn btn-outline-primary m-r-15" (click)="generateCode()">Generate  Code</button> -->
-        <button type="button" *ngIf="inventoryForm.dirty" class="btn btn-primary" [disabled]="inventoryForm.invalid" (click)="uppertInventory()">{{ inventoryForm.value.id === 0 ? "Save" : "Update" }}</button>
+        <button type="button" *ngIf="inventoryForm.dirty" class="btn btn-primary" [disabled]="inventoryForm.invalid"
+          (click)="updateInventory()">{{ inventoryForm.value.id === 0 ? "Save" : "Update" }}</button>
       </div>
     </app-card>
   </div>
