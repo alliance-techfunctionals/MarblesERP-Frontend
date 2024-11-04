@@ -48,7 +48,7 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
     poNumber: ["", Validators.required],
     voucherDate: ["", Validators.required],
     supplierId: ["", Validators.required],
-    otherCharges: [""],
+    otherCharges: [null],
   }) as any;
 
   productDetailForm: FormGroup = this.formBuilder.nonNullable.group({
@@ -239,7 +239,7 @@ calculateAmount(idx: number) {
     this.productDetailForm = this.formBuilder.nonNullable.group({
       purchaseOrderId: [0],
       productDescription: ["", Validators.required],
-      hsnCode: [""],
+      hsnCode: [null],
       quantity: ["", Validators.required],
       rate: ["", Validators.required],
       amount: ["", Validators.required],
@@ -297,7 +297,7 @@ calculateAmount(idx: number) {
   addEmptyRow(): void {
     const emptyProduct: ProductDetail = {
       productDescription: "",
-      hsnCode: 0,
+      hsnCode: null,
       quantity: 0,
       rate: 0,
       amount: 0,

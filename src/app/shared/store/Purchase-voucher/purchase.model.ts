@@ -8,7 +8,7 @@ export interface PurchaseVoucherDetail{
   export interface ProductDetail{
     purchaseOrderId?:number;
     productDescription: string;
-    hsnCode:number;
+    hsnCode:number | null;
     quantity:number;
     rate:number;
     amount:number;
