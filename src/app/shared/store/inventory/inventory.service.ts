@@ -54,16 +54,16 @@ export class InventoryService {
   }
 
   // insert and update Inventory
-  upsertInventory(inventory: InventoryModel, deleteByGuid:boolean = false ): Observable<InventoryModel> {
+  upsertInventory(inventory: InventoryModel, deleteByGuid:boolean = false ): Observable<any> {
     if (inventory.id === 0) {
       return this.CarpetInventoryService.insertInventory(inventory).pipe(
         catchError(_error => {
           this.messageService.error('Something Went Wrong');
           return EMPTY;
         }),
-        tap((response: InventoryModel) => {
-          this.store.upsertById(response);
-          // console.log(response);
+        tap((response: any) => {
+          this.store.upsertById(response.data);
+          console.log(response);
           this.messageService.success('Inventory Inserted Successfully');
         })
       );
