@@ -54,7 +54,7 @@ export class InventoryService {
   }
 
   // insert and update Inventory
-  upsertInventory(inventory: InventoryModel): Observable<InventoryModel> {
+  upsertInventory(inventory: InventoryModel, deleteByGuid:boolean = false ): Observable<InventoryModel> {
     if (inventory.id === 0) {
       return this.CarpetInventoryService.insertInventory(inventory).pipe(
         catchError(_error => {
@@ -69,17 +69,33 @@ export class InventoryService {
       );
     }
     else {
-      return this.CarpetInventoryService.updateInventory(inventory).pipe(
-        catchError(_error => {
-          this.messageService.error('Something Went Wrong');
-          return EMPTY;
-        }),
-        tap((response) => {
-          this.messageService.success('Inventory Updated Successfully');
-          console.log(response);
-          this.store.updateInventory(response);
-        })
-      );
+      if(deleteByGuid){
+        return this.CarpetInventoryService.updateInventoryByGuid(inventory).pipe(
+          catchError(_error => {
+            this.messageService.error('Something Went Wrong');
+            return EMPTY;
+          }),
+          tap((response) => {
+            this.messageService.success('Inventory Updated Successfully');
+            console.log(response);
+            this.store.updateInventory(response);
+          })
+        );
+        
+
+      }else{
+        return this.CarpetInventoryService.updateInventoryById(inventory).pipe(
+          catchError(_error => {
+            this.messageService.error('Something Went Wrong');
+            return EMPTY;
+          }),
+          tap((response) => {
+            this.messageService.success('Inventory Updated Successfully');
+            console.log(response);
+            this.store.updateInventory(response);
+          })
+        );
+      }
     }
   }
 
@@ -92,6 +108,30 @@ export class InventoryService {
       }),
       tap((response: InventoryModel) => {
         this.store.deleteById(inventory.id);
+        this.messageService.success('Inventory Deleted Successfully');
+      })
+    ).subscribe();
+  }
+  deleteInventoryById(inventory: InventoryModel): void {
+    this.CarpetInventoryService.deleteInventoryById(inventory).pipe(
+      catchError(_error => {
+        this.messageService.error('Error on delete inventory');
+        return EMPTY;
+      }),
+      tap((response: InventoryModel) => {
+        this.store.deleteById(inventory.id);
+        this.messageService.success('Inventory Deleted Successfully');
+      })
+    ).subscribe();
+  }
+  deleteInventoryByGuid(inventory: InventoryModel): void {
+    this.CarpetInventoryService.deleteInventoryByGuid(inventory).pipe(
+      catchError(_error => {
+        this.messageService.error('Error on delete inventory');
+        return EMPTY;
+      }),
+      tap((response: InventoryModel) => {
+        this.store.deleteInventory(inventory.id);
         this.messageService.success('Inventory Deleted Successfully');
       })
     ).subscribe();

@@ -1,17 +1,18 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { SharedModule } from '../../shared.module';
-import { ModalConfirmComponent } from './modal-confirm.component';
+import {  ModalDeleteInventoryModule } from './modal-delete-inventory.module';
+import { ModalDeleteInventoryComponent } from './modal-delete-inventory.component';
 
-describe('ModalConfirmComponent', () => {
-    let component: ModalConfirmComponent;
-    let fixture: ComponentFixture<ModalConfirmComponent>;
+describe('ModalDeleteInventoryComponent', () => {
+    let component: ModalDeleteInventoryComponent;
+    let fixture: ComponentFixture<ModalDeleteInventoryComponent>;
     let bsModalRef: Partial<BsModalRef>
 
     beforeEach(waitForAsync(() => {
         bsModalRef = {};
         TestBed.configureTestingModule({
-            declarations: [ModalConfirmComponent],
+            declarations: [ModalDeleteInventoryComponent],
             providers: [
                 { provide: BsModalRef, useValue: bsModalRef }
             ],
@@ -20,12 +21,12 @@ describe('ModalConfirmComponent', () => {
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(ModalConfirmComponent);
+        fixture = TestBed.createComponent(ModalDeleteInventoryComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
 
-    it("Modal Confirm Component should be generated ", () => {
+    it("Modal Delete Inventory Component should be generated ", () => {
         component.ngOnInit();
         expect(component).toBeTruthy();
     });

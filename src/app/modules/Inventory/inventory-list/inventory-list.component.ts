@@ -1,33 +1,32 @@
 import { Component, ViewChild } from '@angular/core';
-import { combineLatest, map, Observable, of, startWith, Subscription, tap } from 'rxjs';
-import { InventoryModel } from 'src/app/shared/store/inventory/inventory.model';
-import MessageDialogBoxComponent from '../../components/message-dialog-box/message-dialog-box.component';
+import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { InventoryStoreService } from 'src/app/shared/store/inventory/inventory.store';
-import { InventoryService } from 'src/app/shared/store/inventory/inventory.service';
-import { DesignStoreService } from 'src/app/shared/store/design/design.store';
-import { DesignService } from 'src/app/shared/store/design/design.service';
-import { QualityStoreService } from 'src/app/shared/store/quality/quality.store';
-import { QualityService } from 'src/app/shared/store/quality/quality.service';
-import { Pagination, createPagination } from 'src/app/core/models/pagination.model';
-import { ModalConfirmComponent, ModalType } from 'src/app/shared/components/modal-confirm/modal-confirm.component';
+import { ColDef, GridApi } from 'ag-grid-community'; // Column Definition Type Interface
 import { BsModalService } from 'ngx-bootstrap/modal';
+import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
+import { combineLatest, concatMap, map, Observable, of, Subscription, tap } from 'rxjs';
+import { createPagination, Pagination } from 'src/app/core/models/pagination.model';
 import { ImageService } from 'src/app/core/service/Image.service';
+import { MessageToastService } from 'src/app/core/service/message-toast.service';
+import { AgCustomButtonComponent } from 'src/app/shared/components/Button/ag-custom-button/ag-custom-button.component';
+import { ModalType } from 'src/app/shared/components/modal-confirm/modal-confirm.component';
+import { Design } from 'src/app/shared/store/design/design.model';
+import { DesignService } from 'src/app/shared/store/design/design.service';
+import { DesignStoreService } from 'src/app/shared/store/design/design.store';
+import { InventoryModel } from 'src/app/shared/store/inventory/inventory.model';
+import { InventoryService } from 'src/app/shared/store/inventory/inventory.service';
+import { InventoryStoreService } from 'src/app/shared/store/inventory/inventory.store';
+import { Quality } from 'src/app/shared/store/quality/quality.model';
+import { QualityService } from 'src/app/shared/store/quality/quality.service';
+import { QualityStoreService } from 'src/app/shared/store/quality/quality.store';
 import { UserService } from 'src/app/shared/store/user/user.service';
 import { UserStoreService } from 'src/app/shared/store/user/user.store';
-import { Quality } from 'src/app/shared/store/quality/quality.model';
-import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
-import { FormControl } from '@angular/forms';
-import { Design } from 'src/app/shared/store/design/design.model';
-import { AgCustomButtonComponent } from 'src/app/shared/components/Button/ag-custom-button/ag-custom-button.component';
-import { ColDef, GridApi} from 'ag-grid-community'; // Column Definition Type Interface
-import { MessageToastService } from 'src/app/core/service/message-toast.service';
 import { environment } from 'src/environments/environment';
+import MessageDialogBoxComponent from '../../components/message-dialog-box/message-dialog-box.component';
 // import { Component } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
-import { SaleModel } from 'src/app/shared/store/sales/sale.model';
-import { InventoryModule } from '../inventory.module';
 import printJS from 'print-js';
+import { ModalDeleteInventoryComponent } from 'src/app/shared/components/modal-delete/modal-delete-inventory.component';
 
 export interface AutoCompleteModel {
   value: any;
@@ -41,14 +40,15 @@ export interface AutoCompleteModel {
 })
 export default class InventoryListComponent {
   colDefs: ColDef[] = [
-    { field: 'id', headerCheckboxSelection: true, checkboxSelection: true},
-    { headerName: "#", valueGetter: "node.rowIndex + 1", maxWidth: 60, resizable: true },
+    // { field: '', headerCheckboxSelection: true, checkboxSelection: true},
+    { headerName: "#", headerCheckboxSelection: true, checkboxSelection: true, valueGetter: "node.rowIndex + 1", maxWidth: 60, resizable: true },
     { field: "supplierName", headerName: 'Supplier', filter: true, floatingFilter: true },
     { field: "qualityType", headerName: 'Quality', filter: true, floatingFilter: true},
     { field: "product",headerName: 'Product Name', filter: true, floatingFilter: true},
     { field: "shape",headerName: 'Shape', filter: true, floatingFilter: true},
     { field: "design",headerName: 'Design', filter: true, floatingFilter: true},
     { field: "stonesNb",headerName: 'No Of Stones', filter: true, floatingFilter: true},
+    { field: "productCode",headerName: 'Product Code', filter: true, minWidth: 150, floatingFilter: true},
     // { field: "supplierName", filter: true, floatingFilter: true, valueFormatter: params => params.value ? params.value : "N/A"},
     {
       field: "action",
@@ -260,6 +260,7 @@ export default class InventoryListComponent {
   protected navigateInventory(id: number = 0): void {
     this.router.navigate(['inventory', id]);
   }
+  
 
   protected openDeleteConfirmationModal(item: InventoryModel) {
     const initialState = {
@@ -268,12 +269,20 @@ export default class InventoryListComponent {
       modalType: ModalType.Confirmation
     };
 
-    const modalRef = this.modalService.show(ModalConfirmComponent, { initialState, class: 'modal-sm modal-dialog-centered' });
+    const modalRef = this.modalService.show(ModalDeleteInventoryComponent, { initialState, class: 'modal-sm modal-dialog-centered' });
     const sub = modalRef.content?.onClose.pipe(
       tap(
-        (result: boolean) => {
-          if (result) {
-            this.service.deleteInventory(item);
+        (result: any) => {
+          if(result){
+
+            if (result.value) {
+              this.service.deleteInventoryByGuid(item);
+              this.store.resetInventoryStore().pipe(
+                concatMap(() => this.service.getAll())
+              ).subscribe();
+            }else{              
+              this.service.deleteInventoryById(item);
+            }
           }
         }
       )

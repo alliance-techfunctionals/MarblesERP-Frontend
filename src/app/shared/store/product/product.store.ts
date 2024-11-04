@@ -16,7 +16,7 @@ import { entitiesStateHistory } from "@ngneat/elf-state-history";
 import { Product } from "./product.model";
 
 const productStore = createStore(
-  { name: "product" },
+  { name: "product"},
   withEntities<Product, "name">({ idKey: "name" })
 );
 

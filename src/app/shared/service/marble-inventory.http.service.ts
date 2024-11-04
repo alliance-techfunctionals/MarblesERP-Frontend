@@ -182,6 +182,7 @@ export class MarbleInventoryHttpService {
     // formData.append("CostPrice", inventory.costPrice.toString());
     // formData.append("Quantity", inventory.sellingPrice.toString());
 
+    delete inventory.guid;
 
     
     const authToken = localStorage.getItem('Token');
@@ -200,19 +201,29 @@ export class MarbleInventoryHttpService {
     return this.http.post<InventoryModel>(`${this.baseUrl}inventory`, inventory, requestOptions);
   }
   
-  updateInventory(inventory: InventoryModel): Observable<InventoryModel> {
-    console.log(inventory)
-    // const formData = new FormData()
-    // formData.append("MasterId", String(inventory.id));
-    // formData.append("QualityId", String(inventory.qualityId));
-    // formData.append("DesignId", String(inventory.designId));
-    // formData.append("ColorCode", inventory.colorCode);
-    // formData.append("Quantity", String(inventory.quantity));
-    // formData.append("Size", inventory.size);
-    // formData.append("file", inventory.file);
-    // formData.append("supplierId", inventory.supplierId.toString());
-    // formData.append("isNormalUpdate",inventory.isNormalUpdate.toString())
+  // updateInventory(inventory: InventoryModel): Observable<InventoryModel> {
+  //   console.log(inventory)
+        
+  //   let params = new HttpParams();
+  //   const authToken = localStorage.getItem('Token');
+  //   const headers = new HttpHeaders({
+  //     Authorization: `Bearer ${authToken}`
+  //   });
     
+    
+  //   params = params.append('id', inventory.id);
+  //   // params = params.append('guid', inventory.guid);
+
+  //   console.log(params)
+  //   const requestOptions = {
+  //     headers: headers,
+  //     params: params,
+  //   };
+  //   return this.http.put<InventoryModel>(`${this.baseUrl}inventory`, inventory, requestOptions);
+  // }
+  updateInventoryById(inventory: InventoryModel): Observable<InventoryModel> {
+    console.log(inventory)
+        
     let params = new HttpParams();
     const authToken = localStorage.getItem('Token');
     const headers = new HttpHeaders({
@@ -222,6 +233,26 @@ export class MarbleInventoryHttpService {
     
     params = params.append('id', inventory.id);
     // params = params.append('guid', inventory.guid);
+
+    console.log(params)
+    const requestOptions = {
+      headers: headers,
+      params: params,
+    };
+    return this.http.put<InventoryModel>(`${this.baseUrl}inventory`, inventory, requestOptions);
+  }
+  updateInventoryByGuid(inventory: InventoryModel): Observable<InventoryModel> {
+    console.log(inventory)
+        
+    let params = new HttpParams();
+    const authToken = localStorage.getItem('Token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${authToken}`
+    });
+    
+    if(inventory.guid){
+      params = params.append('guid', inventory.guid);
+    }
 
     console.log(params)
     const requestOptions = {
@@ -240,6 +271,44 @@ export class MarbleInventoryHttpService {
     let params = new HttpParams();
     params = params.append('id', inventory.id);
     // params = params.append('guid', inventory.guid);
+
+    console.log(params)
+    const requestOptions = {
+      headers: headers,
+      params: params,
+    };
+    
+    return this.http.delete<InventoryModel>(`${this.baseUrl}inventory`, requestOptions);
+  }
+  deleteInventoryById(inventory: InventoryModel): Observable<InventoryModel> {
+
+    const authToken = localStorage.getItem('Token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${authToken}`
+    });
+    let params = new HttpParams();
+    params = params.append('id', inventory.id);
+    // params = params.append('guid', inventory.guid);
+
+    console.log(params)
+    const requestOptions = {
+      headers: headers,
+      params: params,
+    };
+    
+    return this.http.delete<InventoryModel>(`${this.baseUrl}inventory`, requestOptions);
+  }
+  deleteInventoryByGuid(inventory: InventoryModel): Observable<InventoryModel> {
+
+    const authToken = localStorage.getItem('Token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${authToken}`
+    });
+    let params = new HttpParams();
+    if(inventory.guid){
+
+      params = params.append('guid', inventory.guid);
+    }
 
     console.log(params)
     const requestOptions = {

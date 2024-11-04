@@ -124,6 +124,8 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
 
     this.subscriptions.push(this.userService.getAll().subscribe());
+    this.maxDate = this.dateService.formatDateToInput(new Date())
+
     // get Product
     this.subscriptions.push(
       combineLatest([this.route.params])
@@ -170,9 +172,6 @@ export class PurchaseVoucherDetailsComponent implements OnInit, OnDestroy {
               this.voucherDate.setValue(
                 this.dateService.formatDateToInput(new Date())
               );
-
-              this.maxDate = this.dateService.formatDateToInput(new Date())
-
               this.addEmptyRow();
             }
           })
@@ -257,6 +256,7 @@ calculateAmount(idx: number) {
       quantity: this.quantity.value,
       rate: this.rate.value,
       amount: this.amount.value,
+      
     });
     this.clear();
 
@@ -276,7 +276,6 @@ calculateAmount(idx: number) {
     this.quantity.setValue(this.addedProducts[index].quantity);
     this.rate.setValue(this.addedProducts[index].rate);
     this.amount.setValue(this.addedProducts[index].amount);
-
     // remove product from list before edit
     this.addedProducts.splice(index, 1);
     this.editProduct = true;
@@ -302,6 +301,7 @@ calculateAmount(idx: number) {
       quantity: 0,
       rate: 0,
       amount: 0,
+      
     };
     this.addedProducts.push(emptyProduct); // Add the empty product at the end
     this.editingIndex = this.addedProducts.length - 1; // Set the new row to be in edit mode
