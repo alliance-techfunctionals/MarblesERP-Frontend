@@ -52,6 +52,7 @@ import { UserModel } from "src/app/shared/store/user/user.model";
 import { UserService } from "src/app/shared/store/user/user.service";
 import { UserStoreService } from "src/app/shared/store/user/user.store";
 import { InventoryModule } from "../inventory.module";
+import printJS from "print-js";
 
 @Component({
   selector: "app-inventory-detail",
@@ -61,6 +62,7 @@ import { InventoryModule } from "../inventory.module";
 export default class InventoryDetailComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   checkbox: boolean = false; 
+  
 
   qualityList$: Observable<string[]> = this.qualityStoreService
     .selectAll()
@@ -124,9 +126,9 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
     primaryStone: ["", Validators.required],
     design: ["", Validators.required],
     primaryColor: ["", Validators.required],
-    stonesNb: ["", Validators.required],
+    stonesNb: [null],
     supplierId: ["", Validators.required],
-    costPrice: ["", Validators.required],
+    costPrice: [null],
     sellingPrice: ["", Validators.required],
     productNameCode: ["",Validators.required],
     userCode: [""],
@@ -448,7 +450,7 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
     // }
 
     // submit button click
-    protected updateInventory(): void {
+    protected updateInventory(print:boolean = false): void {
       const inventory = createInventoryModel({
         id: this.id.value,
         supplierId: this.supplierId.value,
@@ -503,7 +505,15 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
           this.inventoryService
             .upsertInventory(inventory, true)
             .pipe(
-              tap(() => {
+              tap((response) => {
+                if(print) {
+                  let idsArray: number[] = [];
+                  response.data.forEach((item: any) => {
+                    idsArray.push(item.id);
+                  })
+
+                  this.printInventoryBarcode(idsArray);
+                }
                 this.store.resetInventoryStore();
                 this.inventoryService.getAll();
                 this.inventoryForm.markAsPristine();
@@ -519,7 +529,15 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
           this.inventoryService
             .upsertInventory(inventory, false)
             .pipe(
-              tap(() => {
+              tap((response) => {
+                if(print) {
+                  let idsArray: number[] = [];
+                  response.data.forEach((item: any) => {
+                    idsArray.push(item.id);
+                  })
+
+                  this.printInventoryBarcode(idsArray);
+                }
                 this.inventoryService.getAll();
                 this.inventoryForm.markAsPristine();
                 this.navigate();
@@ -719,5 +737,42 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
+  }
+
+  // printAll() {
+  //   if (this.agGrid && this.agGrid.api) {
+  //     const selectedRows = this.agGrid.api.getSelectedRows(); // Get selected rows
+  //     console.log("Selected Rows: ", this.selectedRows);
+  //     const idsArray: number[] = []
+  //     selectedRows.forEach((row) => {
+  //       idsArray.push(row.id);
+  //     })
+
+  //     this.printInventoryBarcode(idsArray);
+  //   } else {
+  //     console.error("Grid API is not available yet.");
+  //   }
+  // }
+  printHTML(htmlContent: string) {
+    printJS({
+      printable: htmlContent,
+      type: "raw-html",
+      targetStyles: ["*"], // This ensures that all styles are included
+    });
+  }
+
+  printInventoryBarcode(productIds:number[]){
+
+    this.inventoryService
+      .printInventoryBarcode(productIds)
+      .pipe(
+        tap((productBarcodeResponse) => {
+          if (productBarcodeResponse) {
+            
+            this.printHTML(productBarcodeResponse);
+          }
+        })
+      )
+      .subscribe();
   }
 }

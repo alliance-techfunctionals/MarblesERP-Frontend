@@ -165,6 +165,8 @@ export default class InventoryListComponent {
       })
 
       this.printInventoryBarcode(idsArray);
+
+      this.agGrid.api.deselectAll();
     } else {
       console.error("Grid API is not available yet.");
     }
