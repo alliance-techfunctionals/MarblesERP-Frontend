@@ -144,7 +144,7 @@
               <label for="supplierId">Supplier<span class="required">*</span></label>
               <select id="supplierId" class="form-control" formControlName="supplierId">
                 <option value="0">Select</option>
-                <option *ngFor="let supplier of group.supplierUserList" value="{{ supplier.id }}">{{ supplier.name }}
+                <option *ngFor="let supplier of group.supplierUserList" value="{{ supplier.id }}">{{ supplier.name }} ({{supplier.userCode}})
                 </option>
               </select>
             </div>
@@ -246,6 +246,13 @@
 
           <label for="editSameGuid">Apply changes to all similar items</label>
         </div>
+        <!-- <div class="form-group ">
+          <input type="checkbox" id="yes"  class=" m-r-10" />
+          <label for="yes" class=" m-r-10">Yes</label>
+          <input type="checkbox" id="no"  class=" m-r-10" />
+          <label for="no" class=" m-r-10">No</label>
+          <label for="editSameGuid" class=" m-r-10">Assumption for these product</label>
+        </div> -->
         <button type="button" class="btn btn-outline-primary m-r-15" [routerLink]="'/inventory'">Cancel</button>
         <!-- <button type="button" class="btn btn-outline-primary m-r-15" (click)="generateCode()">Generate  Code</button> -->
         <button type="button" *ngIf="inventoryForm.dirty" class="btn btn-primary m-r-15 " [disabled]="inventoryForm.invalid"

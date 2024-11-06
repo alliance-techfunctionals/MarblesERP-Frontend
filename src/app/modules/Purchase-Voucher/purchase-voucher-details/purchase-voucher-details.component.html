@@ -39,7 +39,7 @@
               <label for="supplierId">Purchased From <span class="required text-danger">*</span></label>
               <select id="supplierId" class="form-control" formControlName="supplierId">
                 <option value="0">Select</option>
-                <option *ngFor="let supplier of group.supplierUserList" value="{{ supplier.id }}">{{ supplier.name }}
+                <option *ngFor="let supplier of group.supplierUserList"  value="{{ supplier.id }}">{{ supplier.name }} ({{supplier.userCode}})
                 </option>
               </select>
             </div>
