@@ -1,8 +1,6 @@
-<div
-  *ngIf="{
+<div *ngIf="{
     roleList: (roleList$ | async) ?? []
-  } as group"
->
+  } as group">
   <div class="col-md-12">
     <app-card cardTitle="" [hidHeader]="true" [options]="false">
       <form [formGroup]="userForm">
@@ -27,7 +25,8 @@
             <!-- enter name -->
             <div class="form-group">
               <label for="name">Name<span class="required">*</span></label>
-              <input type="text" class="form-control text-capitalize" id="name" placeholder="Ex: John" formControlName="name" />
+              <input type="text" class="form-control text-capitalize" id="name" placeholder="Ex: John"
+                formControlName="name" />
               <ul *ngIf="name.touched && name.invalid">
                 <li *ngIf="name.errors?.['required']" class="text-danger">Name is required</li>
                 <li *ngIf="name.errors?.['message']" class="text-danger">{{ name.errors?.["message"] }}</li>
@@ -53,7 +52,7 @@
             <div class="form-group">
               <label for="mobileNumber">Mobile Number<span class="required">*</span></label>
               <div class="input-group" formArrayName="mobileNumberList">
-                <input class="form-control"[formControlName]="i" placeholder="Ex: 1234567890">
+                <input class="form-control" [formControlName]="i" placeholder="Ex: 1234567890">
                 <button class="btn btn-outline-danger" type="button" (click)="removeMobile(i)">
                   <i class="feather icon-minus"></i>
                 </button>
@@ -73,7 +72,7 @@
             <div class="form-group">
               <label for="email">E-mail</label>
               <div class="input-group" formArrayName="emailAddressList">
-                <input class="form-control"[formControlName]="i" placeholder="Ex: xyz@gmail.com">
+                <input class="form-control" [formControlName]="i" placeholder="Ex: xyz@gmail.com">
                 <button class="btn btn-outline-danger" type="button" (click)="removeEmail(i)">
                   <i class="feather icon-minus"></i>
                 </button>
@@ -107,10 +106,13 @@
             <!-- residential address -->
             <div class="form-group">
               <label for="residentialAddress">Residential Address</label>
-              <textarea class="form-control text-capitalize" id="residentialAddress" rows="1" formControlName="residentialAddress"></textarea>
+              <textarea class="form-control text-capitalize" id="residentialAddress" rows="1"
+                formControlName="residentialAddress"></textarea>
               <ul *ngIf="residentialAddress.touched && residentialAddress.invalid">
-                <li *ngIf="residentialAddress.errors?.['required']" class="text-danger">Residential Address is required</li>
-                <li *ngIf="residentialAddress.errors?.['message']" class="text-danger">{{ residentialAddress.errors?.["message"] }}</li>
+                <li *ngIf="residentialAddress.errors?.['required']" class="text-danger">Residential Address is required
+                </li>
+                <li *ngIf="residentialAddress.errors?.['message']" class="text-danger">{{
+                  residentialAddress.errors?.["message"] }}</li>
               </ul>
             </div>
           </div>
@@ -141,7 +143,8 @@
             <!-- User Code -->
             <div class="form-group" *ngIf="showSupplierCode">
               <label for="showSupplierCode">Supplier Code<span class="required">*</span></label>
-              <input type="text" class="form-control text-capitalize" id="name" placeholder="Ex: MM" formControlName="userCode" />
+              <input type="text" class="form-control text-capitalize" id="name" placeholder="Ex: MM"
+                formControlName="userCode" />
               <ul *ngIf="userCode.touched && userCode.invalid">
                 <li *ngIf="userCode.errors?.['required']" class="text-danger">Supplier Code is required</li>
                 <li *ngIf="userCode.errors?.['message']" class="text-danger">{{ name.errors?.["message"] }}</li>
@@ -155,7 +158,10 @@
       </form>
       <div class="col-md-12">
         <button type="button" class="btn btn-outline-primary m-r-15" [routerLink]="'/users'">Cancel</button>
-        <button type="button" *ngIf="userForm.dirty" class="btn btn-primary" [disabled]="userForm.invalid" (click)="uppertUser()">{{ userForm.value.id === 0 ? "Save" : "Update" }} </button>
+        <button type="button" *ngIf="userForm.dirty" class="btn btn-primary" [disabled]="userForm.invalid"
+          (click)="uppertUser()">
+          {{ userForm.value.id === 0 ? "Save" : "Update" }}
+        </button>
       </div>
     </app-card>
   </div>
