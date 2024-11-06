@@ -1,0 +1,173 @@
+<h4 class="">Sales Overview</h4>
+<p>Your brief overview of your Sales and Vouchers</p>
+
+<div class="tiles-container row">
+    <div class="px-1 ps-md-0 mb-2 col-12 col-md-4">
+        <div class="bg-white tiles border ">
+            <div class="d-flex">
+                <p class="me-2 mb-0 p-0">Vouchers</p>
+                <p [ngStyle]="{'color': (((currentMonthVouchersCount - previousMonthVouchersCount) / previousMonthVouchersCount) * 100) > 0 ? 'Green' : 'Red'}">{{ voucherPercentageChange }}%
+                    <i class="bi" [ngClass]="(((currentMonthVouchersCount - previousMonthVouchersCount) / previousMonthVouchersCount) * 100) > 0 ? 'bi-arrow-up' : 'bi-arrow-down'"></i>
+                </p>
+            </div>
+            <h5 [ngStyle]="{'color': getColor(0)}">{{currentMonthVouchersCount}}</h5>
+            <div class="d-flex justify-content-between text-secondary">
+                <p class="text-secondary p-0 m-0">vs. last month</p>
+                <h6 class="p-0 m-0">{{ previousMonthVouchersCount }}</h6>
+            </div>
+        </div>
+    </div>
+    <div class="px-1 mb-2 col-12 col-md-4">
+        <div class="bg-white tiles border ">
+            <div class="d-flex">
+                <p class="me-2 mb-0 p-0">Sales</p>
+                <p [ngStyle]="{'color': (((currentMonthSalesCount - previousMonthSalesCount) / previousMonthSalesCount) * 100) > 0 ? 'Green' : 'Red'}">{{ salePercentageChange }}%
+                    
+                    <i class="bi" [ngClass]="(((currentMonthSalesCount - previousMonthSalesCount) / previousMonthSalesCount) * 100) > 0 ? 'bi-arrow-up' : 'bi-arrow-down'"></i>
+                </p>
+            </div>
+            <h5 [ngStyle]="{'color': getColor(0)}">{{currentMonthSalesCount}}</h5>
+            <div class="d-flex justify-content-between text-secondary">
+                <p class="text-secondary p-0 m-0">vs. last month</p>
+                <h6 class="p-0 m-0">{{ previousMonthSalesCount }}</h6>
+            </div>
+        </div>
+    </div>
+    <!-- Revenue Generated -->
+    <div class="px-1 mb-2 pe-md-0 col-12 col-md-4">
+        <div class="bg-white tiles border ">
+            <div class="d-flex">
+                <p class="me-2 mb-0 p-0">Revenue</p>
+                <p [ngStyle]="{'color': (((currentMonthRevenue - previousMonthRevenue) / previousMonthRevenue) * 100) > 0 ? 'Green' : 'Red'}">{{ revenuePercentageChange }}%
+                    <i class="bi" [ngClass]="(((currentMonthRevenue - previousMonthRevenue) / previousMonthRevenue) * 100) > 0 ? 'bi-arrow-up' : 'bi-arrow-down'"></i>
+                </p>
+            </div>
+            <h5 [ngStyle]="{'color': getColor(0)}">{{currentMonthRevenueString}}</h5>
+            <div class="d-flex justify-content-between text-secondary">
+                <p class="text-secondary p-0 m-0">vs. last month</p>
+                <h6 class="p-0 m-0">{{ previousMonthRevenueString }}</h6>
+            </div>
+        </div>
+    </div>
+    <!-- Country With Maximum Sale -->
+    <div class="px-1 ps-md-0 mb-2 col-12 col-md-4">
+        <div class="bg-white tiles border ">
+            <div class="d-flex">
+                <p class="me-2 mb-3 p-0">Country With Maximum Sales</p>
+            </div>
+            <h5 [ngStyle]="{'color': getColor(0)}" class="text-capitalize">{{currentMonthCountry}}</h5>
+            <div class="d-flex justify-content-between text-secondary">
+                <p class="text-secondary p-0 m-0">vs. last month</p>
+                <h6 class="p-0 m-0 text-capitalize">{{ previousMonthCountry }}</h6>
+            </div>
+        </div>
+    </div>
+    <div class="px-1 mb-2 col-12 col-md-4">
+        <div class="bg-white tiles border ">
+            <div class="d-flex">
+                <p class="me-2 mb-0 p-0">Linked Sales</p>
+                <p [ngStyle]="{'color': (((currentMonthSalesWithVoucherCount - previousMonthSalesWithVoucherCount) / previousMonthSalesWithVoucherCount) * 100) > 0 ? 'Green' : 'Red'}">{{ linkedSalePercentageChange }}%
+                    
+                    <i class="bi" [ngClass]="(((currentMonthSalesWithVoucherCount - previousMonthSalesWithVoucherCount) / previousMonthSalesWithVoucherCount) * 100) > 0 ? 'bi-arrow-up' : 'bi-arrow-down'"></i>
+                </p>
+            </div>
+            <h5 [ngStyle]="{'color': getColor(0)}">{{currentMonthSalesWithVoucherCount}}</h5>
+            <div class="d-flex justify-content-between text-secondary">
+                <p class="text-secondary p-0 m-0">vs. last month</p>
+                <h6 class="p-0 m-0">{{ previousMonthSalesWithVoucherCount }}</h6>
+            </div>
+        </div>
+    </div>
+    <div class="px-1 pe-0 mb-2 col-12 col-md-4">
+        <div class="bg-white tiles border ">
+            <div class="d-flex">
+                <p class="me-2 mb-0 p-0">Cancelled Sales</p>
+                <p [ngStyle]="{'color': (((currentMonthCanceledSalesCount - previousMonthCanceledSalesCount) / previousMonthCanceledSalesCount) * 100) > 0 ? 'Green' : 'Red'}">{{ cancelledPercentageChange }}%
+                    
+                    <i class="bi" [ngClass]="(((currentMonthCanceledSalesCount - previousMonthCanceledSalesCount) / previousMonthCanceledSalesCount) * 100) > 0 ? 'bi-arrow-up' : 'bi-arrow-down'"></i>
+                </p>
+            </div>
+            <h5 [ngStyle]="{'color': getColor(0)}">{{currentMonthCanceledSalesCount}}</h5>
+            <div class="d-flex justify-content-between text-secondary">
+                <p class="text-secondary p-0 m-0">vs. last month</p>
+                <h6 class="p-0 m-0">{{ previousMonthCanceledSalesCount }}</h6>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bg-white border p-4 chart-parent-container">
+
+    <h5 class="">Sale Analysis</h5>
+    <!-- <div>
+        <label for="type-of-chart" class="me-2">Type of Analysis</label>
+        <select name="" id="type-of-chart">
+            <option value="0">Monthly Sale</option>
+            <option value="1">Monthly Voucher</option>
+        </select>
+    </div> -->
+
+    <div class="mb-3">
+        <form [formGroup]="analysisForm" (ngSubmit)="updateChart()">
+            <div class="d-flex gap-4 justify-content-between">
+                <div class="form-field-container">
+                    <label for="type-of-chart" class="me-2 mb-2">Type of Analysis</label>
+                    <select formControlName="typeOfChart" id="type-of-chart" class="form-control">
+                    <option value="0">Sale Analysis</option>
+                    <option value="1">Voucher Analysis</option>
+                    <option value="2">Vouchers Vs Sales</option>
+                    <option value="3">YOY Sales</option>
+                    <option value="4">YOY Vouchers</option>
+                    <option value="5">Salesman - Sales</option>
+                    <option value="6">Salesman - Vouchers</option>
+                    <option value="7">Salesman - Vouchers Vs Sales</option>
+                    <option value="8">Types of Sales</option>
+                    <option value="9">Cancelled Sales</option>
+                    <option value="10">Order Status</option>
+                    <option value="11">Revenue Generated</option>
+                    <option value="12">Country Wise Sales</option>
+                    </select>
+                </div>
+            
+                <div class="form-field-container" *ngIf="showDateFields">
+                    <div>
+                    <label for="start-date" class="me-2 mb-2">Start Date</label>
+                    <input type="date" formControlName="startDate" id="start-date" class="form-control">
+                    </div>
+                </div>
+                <div class="form-field-container" *ngIf="showDateFields">
+                    <div>
+                    <label for="end-date" class="me-2 mb-2">End Date</label>
+                    <input type="date" formControlName="endDate" id="end-date" class="form-control">
+                    </div>
+                </div>
+            
+                <div class="form-field-container" *ngIf="showYearField">
+                    <div>
+                    <label for="number-of-years" class="me-2 mb-2">Number of Years</label>
+                    <select formControlName="numberOfYears" id="number-of-years" class="form-control">
+                        <option *ngFor="let year of [1, 2, 3]" [value]="year">{{ year }}</option>
+                    </select>
+                    </div>
+                </div>
+                
+                <div class="d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </div>
+            </form>
+    </div>
+
+</div>
+<!-- <button class="btn btn-primary" (click)="updateChart()">Update</button> -->
+<div class="d-flex flex-column flex-lg-row justify-content-between gap-5 mt-4">
+    <p-chart class="w-100 bg-white p-2 border chart" type="bar" 
+            [data]="basicData"
+            [options]="basicOptions"> 
+    </p-chart>
+
+    <p-chart class="w-100 bg-white p-2 border chart" type="line" 
+            [data]="lineBasicData"
+            [options]="basicOptions"> 
+    </p-chart>
+</div>

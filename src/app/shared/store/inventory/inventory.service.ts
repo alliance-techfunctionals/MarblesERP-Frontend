@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { EMPTY, Observable, of } from 'rxjs';
 import { catchError, delay, switchMap, take, tap } from 'rxjs/operators';
+import { MessageToastService } from 'src/app/core/service/message-toast.service';
+import { MarbleInventoryHttpService } from '../../service/marble-inventory.http.service';
 import { CheckInventoryModel, InventoryModel } from './inventory.model';
 import { InventoryStoreService } from './inventory.store';
-import { MarbleInventoryHttpService } from '../../service/marble-inventory.http.service';
-import { MessageToastService } from 'src/app/core/service/message-toast.service';
 
 @Injectable({ providedIn: 'root' })
 export class InventoryService {
@@ -33,8 +33,8 @@ export class InventoryService {
               return EMPTY;
             }
           }),
-          tap((records: InventoryModel[]) => {
-            this.store.upsertInventories(records)
+          tap((records: any) => {
+            this.store.upsertInventories(records.data)
           })
         );
         return hasCache ? of([]) : request;
@@ -54,32 +54,48 @@ export class InventoryService {
   }
 
   // insert and update Inventory
-  upsertInventory(inventory: InventoryModel): Observable<InventoryModel> {
+  upsertInventory(inventory: InventoryModel, deleteByGuid:boolean = false ): Observable<any> {
     if (inventory.id === 0) {
       return this.CarpetInventoryService.insertInventory(inventory).pipe(
         catchError(_error => {
-          this.messageService.error('Error on insert inventory');
+          this.messageService.error('Something Went Wrong');
           return EMPTY;
         }),
-        tap((response: InventoryModel) => {
-          this.store.upsertById(response);
-          // console.log(response);
+        tap((response: any) => {
+          this.store.upsertById(response.data);
+          console.log(response);
           this.messageService.success('Inventory Inserted Successfully');
         })
       );
     }
     else {
-      return this.CarpetInventoryService.updateInventory(inventory).pipe(
-        catchError(_error => {
-          this.messageService.error('Error on update inventory');
-          return EMPTY;
-        }),
-        tap((response) => {
-          this.messageService.success('Inventory Updated Successfully');
-          console.log(response);
-          this.store.updateInventory(response);
-        })
-      );
+      if(deleteByGuid){
+        return this.CarpetInventoryService.updateInventoryByGuid(inventory).pipe(
+          catchError(_error => {
+            this.messageService.error('Something Went Wrong');
+            return EMPTY;
+          }),
+          tap((response) => {
+            this.messageService.success('Inventory Updated Successfully');
+            console.log(response);
+            this.store.updateInventory(response);
+          })
+        );
+        
+
+      }else{
+        return this.CarpetInventoryService.updateInventoryById(inventory).pipe(
+          catchError(_error => {
+            this.messageService.error('Something Went Wrong');
+            return EMPTY;
+          }),
+          tap((response) => {
+            this.messageService.success('Inventory Updated Successfully');
+            console.log(response);
+            this.store.updateInventory(response);
+          })
+        );
+      }
     }
   }
 
@@ -96,5 +112,46 @@ export class InventoryService {
       })
     ).subscribe();
   }
-
+  deleteInventoryById(inventory: InventoryModel): void {
+    this.CarpetInventoryService.deleteInventoryById(inventory).pipe(
+      catchError(_error => {
+        this.messageService.error('Error on delete inventory');
+        return EMPTY;
+      }),
+      tap((response: InventoryModel) => {
+        this.store.deleteById(inventory.id);
+        this.messageService.success('Inventory Deleted Successfully');
+      })
+    ).subscribe();
+  }
+  deleteInventoryByGuid(inventory: InventoryModel): void {
+    this.CarpetInventoryService.deleteInventoryByGuid(inventory).pipe(
+      catchError(_error => {
+        this.messageService.error('Error on delete inventory');
+        return EMPTY;
+      }),
+      tap((response: InventoryModel) => {
+        this.store.deleteInventory(inventory.id);
+        this.messageService.success('Inventory Deleted Successfully');
+      })
+    ).subscribe();
+  }
+  printInventoryBarcode(inventoryIds: number[]): Observable<string> {
+    return this.CarpetInventoryService.printInventoryBarcode(inventoryIds).pipe(
+      catchError(error => {
+        console.error('Error caught:', error)
+        if (error.status === 204) {
+          this.messageService.error('No Invoice Found');
+        } else {
+          this.messageService.error('Error on Getting Invoice:', error.error.message);
+        }
+        return EMPTY;
+      }),
+      tap((response: string) => {
+        if (!response) {
+          this.messageService.error('No Invoice Found');
+        }
+      })
+    );
+  }
 }

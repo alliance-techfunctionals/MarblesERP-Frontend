@@ -1,0 +1,135 @@
+<div *ngIf="{
+  supplierUserList: (supplierUserList$ | async) ?? [],
+  } as group">
+
+  <div class="col-md-12">
+    <app-card cardTitle="" [hidHeader]="true" [options]="false">
+      <form [formGroup]="purchaseVoucherForm">
+        <h5>Purchase Voucher</h5>
+        <hr />
+        <div class="row">
+          <div class="col-md-6">
+            <!-- select Invoice no  -->
+            <div class="form-group">
+              <label for="poNumber">PO No <span class="required text-danger">*</span></label>
+              <input class="form-control text-capitalize" type="text" id="poNumber" formControlName="poNumber"
+                placeholder="Ex: 151">
+              <ul *ngIf="poNumber.touched && poNumber.invalid">
+                <li *ngIf="poNumber.errors?.['required']" class="text-danger">Invoice No is required</li>
+                <li *ngIf="poNumber.errors?.['message']" class="text-danger">{{ poNumber.errors?.["message"] }}</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <!-- select Date -->
+            <div class="form-group">
+              <label for="voucherDate">Date <span class="required text-danger">*</span></label>
+              <input [max]="maxDate" class="form-control text-capitalize" type="datetime-local" id="voucherDate"
+                formControlName="voucherDate">
+              <ul *ngIf="voucherDate.touched && voucherDate.invalid">
+                <li *ngIf="voucherDate.errors?.['required']" class="text-danger">Date is required</li>
+                <li *ngIf="voucherDate.errors?.['message']" class="text-danger">{{ voucherDate.errors?.["message"] }}
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <!-- select supplierId -->
+            <div class="form-group">
+              <label for="supplierId">Purchased From <span class="required text-danger">*</span></label>
+              <select id="supplierId" class="form-control" formControlName="supplierId">
+                <option value="0">Select</option>
+                <option *ngFor="let supplier of group.supplierUserList"  value="{{ supplier.id }}">{{ supplier.name }} ({{supplier.userCode}})
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <!-- select otherCharges -->
+            <div class="form-group">
+              <label for="otherCharges">Other Charges</label>
+              <input class="form-control text-capitalize" type="number" id="otherCharges"
+                formControlName="otherCharges">
+                <!-- <ul *ngIf="otherCharges.touched && otherCharges.invalid">
+                  <li *ngIf="otherCharges.errors?.['required']" class="text-danger">Date is required</li>
+                  <li *ngIf="otherCharges.errors?.['message']" class="text-danger">{{ otherCharges.errors?.["message"] }}
+                  </li>
+                </ul> -->
+            </div>
+          </div>
+        </div>
+      </form>
+      <hr />
+
+      <div class="col-md-12">
+        <app-card [hidHeader]="true" cardTitle="Added Products Details" [options]="false">
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Product Name <span class="required text-danger">*</span></th>
+                  <th>HSN Code</th>
+                  <th>Quantity<span class="required text-danger">*</span></th>
+                  <th>Rate<span class="required text-danger">*</span></th>
+                  <th>Amount<span class="required text-danger">*</span></th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let product of addedProducts; let i = index">
+                  <!-- <td>{{ i + 1 }}</td>
+                  <td>{{ product.productDescription }}</td>
+                  <td>{{ product.hsnCode }}</td>
+                  <td>{{ product.quantity }}</td>
+                  <td>{{ product.rate }}</td>
+                  <td>{{ product.amount }}</td>
+                  <td id="actionBtn">
+                    <i class="feather icon-edit m-r-10" (click)="onEditClick(i)"></i>
+                    <i class="feather icon-trash-2" (click)="onDeleteClick(i)"></i>
+                  </td> -->
+
+                  <ng-container *ngIf="editingIndex === i; else viewMode">
+                    <td>{{ i + 1 }}</td>
+                    <td><input [(ngModel)]="product.productDescription" required /></td>
+                    <td><input class="input-width" [(ngModel)]="product.hsnCode" type="number" /></td>
+                    <td><input class="input-width" [(ngModel)]="product.quantity" type="number" (ngModelChange)="calculateAmount(i)" required /></td>
+                    <td><input class="input-width" [(ngModel)]="product.rate" type="number" (ngModelChange)="calculateAmount(i)" required /></td>
+                    <td><input class="input-width" [(ngModel)]="product.amount" type="number" required readonly /></td>
+                    <td class="d-flex gap-2">
+                      <button (click)="saveEdit(i)" [disabled]="!isProductValid(product)">Save</button>
+                      <button (click)="cancelEdit()">Cancel</button>
+                    </td>
+                  </ng-container>
+                  <ng-template #viewMode>
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ product.productDescription }}</td>
+                    <td>{{ product.hsnCode }}</td>
+                    <td>{{ product.quantity }}</td>
+                    <td>{{ product.rate }}</td>
+                    <td>{{ product.amount }}</td>
+                    <td id="actionBtn">
+                      <i class="feather icon-edit m-r-10" (click)="onEditClickNew(i)"></i>
+                      <i class="feather icon-trash-2" (click)="onDeleteClickNew(i)"></i>
+                    </td>
+                  </ng-template>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </app-card>
+      </div>
+
+      <div class="col-md-12">
+        <button type="button" class="btn btn-outline-primary m-r-15" [routerLink]="'/purchase-voucher'">Cancel</button>
+        <button type="button" class="btn btn-outline-primary m-r-10" [disabled]="editingIndex !== null"
+          (click)="addEmptyRow()">
+          Add More
+        </button>
+        <!-- <button type="button" class="btn btn-outline-primary m-r-15" (click)="generateCode()">Generate  Code</button> -->
+        <button type="button" class="btn btn-primary" (click)="onSubmit()"
+          [disabled]="editingIndex !== null || purchaseVoucherForm.invalid || addedProducts.length == 0">Save</button>
+      </div>
+    </app-card>
+  </div>
+</div>

@@ -481,7 +481,7 @@
   width: 37px;
   height: $header-height;
   position: absolute;
-  right: 0;
+  left: 15px;
   top: 0;
   padding: 0 10px;
 
@@ -1225,6 +1225,11 @@
 }
 
 @media only screen and (max-width: 991px) {
+  .mob-toggler,
+  .mobile-menu{
+    left : auto;
+    right : 0;
+  }
   .pcoded-header {
     .input-group-text,
     a,

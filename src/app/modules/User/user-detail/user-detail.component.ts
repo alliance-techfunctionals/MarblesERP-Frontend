@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription, combineLatest, tap } from 'rxjs';
-import { validateEmailFormat } from 'src/app/core/validators/validators/email.validator';
 import { numberValidator } from 'src/app/core/validators/validators/numberValidator';
 import { Role } from 'src/app/shared/store/role/role.model';
 import { RoleService } from 'src/app/shared/store/role/role.service';
@@ -37,9 +36,14 @@ export default class UserDetailComponent implements OnInit, OnDestroy {
     city: ['Agra'],
     pinCode: [''],
     state: ['UP'],
-    password: ['']
+    password: [''],
+    userCode: ['',Validators.required]
+    
   });
 
+  showSupplierCode:boolean=false;
+
+  
   get userFormControl() {
     return this.userForm.controls;
   }
@@ -91,6 +95,10 @@ export default class UserDetailComponent implements OnInit, OnDestroy {
   get password() {
     return this.userForm.get('password') as FormControl;
   }
+  get userCode(){
+    return this.userForm.get('userCode') as FormControl;
+  }
+ 
 
   addMobile() {
     this.mobileNumberList.push(this.formBuilder.control(''));
@@ -111,6 +119,8 @@ export default class UserDetailComponent implements OnInit, OnDestroy {
       this.emailAddressList.removeAt(index);
     }
   }
+
+  
 
   constructor(
     private route: ActivatedRoute,
@@ -135,6 +145,11 @@ export default class UserDetailComponent implements OnInit, OnDestroy {
           if (params['id'] != 0) {
             const userId = Number(params['id']);
             const user = this.store.getById(userId) ?? createUserModel({});
+            if(user.roleId == 5000){
+              this.showSupplierCode = true;
+            }else {
+              this.showSupplierCode = false;
+            }
 
             this.emailAddressList.clear();
             // Add each email address as a separate control
@@ -155,12 +170,22 @@ export default class UserDetailComponent implements OnInit, OnDestroy {
               roleId: user.roleId,
               state: 'UP',
               emailAddressList: user.emailAddressList,
-              password: user.password
+              password: user.password,
+              userCode: user.userCode
             })
           }
         })
       ).subscribe()
     );
+
+    this.roleId.valueChanges.subscribe(value => {
+      if(value==5000){
+        this.showSupplierCode =true;
+      }else{
+        this.showSupplierCode = false;
+
+      }
+    })
 
   }
 
@@ -178,7 +203,8 @@ export default class UserDetailComponent implements OnInit, OnDestroy {
       residentialAddress: this.residentialAddress.value,
       roleId: this.roleId.value,
       state: "UP",
-      password: this.password.value
+      password: this.password.value,
+      userCode: this.userCode.value
     });
 
     if (this.userForm.valid || this.userForm.disabled) {

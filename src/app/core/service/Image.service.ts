@@ -7,7 +7,7 @@ export interface S3BucketImageModel {
 }
 
 export function createS3BucketImageModel({
-    bucketName = 'server.atf-labs.com:5002',
+    bucketName = 'server.atf-labs.com:5003',
     location = 'imageUpload',
     fileName = ''
 }: Partial<S3BucketImageModel>) {
@@ -26,7 +26,7 @@ export class ImageService {
     getGeneratedURL(imageName: string): string {
         const { bucketName, location, fileName } = createS3BucketImageModel({ fileName: imageName })
         if (fileName) {
-            return `http://${bucketName}/api/${location}/${fileName}`;
+            return `https://${bucketName}/api/${location}/${fileName}`;
         }
         return '';
     }

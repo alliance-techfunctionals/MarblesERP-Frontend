@@ -3,7 +3,7 @@ import packageInfo from '../../package.json';
 export const environment = {
   appVersion: packageInfo.version,
   production: true,
-  apiUrl: 'https://server.atf-labs.com:5003/api/',
+  apiUrl: 'https://server.atf-labs.com:5008/api/',
 
   // HTTP request timeout value in Milliseconds [2mins -> 2 x 60 x 1000 ]
 	requestTimeout: 120000,

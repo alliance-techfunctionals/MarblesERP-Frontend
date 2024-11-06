@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { EMPTY, Observable, of } from 'rxjs';
 import { catchError, delay, switchMap, take, tap } from 'rxjs/operators';
+import { MessageToastService } from 'src/app/core/service/message-toast.service';
+import { MarbleInventoryHttpService } from '../../service/marble-inventory.http.service';
+import { City, Country, State } from '../../service/open-source-data.service';
 import { SaleModel } from './sale.model';
 import { SaleStoreService } from './sale.store';
-import { MarbleInventoryHttpService } from '../../service/marble-inventory.http.service';
-import { MessageToastService } from 'src/app/core/service/message-toast.service';
-import { City, Country, State } from '../../service/open-source-data.service';
 
 @Injectable({ providedIn: 'root' })
 export class SaleService {
@@ -96,6 +96,25 @@ export class SaleService {
       })
     ).subscribe();
   }
+// cancel
+// delete sale
+cancelSale(sale: SaleModel, comment: string): void {
+  this.CarpetInventoryService.cancelSale(sale, comment).pipe(
+    catchError(error => {
+      console.error('Error on getting sales:', error)
+      return EMPTY;
+    }),
+    tap((response: boolean) => {
+      if(response){
+        this.store.deleteById(sale.id);
+        this.messageService.success('Sale Cancelled successfully');
+      }else {
+        this.messageService.error('Something Went wrong');
+      }
+    })
+  ).subscribe();
+}
+
 
   // check order number
   checkOrderNo(orderNo: string): Observable<boolean> {

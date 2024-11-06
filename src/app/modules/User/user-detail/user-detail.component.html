@@ -136,6 +136,21 @@
               </ul>
             </div>
           </div>
+
+          <div class="col-md-6">
+            <!-- User Code -->
+            <div class="form-group" *ngIf="showSupplierCode">
+              <label for="showSupplierCode">Supplier Code<span class="required">*</span></label>
+              <input type="text" class="form-control text-capitalize" id="name" placeholder="Ex: MM" formControlName="userCode" />
+              <ul *ngIf="userCode.touched && userCode.invalid">
+                <li *ngIf="userCode.errors?.['required']" class="text-danger">Supplier Code is required</li>
+                <li *ngIf="userCode.errors?.['message']" class="text-danger">{{ name.errors?.["message"] }}</li>
+              </ul>
+            </div>
+          </div>
+
+
+
         </div>
       </form>
       <div class="col-md-12">

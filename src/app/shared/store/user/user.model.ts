@@ -16,6 +16,7 @@ export interface UserModel {
   emailAddressList: string[];
   state: string;
   password: string;
+  userCode:string;
 }
 
 
@@ -33,7 +34,8 @@ export function createUserModel({
   state = '',
   password = '',
   isDeleted = false,
-  createdOn = new Date()
+  createdOn = new Date(),
+  userCode=""
 }: Partial<UserModel>) {
   return {
     id,
@@ -49,7 +51,8 @@ export function createUserModel({
     state,
     password,
     isDeleted,
-    createdOn
+    createdOn,
+    userCode
   } as UserModel;
 }
 
@@ -67,4 +70,5 @@ export interface UserForm {
   state: FormControl<string>;
   password: FormControl<string>;
   emailAddressList: FormArray;
+  userCode :FormControl<string>;
 }

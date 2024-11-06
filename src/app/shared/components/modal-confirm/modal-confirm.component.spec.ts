@@ -1,7 +1,7 @@
-import { TestBed, waitForAsync, ComponentFixture } from '@angular/core/testing';
-import { ModalConfirmComponent } from './modal-confirm.component';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { SharedModule } from '../../shared.module';
+import { ModalConfirmComponent } from './modal-confirm.component';
 
 describe('ModalConfirmComponent', () => {
     let component: ModalConfirmComponent;

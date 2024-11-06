@@ -1,29 +1,32 @@
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, switchMap } from 'rxjs';
-import { UserModel } from '../store/user/user.model';
-import { Role } from '../store/role/role.model';
 import { environment } from 'src/environments/environment';
-import { CheckInventoryModel, InventoryModel } from '../store/inventory/inventory.model';
-import { QualityResponse } from '../store/quality/quality.model';
-import { DesignResponse } from '../store/design/design.model';
+import { ArtisanResponse } from '../store/artisan/artisan.model';
 import { Color } from '../store/color/color.model';
-import { Size } from '../store/size/size.model';
-import { VoucherModel } from '../store/voucher/voucher.model';
-import { SaleModel } from '../store/sales/sale.model';
-import { CustomOrderModel } from '../store/custom-order/custom-order.model';
-import { MasterInventoryModel } from '../store/MasterInventory/masterInventory.model';
-import { PendingPaymentModel } from '../store/pending-payment/pending-payment.model';
-import { Invoice } from '../store/invoice/invoice.model';
-import { SubPendingPaymentModel } from '../store/sub-pending-payment/sub-pending-payment.model';
-import { LinkSale } from '../store/link-sale/link-sale.model';
-import { FeedbackModel, feedbackSaveModel } from '../store/feedback-form/feedback-form.model';
-import { Shipping } from '../store/deliver-shipment/delivery-shipment.model';
-import { SignInModel } from '../store/sign-in/sign-in.model';
 import { CustomOrderProgressModel } from '../store/custom-order-progress/custom-order-progress.model';
+import { CustomOrderModel } from '../store/custom-order/custom-order.model';
+import { Shipping } from '../store/deliver-shipment/delivery-shipment.model';
 import { DeliveryPartnerModel } from '../store/delivery-partner/delivery-partner.model';
+import { DesignResponse } from '../store/design/design.model';
+import { FeedbackModel, feedbackSaveModel } from '../store/feedback-form/feedback-form.model';
+import { CheckInventoryModel, InventoryModel } from '../store/inventory/inventory.model';
+import { Invoice } from '../store/invoice/invoice.model';
+import { LinkSale } from '../store/link-sale/link-sale.model';
+import { PendingPaymentModel } from '../store/pending-payment/pending-payment.model';
+import { PrimaryColor } from '../store/primary-color/primary-color.model';
+import { Product } from '../store/product/product.model';
+import { QualityResponse } from '../store/quality/quality.model';
+import { Role } from '../store/role/role.model';
+import { SaleModel } from '../store/sales/sale.model';
+import { Shape } from '../store/shape/shape.model';
+import { SignInModel } from '../store/sign-in/sign-in.model';
+import { Size } from '../store/size/size.model';
+import { SubPendingPaymentModel } from '../store/sub-pending-payment/sub-pending-payment.model';
+import { UserModel } from '../store/user/user.model';
+import { VoucherModel } from '../store/voucher/voucher.model';
 import { City, Country, OpenSourceDataService, State } from './open-source-data.service';
-import { head } from 'lodash';
+import {PurchaseModel } from '../store/Purchase-voucher/purchase.model';
 
 @Injectable({
   providedIn: 'root'
@@ -43,6 +46,8 @@ export class MarbleInventoryHttpService {
       Authorization: `Bearer ${authToken}`
     });
   }
+
+
 
   // Sign In API
   signInUser(user: SignInModel): Observable<string>{
@@ -81,23 +86,29 @@ export class MarbleInventoryHttpService {
     return this.http.get<Role[]>(`${this.baseUrl}user/userrole`,{ headers: headers});
   }
 
-  // Quality API
+  // Quality (qualityTypeName) API
   getAllQuality(): Observable<QualityResponse[]> {
     const headers = this.getHeaders();
-    return this.http.get<QualityResponse[]>(`${this.baseUrl}quality`, { headers: headers });
+    return this.http.get<QualityResponse[]>(`${this.baseUrl}Lookups/quality`, { headers: headers });
   }
 
   // Design API
   getAllDesign(): Observable<DesignResponse[]> {
     const headers = this.getHeaders();
-    return this.http.get<DesignResponse[]>(`${this.baseUrl}design`, { headers: headers });
+    return this.http.get<DesignResponse[]>(`${this.baseUrl}Lookups/design`, { headers: headers });
 
   }
 
-  // Color API
+  // Color(Primary Stone) API
   getAllColor(): Observable<Color[]> {
     const headers = this.getHeaders();
-    return this.http.get<Color[]>(`${this.baseUrl}colourSize/colours`, { headers: headers });
+    return this.http.get<Color[]>(`${this.baseUrl}Lookups/primarystone`, { headers: headers });
+  }
+
+  // Color(Primary Color) API
+  getAllPrimaryColor(): Observable<Color[]> {
+    const headers = this.getHeaders();
+    return this.http.get<PrimaryColor[]>(`${this.baseUrl}Lookups/primarycolor`, { headers: headers });
   }
 
   // Size API
@@ -105,6 +116,36 @@ export class MarbleInventoryHttpService {
     const headers = this.getHeaders();
     return this.http.get<Size[]>(`${this.baseUrl}colourSize/size`, { headers: headers });
   }
+
+  // Shape API
+  getAllShape(): Observable<Shape[]> {
+    const headers = this.getHeaders();
+    return this.http.get<Shape[]>(`${this.baseUrl}Lookups/shape`, { headers: headers });
+  }
+
+  // Product API
+  getAllProduct(): Observable<Product[]> {
+    const headers = this.getHeaders();
+    return this.http.get<Product[]>(`${this.baseUrl}Lookups/product`, { headers: headers });
+  }
+
+
+  
+  
+  // Artisan API
+  getAllArtisan(): Observable<ArtisanResponse[]> {
+    const headers = this.getHeaders();
+    return this.http.get<ArtisanResponse[]>(`${this.baseUrl}Lookups/artisian`, { headers: headers });
+
+  }
+
+  // cancele 
+  cancelSale(sale: SaleModel, comment: string): Observable<boolean> {
+    const headers = this.getHeaders();
+    return this.http.delete<boolean>(`${this.baseUrl}sale/deleteTransaction/${sale.id}?type=1&cancelledComment=${comment}`, { headers: headers });
+  }
+
+
 
   // Inventory API for Accordian
   // getAllInventory(): Observable<InventoryModel[]> {
@@ -115,56 +156,243 @@ export class MarbleInventoryHttpService {
   // Inventory API for grid
   getAllInventory(): Observable<InventoryModel[]> {
     const headers = this.getHeaders();
-    return this.http.get<InventoryModel[]>(`${this.baseUrl}inventory/details`, { headers: headers });
+    return this.http.get<InventoryModel[]>(`${this.baseUrl}inventory`, { headers: headers });
   }
 
   insertInventory(inventory: InventoryModel): Observable<InventoryModel> {
 
-    const formData = new FormData()
-    formData.append("QualityName", inventory.qualityId.toString());
-    formData.append("DesignName", inventory.designId.toString());
-    formData.append("ColorCode", inventory.colorCode);
-    formData.append("Quantity", inventory.quantity.toString());
-    formData.append("Size", inventory.size);
-    formData.append("file", inventory.file);
-    formData.append("supplierId", inventory.supplierId.toString());
+    // const formData = new FormData()
+    // formData.append("id", inventory.id.toString());
+    // formData.append("ArtisianName", inventory.supplierId.toString());
+    // formData.append("Size", inventory.size);
+    // formData.append("QualityTypeName", inventory.qualityType);
+    // formData.append("ProductName", inventory.product);
+    // formData.append("ProductCode", inventory.productCode);
+    // formData.append("ShapeName", inventory.shape);
+    // formData.append("PrimaryStoneName", inventory.primaryStone);
+    // formData.append("DesignName", inventory.design);
+    // formData.append("PrimaryColorName", inventory.primaryColor);
+    // formData.append("StonesNb", inventory.stonesNb.toString());
+    // formData.append("SellingPrice", inventory.sellingPrice.toString());
+    // formData.append("IsDeleted", inventory.isDeleted.toString());
+    // formData.append("Name", "N/A");
+    // formData.append("Rate", inventory.rate.toString());
+    // formData.append("Sadekaar", inventory.sadekaar.toString());
+    // formData.append("DesignAmt", inventory.designAmt.toString());
+    // formData.append("CostPrice", inventory.costPrice.toString());
+    // formData.append("Quantity", inventory.sellingPrice.toString());
+
+    delete inventory.guid;
+
+    
     const authToken = localStorage.getItem('Token');
     const headers = new HttpHeaders({
       Authorization: `Bearer ${authToken}`
     });
-    return this.http.post<InventoryModel>(`${this.baseUrl}inventory`, formData, { headers: headers });
-  }
 
-  updateInventory(inventory: InventoryModel): Observable<InventoryModel> {
+    // Convert the array into query parameters
+    let params = new HttpParams();
+    params = params.append('quantity', inventory.quantity);
+    
+    const requestOptions = {
+      headers: headers,
+      params: params,
+    };
+    return this.http.post<InventoryModel>(`${this.baseUrl}inventory`, inventory, requestOptions);
+  }
+  
+  // updateInventory(inventory: InventoryModel): Observable<InventoryModel> {
+  //   console.log(inventory)
+        
+  //   let params = new HttpParams();
+  //   const authToken = localStorage.getItem('Token');
+  //   const headers = new HttpHeaders({
+  //     Authorization: `Bearer ${authToken}`
+  //   });
+    
+    
+  //   params = params.append('id', inventory.id);
+  //   // params = params.append('guid', inventory.guid);
+
+  //   console.log(params)
+  //   const requestOptions = {
+  //     headers: headers,
+  //     params: params,
+  //   };
+  //   return this.http.put<InventoryModel>(`${this.baseUrl}inventory`, inventory, requestOptions);
+  // }
+  updateInventoryById(inventory: InventoryModel): Observable<InventoryModel> {
     console.log(inventory)
-    const formData = new FormData()
-    formData.append("MasterId", String(inventory.id));
-    formData.append("QualityId", String(inventory.qualityId));
-    formData.append("DesignId", String(inventory.designId));
-    formData.append("ColorCode", inventory.colorCode);
-    formData.append("Quantity", String(inventory.quantity));
-    formData.append("Size", inventory.size);
-    formData.append("file", inventory.file);
-    formData.append("supplierId", inventory.supplierId.toString());
-    formData.append("isNormalUpdate",inventory.isNormalUpdate.toString())
-    
+        
+    let params = new HttpParams();
     const authToken = localStorage.getItem('Token');
     const headers = new HttpHeaders({
       Authorization: `Bearer ${authToken}`
     });
     
-    return this.http.put<InventoryModel>(`${this.baseUrl}inventory/${inventory.id}`, formData, { headers: headers });
-  }
+    
+    params = params.append('id', inventory.id);
+    // params = params.append('guid', inventory.guid);
 
+    console.log(params)
+    const requestOptions = {
+      headers: headers,
+      params: params,
+    };
+    return this.http.put<InventoryModel>(`${this.baseUrl}inventory`, inventory, requestOptions);
+  }
+  updateInventoryByGuid(inventory: InventoryModel): Observable<InventoryModel> {
+    console.log(inventory)
+        
+    let params = new HttpParams();
+    const authToken = localStorage.getItem('Token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${authToken}`
+    });
+    
+    if(inventory.guid){
+      params = params.append('guid', inventory.guid);
+    }
+
+    console.log(params)
+    const requestOptions = {
+      headers: headers,
+      params: params,
+    };
+    return this.http.put<InventoryModel>(`${this.baseUrl}inventory`, inventory, requestOptions);
+  }
+  
   deleteInventory(inventory: InventoryModel): Observable<InventoryModel> {
-    const headers = this.getHeaders();
-    return this.http.delete<InventoryModel>(`${this.baseUrl}inventory/${inventory.id}`, { headers: headers });
-  }
 
+    const authToken = localStorage.getItem('Token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${authToken}`
+    });
+    let params = new HttpParams();
+    params = params.append('id', inventory.id);
+    // params = params.append('guid', inventory.guid);
+
+    console.log(params)
+    const requestOptions = {
+      headers: headers,
+      params: params,
+    };
+    
+    return this.http.delete<InventoryModel>(`${this.baseUrl}inventory`, requestOptions);
+  }
+  deleteInventoryById(inventory: InventoryModel): Observable<InventoryModel> {
+
+    const authToken = localStorage.getItem('Token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${authToken}`
+    });
+    let params = new HttpParams();
+    params = params.append('id', inventory.id);
+    // params = params.append('guid', inventory.guid);
+
+    console.log(params)
+    const requestOptions = {
+      headers: headers,
+      params: params,
+    };
+    
+    return this.http.delete<InventoryModel>(`${this.baseUrl}inventory`, requestOptions);
+  }
+  deleteInventoryByGuid(inventory: InventoryModel): Observable<InventoryModel> {
+
+    const authToken = localStorage.getItem('Token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${authToken}`
+    });
+    let params = new HttpParams();
+    if(inventory.guid){
+
+      params = params.append('guid', inventory.guid);
+    }
+
+    console.log(params)
+    const requestOptions = {
+      headers: headers,
+      params: params,
+    };
+    
+    return this.http.delete<InventoryModel>(`${this.baseUrl}inventory`, requestOptions);
+  }
+  
   checkInventory(inventory: CheckInventoryModel): Observable<CheckInventoryModel> {
     const headers = this.getHeaders();
     return this.http.post<CheckInventoryModel>(`${this.baseUrl}inventory/check-inventory`,inventory, { headers: headers });
   }
+
+  // printInventoryBarcode(ids: number[]): Observable<string> {
+  //   const headers = this.getHeaders()
+  //   const requestOptions: Object = {
+  //     headers: headers,
+  //     responseType: 'text',
+  //   }
+  //   return this.http.get<string>(`${this.baseUrl}inventory/generate-barcode`, ids, requestOptions);
+  // }
+
+  printInventoryBarcode(ids: number[]): Observable<string> {
+    const headers = this.getHeaders();
+
+    // Convert the array into query parameters
+    let params = new HttpParams();
+    ids.forEach(id => {
+        params = params.append('ids', id.toString());
+    });
+
+    const requestOptions = {
+        headers: headers,
+        params: params,
+        responseType: 'text' as 'json' // Set response type to text
+    };
+
+    return this.http.get<string>(`${this.baseUrl}inventory/generate-barcode`, requestOptions);
+}
+
+
+
+
+
+  // Purchase-Voucher Product API
+
+  insertPurchaseVoucher(purchase:PurchaseModel):Observable<PurchaseModel>{
+    const headers = this.getHeaders();
+    return this.http.post<PurchaseModel>(`${this.baseUrl}purchase-voucher`, purchase,{headers:headers});
+  }
+  
+  getPurchaseVoucher():Observable<PurchaseModel[]>{
+    const headers = this.getHeaders();
+    return this.http.get<PurchaseModel[]>(`${this.baseUrl}purchase-voucher` , {headers : headers});
+  }
+  updatePurchaseVoucher(purchase:PurchaseModel):Observable<PurchaseModel>{
+    const headers = this.getHeaders();
+    return this.http.put<PurchaseModel>(`${this.baseUrl}purchase-voucher/${purchase.id}` , purchase ,{headers : headers});
+  }
+  deletePurchaseVoucher(purchase:PurchaseModel): Observable<PurchaseModel> {
+    const headers = this.getHeaders();
+    return this.http.delete<PurchaseModel>(`${this.baseUrl}purchase-voucher/${purchase.id}`,{ headers: headers });
+  }
+
+  getPurchaseVoucherById(purchase:PurchaseModel):Observable<PurchaseModel[]>{
+    const headers = this.getHeaders();
+    return this.http.get<PurchaseModel[]>(`${this.baseUrl}purchase-voucher${purchase.id}`,{headers : headers});
+  }
+
+
+  printPurchaseVoucher(id: number): Observable<string> {
+    const headers = this.getHeaders()
+    const requestOptions: Object = {
+      headers: headers,
+      responseType: 'text'
+    }
+    return this.http.get<string>(`${this.baseUrl}purchase-voucher/generate-purchaseVoucher/${id}`, requestOptions);
+  }
+  // getPurchaseVoucherByMasterId(purchase:PurchaseModel):Observable<PurchaseModel[]>{
+  //   const headers = this.getHeaders();
+  //   return this.http.get<PurchaseModel[]>(`${this.baseUrl}purchase-voucher/details${purchase.id}`,{headers : headers});
+  // }
 
   // Voucher API
   getAllVoucher(): Observable<VoucherModel[]> {
@@ -232,14 +460,28 @@ export class MarbleInventoryHttpService {
   }
 
   // Invoice API
-  getInvoice(saleDetail: Invoice): Observable<Invoice> {
-    const headers = this.getHeaders();
-    return this.http.post<Invoice>(`${this.baseUrl}Notification/getInvoice/pushE-mail`, saleDetail, { headers: headers });
+  getInvoice(saleDetail: Invoice): Observable<any> {
+    // const headers = this.getHeaders();
+    // return this.http.post<Invoice>(`${this.baseUrl}Notification/getInvoice/pushE-mail`, saleDetail, { headers: headers });
+
+    const headers = this.getHeaders()
+    const requestOptions: Object = {
+      headers: headers,
+      responseType: 'text'
+    }
+    return this.http.post<any>(`${this.baseUrl}Notification/getInvoice/pushE-mail`, saleDetail,requestOptions);
   }
 
-  printInvoice(saleId: number): Observable<Invoice> {
-    const headers = this.getHeaders();
-    return this.http.get<Invoice>(`${this.baseUrl}sale/invoice/${saleId}`, { headers: headers });
+  printInvoice(saleId: number): Observable<string> {
+    // const headers = this.getHeaders();
+    // return this.http.get<string>(`${this.baseUrl}sale/invoice/${saleId}`, { headers: headers });
+
+    const headers = this.getHeaders()
+    const requestOptions: Object = {
+      headers: headers,
+      responseType: 'text'
+    }
+    return this.http.get<any>(`${this.baseUrl}sale/invoice/${saleId}`, requestOptions);
   }
 
   // Custom Order API

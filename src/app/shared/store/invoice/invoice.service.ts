@@ -15,13 +15,13 @@ export class InvoiceService {
     private messageService: MessageToastService
   ) { }
 
-  upsertInvoice(invoice: Invoice): Observable<Invoice> {
+  upsertInvoice(invoice: Invoice): Observable<string> {
       return this.CarpetInventoryService.getInvoice(invoice).pipe(
         catchError(error => {
           console.error('Error on Getting Invoice:', error)
           return EMPTY;
         }),
-        tap((response: Invoice) => {
+        tap((response: string) => {
           if(invoice.invoiceType !== 2){
             this.messageService.success('E-mail Sent Successfully');
           }
@@ -29,7 +29,7 @@ export class InvoiceService {
       );
     }
 
-    printInvoice(saleId: number): Observable<Invoice> {
+    printInvoice(saleId: number): Observable<string> {
       return this.CarpetInventoryService.printInvoice(saleId).pipe(
         catchError(error => {
           if(error.status === 204){
@@ -40,7 +40,7 @@ export class InvoiceService {
           }
           return EMPTY;
         }),
-        tap((response: Invoice) => {
+        tap((response: string) => {
           if(!response){
             // getting null when there is no inovice found
             this.messageService.error('No Invoice Found');
