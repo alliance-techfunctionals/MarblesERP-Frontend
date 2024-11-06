@@ -19,6 +19,7 @@ import { UserStoreService } from 'src/app/shared/store/user/user.store';
 export default class UserDetailComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   roleList$: Observable<Role[]> = this.roleStoreService.selectAll();
+  
 
   userForm: FormGroup<UserForm> = this.formBuilder.nonNullable.group({
     id: [0],
@@ -150,7 +151,6 @@ export default class UserDetailComponent implements OnInit, OnDestroy {
             }else {
               this.showSupplierCode = false;
             }
-
             this.emailAddressList.clear();
             // Add each email address as a separate control
             user.emailAddressList.forEach(email => this.emailAddressList.push(this.formBuilder.control(email)));
@@ -181,12 +181,14 @@ export default class UserDetailComponent implements OnInit, OnDestroy {
     this.roleId.valueChanges.subscribe(value => {
       if(value==5000){
         this.showSupplierCode =true;
+        this.userForm.get('userCode')?.setValidators([Validators.required]);
       }else{
         this.showSupplierCode = false;
-
+        this.userForm.get('userCode')?.clearValidators();
       }
+      this.userForm.get('userCode')?.updateValueAndValidity();
     })
-
+  
   }
 
   // submit button click
@@ -218,6 +220,7 @@ export default class UserDetailComponent implements OnInit, OnDestroy {
       );
     }
   }
+  
 
   protected cancel(): void {
     //  cancel the
