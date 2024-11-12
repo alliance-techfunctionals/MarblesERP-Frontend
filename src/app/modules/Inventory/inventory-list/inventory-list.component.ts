@@ -173,10 +173,12 @@ export default class InventoryListComponent {
   }
   printHTML(htmlContent: string) {
     printJS({
+      
       printable: htmlContent,
       type: "raw-html",
       targetStyles: ["*"], // This ensures that all styles are included
     });
+    // console.log(htmlContent);
   }
 
   printInventoryBarcode(productIds:number[]){
@@ -186,7 +188,6 @@ export default class InventoryListComponent {
       .pipe(
         tap((productBarcodeResponse) => {
           if (productBarcodeResponse) {
-            
             this.printHTML(productBarcodeResponse);
           }
         })

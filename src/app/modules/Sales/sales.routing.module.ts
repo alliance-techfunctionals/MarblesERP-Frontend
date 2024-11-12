@@ -16,7 +16,11 @@ const routes: Routes = [
   {
     path: ':id/:orderNo',
     component: SaleDetailComponent
-  }
+  },
+  {
+    path: ':type/:id/:orderNo',
+    component: SaleDetailComponent
+  }  
 ];
 
 @NgModule({

@@ -1,0 +1,17 @@
+
+
+ul{
+    padding: 0;
+  }
+  
+  li{
+    list-style-type: none;
+  }
+  
+  input[disabled], select[disabled], textarea[disabled] {
+    background-color: #fff; /* Set background color to white */
+    color: #495057; /* Set text color to default */
+    cursor: text; /* Set cursor to text */
+    opacity: 1; /* Remove default opacity */
+    pointer-events: auto; /* Allow pointer events */
+  }

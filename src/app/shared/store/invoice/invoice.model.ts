@@ -11,6 +11,7 @@ export interface Invoice {
     nationality: string;
     isEmailOnly: boolean;
     invoiceDescription: string;
+    invoiceTransmissionMode: number;
     invoiceType: number;
 }
 
