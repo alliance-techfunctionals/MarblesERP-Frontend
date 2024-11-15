@@ -18,7 +18,7 @@ import { PrimaryColor } from '../store/primary-color/primary-color.model';
 import { Product } from '../store/product/product.model';
 import { QualityResponse } from '../store/quality/quality.model';
 import { Role } from '../store/role/role.model';
-import { SaleModel } from '../store/sales/sale.model';
+import { ProductDetails, SaleModel } from '../store/sales/sale.model';
 import { Shape } from '../store/shape/shape.model';
 import { SignInModel } from '../store/sign-in/sign-in.model';
 import { Size } from '../store/size/size.model';
@@ -457,6 +457,11 @@ export class MarbleInventoryHttpService {
       responseType: 'text'
     }
     return this.http.get<string>(`${this.baseUrl}sale/sale/next-order-number`,requestOptions);
+  }
+
+  getByProductCode(productCode: string): Observable<any> {
+    const headers = this.getHeaders();
+    return this.http.get<any>(`${this.baseUrl}inventory/product-code/${productCode}`, { headers: headers });
   }
 
   // Invoice API

@@ -240,31 +240,6 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
       shippingPinCode: ["", Validators.required],
     });
 
-  counterClintDetailForm: FormGroup<ClientDetailForm> =
-    this.formBuilder.nonNullable.group({
-      id: [0],
-      orderNumber: [""],
-      isForeignSale: [false],
-      customerId: [0],
-      clientName: ["", Validators.required],
-      emailList: this.formBuilder.array([
-        this.formBuilder.control("", [
-          Validators.required,
-          (control: AbstractControl) => validateEmailFormat(control),
-        ]),
-      ]),
-      mobileList: this.formBuilder.array([
-        this.formBuilder.control("", Validators.required),
-      ]),
-      street: ["", Validators.required],
-      apartment: [""],
-      houseNumber: [""],
-      shippingCountry: ["", Validators.required],
-      shippingState: ["", Validators.required],
-      shippingCity: ["", Validators.required],
-      shippingPinCode: ["", Validators.required],
-    });
-
   // ADD PRODUCT FORM
   addProductForm: FormGroup<addProductForm> =
     this.formBuilder.nonNullable.group({
@@ -291,6 +266,8 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
       paymentStatus: [0],
       isCustomized: [false],
       isFreightInclude: [true],
+      productCode: [''],
+      getByProductCode: ['']
     });
 
   // CHECKOUT FORM
@@ -494,6 +471,16 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
     return this.addProductForm.get("expectedDeliveryDate") as FormControl;
   }
 
+  get productCode() {
+    return this.addProductForm.get("productCode") as FormControl;
+  }
+
+  get getByProductCode(){
+    return this.addProductForm.get("getByProductCode") as FormControl;
+  }
+
+
+
   addMobile() {
     let countryPhoneCode = 91; // default country code is India
     if (this.shippingCountry.value != "") {
@@ -508,7 +495,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
     }
     // this.mobileList.push(this.formBuilder.control(`+${countryPhoneCode} `));
     this.mobileList.push(
-      this.formBuilder.control(`+${countryPhoneCode} `, Validators.required)
+      this.formBuilder.control(`+${countryPhoneCode} `, this.isForeignSale.value ? Validators.required : null)
     );
   }
 
@@ -521,10 +508,10 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
   addEmail() {
     // this.emailList.push(this.formBuilder.control(''));
     this.emailList.push(
-      this.formBuilder.control("", [
+      this.formBuilder.control("", this.isForeignSale.value ? [
         Validators.required,
         (control: AbstractControl) => validateEmailFormat(control),
-      ])
+      ] : null)
     );
   }
 
@@ -594,7 +581,6 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
       ])
         .pipe(
           tap(([params]) => {
-            console.log(params);
             this.feedbackService.getAll().subscribe(
               (feedbackList: FeedbackModel[]) => {
                 this.feedbackList = feedbackList; // Assuming group contains feedbackList
@@ -609,24 +595,42 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
             this.isForeignSale.setValue(params["type"] == "foreign");
 
             if (params["type"] == "counter") {
-              
-              this.clientDetailForm.get("emailList")?.clearValidators();
-              this.clientDetailForm.get("mobileList")?.clearValidators();
+              // this.clientDetailForm.get("emailList")?.clearValidators();
+              // this.clientDetailForm.get("mobileList")?.clearValidators();
               this.clientDetailForm.get("street")?.clearValidators();
               this.clientDetailForm.get("shippingCountry")?.clearValidators();
               this.clientDetailForm.get("shippingCity")?.clearValidators();
               this.clientDetailForm.get("shippingPinCode")?.clearValidators();
+
+              const mobileList = this.clientDetailForm.get('mobileList') as FormArray;
+  
+              // Iterate through each control in the mobileList FormArray
+              mobileList.controls.forEach((control: AbstractControl) => {
+                // Remove all validators from the control
+                control.clearValidators();
+                control.updateValueAndValidity();
+              });
+
+              const emailList = this.clientDetailForm.get('emailList') as FormArray;
+              emailList.controls.forEach((control: AbstractControl) => {
+                // Remove all validators from the control
+                control.clearValidators();
+                control.updateValueAndValidity();
+              });
+
+              this.clientDetailForm.get('shippingCountry')?.setValue('India');
+              this.isHandCarry.setValue("true");
+
             } else {
-              // this.clientDetailForm.get("clientName")?.clearValidators();
-              // this.clientDetailForm.get("emailList")?.clearValidators();
-              // this.clientDetailForm.get("street")?.clearValidators();
-              // this.clientDetailForm.get("shippingCountry")?.clearValidators();
-              // this.clientDetailForm.get("shippingState")?.clearValidators();
+              this.clientDetailForm.get("street")?.setValidators(Validators.required);
+              this.clientDetailForm.get("shippingCountry")?.setValidators(Validators.required);
+              this.clientDetailForm.get("shippingCity")?.setValidators(Validators.required);
+              this.clientDetailForm.get("shippingPinCode")?.setValidators(Validators.required);
             }
 
             // Update validators on the form controls
             this.clientDetailForm.get("clientName")?.updateValueAndValidity();
-            this.clientDetailForm.get("emailList")?.updateValueAndValidity();
+            // this.clientDetailForm.get("emailList")?.updateValueAndValidity();
             this.clientDetailForm.get("street")?.updateValueAndValidity();
             this.clientDetailForm
               .get("shippingCountry")
@@ -638,7 +642,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
             this.clientDetailForm
               .get("shippingPinCode")
               ?.updateValueAndValidity();
-            this.clientDetailForm.get("mobileList")?.updateValueAndValidity();
+            // this.clientDetailForm.get("mobileList")?.updateValueAndValidity();
 
             if (params["id"] != 0) {
               // dont show feedback form
@@ -667,10 +671,10 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
               // Add each email address as a separate control
               sale.emailAddressList.forEach((email) =>
                 this.emailList.push(
-                  this.formBuilder.control(email, [
+                  this.formBuilder.control(email, this.isForeignSale.value ? [
                     Validators.required,
                     (control: AbstractControl) => validateEmailFormat(control),
-                  ])
+                  ] : null)
                 )
               );
 
@@ -679,7 +683,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
               // mobileNumberList.forEach(mobile => this.mobileList.push(this.formBuilder.control(mobile)));
               mobileNumberList.forEach((mobile) =>
                 this.mobileList.push(
-                  this.formBuilder.control(mobile, Validators.required)
+                  this.formBuilder.control(mobile, this.isForeignSale.value ? Validators.required : null)
                 )
               );
 
@@ -706,7 +710,9 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
               // adding product details to products array
               for (let product of sale.details) {
                 this.addedProducts.push(product);
+                console.log(this.addedProducts)
               }
+
 
               // set one product in form fields
               this.onEditClick(this.addedProducts.length - 1, true);
@@ -805,7 +811,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
         colour: this.colour.value,
         size: this.size.value,
         shape: this.shape.value,
-        stonesNb: this.stonesNb.value,
+        stonesNB: this.stonesNb.value,
         supplierId: this.supplierId.value,
         quantity: Number(this.quantity.value),
         amount: Number(
@@ -818,6 +824,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
         isCustomized: this.isCustomized.value,
         isFreightInclude: this.isFreightInclude.value,
         expectedDeliveryDate: this.expectedDeliveryDate.value,
+        productCode: this.isCustomized.value ? null : this.productCode.value,
       });
     }
 
@@ -831,7 +838,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
       orderNumber: this.orderNumber.value,
       customerId: this.customerId.value,
       clientName: this.clientName.value,
-      isForeignSale:this.isForeignSale.value,
+      isForeignSale: this.isForeignSale.value,
       emailAddressList: this.emailList.value,
       mobileNumberList: this.mobileList.value,
       street: this.street.value,
@@ -982,6 +989,8 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
       paymentStatus: [0],
       isCustomized: [false],
       isFreightInclude: [false],
+      productCode: [''],
+      getByProductCode: ['']
     });
     this.editProduct = false;
   }
@@ -1013,7 +1022,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
       colour: this.colour.value,
       size: this.size.value,
       shape: this.shape.value,
-      stonesNb: this.stonesNb.value,
+      stonesNB: this.stonesNb.value,
       supplierId: this.supplierId.value,
       quantity: Number(this.quantity.value),
       amount: Number(
@@ -1026,6 +1035,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
       isCustomized: this.isCustomized.value,
       isFreightInclude: this.isFreightInclude.value,
       expectedDeliveryDate: this.expectedDeliveryDate.value,
+      productCode: this.isCustomized.value ? null : this.productCode.value,
     });
     this.clear();
 
@@ -1044,7 +1054,10 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
       this.addProductClick();
     }
 
+    console.log(this.addedProducts[index].stonesNB)
+
     this.ProductId.setValue(this.addedProducts[index].id);
+    this.product.setValue(this.addedProducts[index].product);
     this.quality.setValue(this.addedProducts[index].quality);
     this.design.setValue(this.addedProducts[index].design);
     this.quantity.setValue(this.addedProducts[index].quantity);
@@ -1052,16 +1065,19 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
     this.colour.setValue(this.addedProducts[index].colour);
     this.size.setValue(this.addedProducts[index].size);
     this.shape.setValue(this.addedProducts[index].shape);
-    this.stonesNb.setValue(this.addedProducts[index].stonesNb);
+    this.stonesNb.setValue(this.addedProducts[index].stonesNB);
     this.supplierId.setValue(this.addedProducts[index].supplierId);
     this.amount.setValue(this.addedProducts[index].amount);
     this.currency.setValue(this.addedProducts[index].ccyCode);
     this.description.setValue(this.addedProducts[index].description);
     this.isCustomized.setValue(this.addedProducts[index].isCustomized);
+    this.productCode.setValue(this.addedProducts[index].productCode);
     // remove product from list before edit
     this.addedProducts.splice(index, 1);
     this.editProduct = true;
     this.amountOnBlur();
+
+    console.log(this.addProductForm.value)
   }
 
   // DELETE ADDED PRODUCT
@@ -1547,5 +1563,33 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
 
   scrollToPaymentForm() {
     this.paymentForm.nativeElement.scrollIntoView({ behavior: "smooth" });
+  }
+
+  fetchProductByProductCode(){
+    if(this.getByProductCode.value){
+      this.saleService.getByProductCode(this.getByProductCode.value).subscribe(
+        (response) => {
+          if(response){
+            const productDetail = response.data;
+            this.ProductId.setValue(productDetail.id);
+            this.product.setValue(productDetail.product);
+            this.quality.setValue(productDetail.qualityType);
+            this.design.setValue(productDetail.design);
+            this.primaryStone.setValue(productDetail.primaryStone);
+            this.colour.setValue(productDetail.primaryColor);
+            this.size.setValue(productDetail.size);
+            this.shape.setValue(productDetail.shape);
+            this.stonesNb.setValue(productDetail.stonesNb);
+            this.supplierId.setValue(productDetail.supplierId);
+            this.amount.setValue(productDetail.sellingPrice);
+            this.expectedDeliveryDate.setValue(productDetail.expectedDeliveryDate);
+            this.productCode.setValue(productDetail.productCode);
+          }
+        },
+        (error: any) => {
+          console.error("Error fetching product by product code:", error);
+        }
+      );
+    }
   }
 }

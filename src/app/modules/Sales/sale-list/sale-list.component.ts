@@ -202,7 +202,7 @@ export default class SaleListComponent implements OnInit, OnDestroy {
   }
 
   onEditClicked(e: any) {
-    this.navigateSale(e.rowData.id);
+    this.navigateSale(e.rowData.isForeignSale ? 'foreign' : 'counter', e.rowData.id);
   }
 
   onDeleteClicked(e: any) {
@@ -369,9 +369,8 @@ export default class SaleListComponent implements OnInit, OnDestroy {
     }
   }
   // Navigate to Sale detail
-  protected navigateSale(type: 'counter' | 'foreign', id: number = 0): void {
+  protected navigateSale(type: string, id: number = 0): void {
     const enableOrderNoValue = this.orderNoForm.get("enableOrderNo")?.value;
-    
 
     if (id === 0 && this.orderNo.value !== ""  ) {
       if (enableOrderNoValue) {
@@ -381,17 +380,32 @@ export default class SaleListComponent implements OnInit, OnDestroy {
             tap((result) => {
               if (result) {
               } else {
-                this.router.navigate(["sale", type, id, this.orderNo.value]);
+                this.router.navigate(["sale",type, id, this.orderNo.value]);
               }
             })
           )
           .subscribe();
       } else {
-        this.router.navigate(["sale",type, id, this.orderNo.value]);
+        this.router.navigate(["sale", type, id, this.orderNo.value]);
       }
     } else if (id !== 0) {
       this.router.navigate(["sale",type, id, this.orderNo.value]);
     }
+
+    // if(id === 0 && this.orderNo.value !== ''){
+    //   this.saleService.checkOrderNo(this.orderNo.value).pipe(
+    //     tap((result) => {
+    //       if(result){
+    //       }
+    //       else{
+    //         this.router.navigate(['sale', id, this.orderNo.value]);
+    //       }
+    //     })
+    //   ).subscribe()
+    // }
+    // else if(id !== 0){
+    //   this.router.navigate(['sale', id, this.orderNo.value]);
+    // }
   }
 
   openDeleteConfirmationModal(item: SaleModel) {

@@ -158,7 +158,7 @@ export interface ProductDetails {
   size: string;
   shape: string;
   quantity: number;
-  stonesNb : null;
+  stonesNB : null;
   supplierId: number;
   amount: number;
   ccyCode: string;
@@ -167,6 +167,7 @@ export interface ProductDetails {
   isFreightInclude: boolean;
   isCustomFullfilled?: boolean;
   expectedDeliveryDate: Date;
+  productCode: string;
 }
 
 export interface PartPaymentDetails {
@@ -241,6 +242,8 @@ export interface addProductForm {
   paymentStatus: FormControl<number>;
   isCustomized: FormControl<boolean>;
   isFreightInclude: FormControl<boolean>;
+  productCode: FormControl<string>;
+  getByProductCode: FormControl<string>;
 }
 
 export interface checkoutForm {

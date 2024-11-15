@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { EMPTY, Observable, of } from 'rxjs';
 import { catchError, delay, switchMap, take, tap } from 'rxjs/operators';
-import { SaleModel } from './sale.model';
+import { ProductDetails, SaleModel } from './sale.model';
 import { SaleStoreService } from './sale.store';
 // import { MarbleInventoryHttpService } from '../../service/carpet-inventory.http.service';
 import { MessageToastService } from 'src/app/core/service/message-toast.service';
@@ -179,6 +179,18 @@ export class SaleService {
       }),
       tap((response: string) => {
         // this.store.up(response);
+      })
+    )
+  }
+
+  getByProductCode(productCode: string): Observable<any> {
+    return this.MarbleInventoryHttpService.getByProductCode(productCode).pipe(
+      catchError(_error => {
+        this.messageService.error(_error.error.message);
+        return EMPTY;
+      }),
+      tap((response: any) => {
+        return response.data;
       })
     )
   }

@@ -34,6 +34,19 @@
                     </ul>
                   </div>
                 </div>
+                <div class="col-md-6" *ngIf="!isForeignSale.value">
+                  <!-- select state -->
+                  <div class="form-group">
+                    <label for="shippingAddState">State<span class="required">*</span></label>
+                    <input type="text" class="form-control text-capitalize" formControlName="shippingState"
+                      placeholder="Ex. Delhi" [ngbTypeahead]="searchState" (focus)="getStateList()">
+                    <ul *ngIf="shippingState.touched && shippingState.invalid">
+                      <li *ngIf="shippingState.errors?.['required']" class="text-danger">State is required</li>
+                      <li *ngIf="shippingState.errors?.['message']" class="text-danger">{{
+                        shippingState.errors?.["message"] }}</li>
+                    </ul>
+                  </div>
+                </div>
               </div>
               <!-- Shipping Adress Details -->
               <app-card cardTitle="Shipping Addrss" [hidHeader]="true" [options]="false">
@@ -49,7 +62,7 @@
                   <div class="col-md-4">
                     <!-- enter street -->
                     <div class="form-group">
-                      <label for="street">Street<span class="required">*</span></label>
+                      <label for="street">Street<span *ngIf="isForeignSale.value" class="required">*</span></label>
                       <input type="text" class="form-control text-capitalize" id="street" placeholder="Ex. Down Town"
                         formControlName="street">
                       <ul *ngIf="street.touched && street.invalid">
@@ -71,7 +84,7 @@
                   <div class="col-md-6">
                     <!-- select Country -->
                     <div class="form-group">
-                      <label for="shippingAddCountry">Country<span class="required">*</span></label>
+                      <label for="shippingAddCountry">Country<span *ngIf="isForeignSale.value" class="required">*</span></label>
                       <input type="text" class="form-control text-capitalize" id="shippingAddCountry"
                         formControlName="shippingCountry" placeholder="Ex. India" [ngbTypeahead]="searchCountry">
                       <ul *ngIf="shippingCountry.touched && shippingCountry.invalid">
@@ -81,7 +94,7 @@
                       </ul>
                     </div>
                   </div>
-                  <div class="col-md-6">
+                  <div class="col-md-6" *ngIf="isForeignSale.value">
                     <!-- select state -->
                     <div class="form-group">
                       <label for="shippingAddState">State<span class="required">*</span></label>
@@ -94,12 +107,11 @@
                       </ul>
                     </div>
                   </div>
-                </div>
-                <div class="row">
+
                   <div class="col-md-6">
                     <!-- enter city -->
                     <div class="form-group">
-                      <label for="shippingAddCity">City<span class="required">*</span></label>
+                      <label for="shippingAddCity">City<span *ngIf="isForeignSale.value" class="required">*</span></label>
                       <input type="text" class="form-control text-capitalize" placeholder="Ex: Agra"
                         id="shippingAddCity" formControlName="shippingCity" [ngbTypeahead]="searchCity"
                         (focus)="getCityList()">
@@ -113,7 +125,7 @@
                   <div class="col-md-6">
                     <!-- enter pincode -->
                     <div class="form-group">
-                      <label for="shippingAddPincode">Zip/Pincode<span class="required">*</span></label>
+                      <label for="shippingAddPincode">Zip/Pincode<span *ngIf="isForeignSale.value" class="required">*</span></label>
                       <input type="text" class="form-control" placeholder="Ex: 123456" id="shippingPincode"
                         formControlName="shippingPinCode">
                       <ul *ngIf="shippingPinCode.touched && shippingPinCode.invalid">
@@ -130,7 +142,7 @@
                     <div class="form-group">
                       <!-- <lib-country-list [selectedCountryConfig]="selectedCountryConfig" [countryListConfig]="countryListConfig"
                         (onCountryChange)="onCountryChange($event)"></lib-country-list> -->
-                      <label for="mobileNumber">Mobile Number<span class="required">*</span></label>
+                      <label for="mobileNumber">Mobile Number<span *ngIf="isForeignSale.value" class="required">*</span></label>
                       <div class="input-group" formArrayName="mobileList">
                         <input class="form-control" [formControlName]="i" placeholder="Ex: 1234567890">
                         <button class="btn btn-outline-danger" type="button" (click)="removeMobile(i)">
@@ -155,7 +167,7 @@
                   <div class="col-md-6" *ngFor="let email of emailList.controls; let i=index">
                     <!-- enter email -->
                     <div class="form-group">
-                      <label for="email">E-mail<span class="required">*</span></label>
+                      <label for="email">E-mail<span *ngIf="isForeignSale.value" class="required">*</span></label>
                       <div class="input-group" formArrayName="emailList">
                         <input class="form-control" [formControlName]="i" placeholder="Ex: xyz@gmail.com">
                         <button class="btn btn-outline-danger" type="button" (click)="removeEmail(i)">
@@ -173,6 +185,9 @@
                       </ul>
                     </div>
                   </div>
+                </div>
+                <div class="row">
+                  
                 </div>
                 <button class="btn btn-primary" (click)="markAllAsTouched()" cdkStepperNext>{{ clientDetailForm.value.id
                   === 0? 'Save': 'Update' }} and next</button>
@@ -192,6 +207,18 @@
           <app-card [hidHeader]="true" cardTitle="" [options]="false">
             <form [formGroup]="addProductForm">
               <div class="row">
+                <div class="col-md-6">
+                  <div class="w-100 d-flex gap-1">
+                    <div class="form-group w-100">
+                      <label for="getByProductCode">Search Using Product Code</label>
+                      <input class="form-control" type="text" name="getByProductCode" id="getByProductCode" formControlName="getByProductCode">
+                    </div>
+                    <div class="pb-3 d-flex flex-column justify-content-end">
+                      <button style="width: max-content;" class="btn btn-primary" (click)="fetchProductByProductCode()">Fetch Product</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6"></div>
                 <div class="col-md-6">
                   <!-- select quality -->
                   <div class="form-group">
@@ -224,10 +251,10 @@
                     <label for="design">Design<span class="required">*</span></label>
                     <input class="form-control text-capitalize" type="text" [ngbTypeahead]="searchDesign" id="design"
                       formControlName="design" placeholder="Ex: Flower Border">
-                    <!-- <ul *ngIf="design.touched && design.invalid">
+                    <ul *ngIf="design.touched && design.invalid">
                       <li *ngIf="design.errors?.['required']" class="text-danger">Design is required</li>
                       <li *ngIf="design.errors?.['message']" class="text-danger">{{ design.errors?.["message"] }}</li>
-                    </ul> -->
+                    </ul>
                   </div>
                 </div>
                 <div class="col-md-6">
@@ -236,10 +263,10 @@
                     <label for="size">Size<span class="required">*</span></label>
                     <input type="text" class="form-control" id="size" placeholder="Ex: 24*48" formControlName="size"
                       [ngbTypeahead]="searchSize" />
-                    <!-- <ul *ngIf="size.touched && size.invalid">
+                    <ul *ngIf="size.touched && size.invalid">
                       <li *ngIf="size.errors?.['required']" class="text-danger">Size is required</li>
                       <li *ngIf="size.errors?.['message']" class="text-danger">{{ size.errors?.["message"] }}</li>
-                    </ul> -->
+                    </ul>
                   </div>
                 </div>
                 <div class="col-md-6">
@@ -319,7 +346,7 @@
                       </option>
                     </select>
                   </div>
-                </div>         
+                </div>
 
                 <div class="col-md-2">
                   <!-- enter Amount -->
@@ -441,9 +468,11 @@
                   <tr>
                     <th>#</th>
                     <th>Quality</th>
+                    <th>Product Name</th>
+                    <th>Shape</th>
                     <th>Design</th>
-                    <th>Color</th>
-                    <th>Size</th>
+                    <th>No Of Stones</th>
+                    <th>Product Code</th>
                     <th>Amount</th>
                     <th>Custom</th>
                     <th>Action</th>
@@ -453,9 +482,11 @@
                   <tr *ngFor="let product of addedProducts; let i = index">
                     <td>{{ i + 1 }}</td>
                     <td>{{ product.quality }}</td>
+                    <td>{{ product.product }}</td>
+                    <td>{{ product.shape }}</td>
                     <td>{{ product.design }}</td>
-                    <td>{{ product.primaryStone}}</td>
-                    <td>{{ product.size }}</td>
+                    <td>{{ product.stonesNB}}</td>
+                    <td>{{ product.productCode }}</td>
                     <td>{{ product.amount + ' ' + product.ccyCode }}</td>
                     <td>{{ product.isCustomized? 'Yes': 'No' }}</td>
                     <td id="actionBtn">
