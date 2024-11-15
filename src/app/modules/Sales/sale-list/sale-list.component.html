@@ -8,8 +8,12 @@
         <h4>&nbsp;</h4>
         <form [formGroup]="orderNoForm">
           <div class="text-end d-flex flex-row">
-            <input type="text" class="form-control w-50 m-r-10" placeholder="Enter Order No." formControlName="orderNo">
-            <button class="btn btn-primary" [disabled]="orderNo.value == ''" (click)="navigateSale()">
+            <input type="checkbox" formControlName="enableOrderNo" (change)="toggleOrderNoField()" style="display: block; width: auto;">
+            <span class="fs-6 font-weight-light ms-3">Enter Order No.</span>
+          </div>
+          <div class="text-end d-flex flex-row">
+            <input type="text" class="form-control w-50 m-r-10" placeholder="Enter Order No." formControlName="orderNo" [disabled]="!orderNoForm.get('enableOrderNo')?.value">
+            <button class="btn btn-primary" [disabled]="orderNo.value == ''" (click)="navigateSale('counter')">
               <i class="feather icon-plus"></i>
               Add
             </button>
@@ -17,7 +21,7 @@
         </form>
       </h4>
       <div class="col-md-12 text-center">
-        <img class="w-50" src="assets/images/KCI Logo.png" alt="">
+        <img src="assets/images/KCI Logo.png" alt="">
       </div>
     </app-card>
   </div>
@@ -27,12 +31,23 @@
       <h4 class="d-flex"></h4>
       <h4 class="text-end d-flex flex-row justify-content-between">
         <h4>Sale List</h4>
-        <form [formGroup]="orderNoForm">
-          <div class="text-end d-flex flex-row">
-            <input type="text" class="form-control w-50 m-r-10" placeholder="Enter Order No." formControlName="orderNo">
-            <button class="btn btn-primary" [disabled]="orderNo.value == ''" (click)="navigateSale()">
+        <form [formGroup]="orderNoForm" class="d-flex gap-1">
+          <div class="d-flex flex-column gap-2">
+            <div class="text-end d-flex flex-row" style>
+              <input type="checkbox" formControlName="enableOrderNo" (change)="toggleOrderNoField()" style="display: block; width: auto;">
+              <span class="fs-6 font-weight-light ms-3">Enter Order No.</span>
+  
+            </div>
+            <input type="text" class="form-control m-r-10" placeholder="Enter Order No." formControlName="orderNo" [disabled]="!orderNoForm.get('enableOrderNo')?.value">
+          </div>
+          <div class="text-end d-flex flex-column gap-1">
+            <button class="btn btn-primary m-l-5" [disabled]="orderNo.value == ''" (click)="navigateSale('foreign')">
               <i class="feather icon-plus"></i>
-              Add
+              Foreign Sale
+            </button>
+            <button class="btn btn-primary m-l-5" [disabled]="orderNo.value == ''" (click)="navigateSale('counter')">
+              <i class="feather icon-plus"></i>
+              Counter Sale
             </button>
           </div>
         </form>
@@ -110,7 +125,9 @@
           style="width: 100%" 
           class="ag-theme-quartz" 
           [rowData]="group.saleList" 
-          [columnDefs]="colDefs"> 
+          [columnDefs]="colDefs"
+          [gridOptions]="gridOptions"> 
+          
         </ag-grid-angular>
       </div>  
     </app-card>

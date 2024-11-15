@@ -57,9 +57,10 @@ export default class VoucherListComponent implements OnInit, OnDestroy {
       headerName: "Actions",
       cellRenderer: AgCustomButtonComponent,
       cellRendererParams: {
-        buttonsToShow: ['edit', 'delete'],
+        buttonsToShow: ['edit', 'delete' ,'view'],
         onEditClick: this.onEditClicked.bind(this),
-        onDeleteClick: this.onDeleteClicked.bind(this)
+        onDeleteClick: this.onDeleteClicked.bind(this),
+        onViewClick: this.onViewClicked.bind(this),
       }
     }
   ];
@@ -74,7 +75,9 @@ export default class VoucherListComponent implements OnInit, OnDestroy {
   onDeleteClicked(e: any) {
     this.openDeleteConfirmationModal(e.rowData);
   }
-
+  onViewClicked(e: any) {
+    this.router.navigate(['voucher/view', e.rowData.id]);
+  }
 
   // subscription
   subscriptions: Subscription[] = [];

@@ -172,11 +172,310 @@ export default class InventoryListComponent {
     }
   }
   printHTML(htmlContent: string) {
+    const dummyContent = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Bar Code</title><style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      .page-container {
+        width: 101.6mm;
+        height: auto;
+        margin: 0;
+        padding: 0;
+      }
+      .page {
+        width: 50.8mm;
+        height: 25mm;
+        margin: 0;
+        padding: 1mm 5mm;
+      }
+      img {
+        height: 5mm;
+        width: auto;
+      }
+      @media print {
+        .page {
+          page-break-before: always; /* Ensures each .page starts on a new page */
+          page-break-inside: avoid; /* Prevents page break inside the div */
+        }
+
+        /* To avoid the first div from breaking before */
+        .page:first-of-type {
+          page-break-before: auto;
+        }
+      }
+    </style></head><body style="font-family: 'Arial', sans-serif; margin: 0; padding: 0;">
+  <div class="page-container"
+    style='box-sizing: border-box; display: flex; justify-content: space-between; flex-wrap: wrap;'>
+    <div class="page"
+      style='box-sizing: border-box;  display: flex; flex-direction: column; justify-content: space-between;'>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>A&L-APBBL146</p>
+        <p>4*5</p>
+      </div>
+      <div style='box-sizing: border-box; width: 100%; display: flex; justify-content: center;'><img
+          src='https://artsandlife.atf-labs.com/images/barcode.jpg ' alt='barcode' /></div>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>454533.00</p>
+        <p>12356</p>
+      </div>
+    </div>
+    <div class="page"
+      style='box-sizing: border-box;  display: flex; flex-direction: column; justify-content: space-between;'>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>A&L-APBBL147</p>
+        <p>4*5</p>
+      </div>
+      <div style='box-sizing: border-box; width: 100%; display: flex; justify-content: center;'><img
+          src='https://artsandlife.atf-labs.com/images/barcode.jpg ' alt='barcode' /></div>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>454533.00</p>
+        <p>12356</p>
+      </div>
+    </div>
+    <div class="page"
+      style='box-sizing: border-box;  display: flex; flex-direction: column; justify-content: space-between;'>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>A&L-APBBL148</p>
+        <p>4*5</p>
+      </div>
+      <div style='box-sizing: border-box; width: 100%; display: flex; justify-content: center;'><img
+          src='https://artsandlife.atf-labs.com/images/barcode.jpg ' alt='barcode' /></div>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>454533.00</p>
+        <p>12356</p>
+      </div>
+    </div>
+    <div class="page"
+      style='box-sizing: border-box;  display: flex; flex-direction: column; justify-content: space-between;'>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>A&L-APBBL149</p>
+        <p>4*5</p>
+      </div>
+      <div style='box-sizing: border-box; width: 100%; display: flex; justify-content: center;'><img
+          src='https://artsandlife.atf-labs.com/images/barcode.jpg ' alt='barcode' /></div>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>454533.00</p>
+        <p>12356</p>
+      </div>
+    </div>
+    <div class="page"
+      style='box-sizing: border-box;  display: flex; flex-direction: column; justify-content: space-between;'>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>A&L-APBBL150</p>
+        <p>4*5</p>
+      </div>
+      <div style='box-sizing: border-box; width: 100%; display: flex; justify-content: center;'><img
+          src='https://artsandlife.atf-labs.com/images/barcode.jpg ' alt='barcode' /></div>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>454533.00</p>
+        <p>12356</p>
+      </div>
+    </div>
+    <div class="page"
+      style='box-sizing: border-box;  display: flex; flex-direction: column; justify-content: space-between;'>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>A&L-APBBL151</p>
+        <p>4*5</p>
+      </div>
+      <div style='box-sizing: border-box; width: 100%; display: flex; justify-content: center;'><img
+          src='https://artsandlife.atf-labs.com/images/barcode.jpg ' alt='barcode' /></div>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>454533.00</p>
+        <p>12356</p>
+      </div>
+    </div>
+    <div class="page"
+      style='box-sizing: border-box;  display: flex; flex-direction: column; justify-content: space-between;'>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>A&L-APBBL151</p>
+        <p>4*5</p>
+      </div>
+      <div style='box-sizing: border-box; width: 100%; display: flex; justify-content: center;'><img
+          src='https://artsandlife.atf-labs.com/images/barcode.jpg ' alt='barcode' /></div>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>454533.00</p>
+        <p>12356</p>
+      </div>
+    </div>
+    <div class="page"
+      style='box-sizing: border-box;  display: flex; flex-direction: column; justify-content: space-between;'>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>A&L-APBBL151</p>
+        <p>4*5</p>
+      </div>
+      <div style='box-sizing: border-box; width: 100%; display: flex; justify-content: center;'><img
+          src='https://artsandlife.atf-labs.com/images/barcode.jpg ' alt='barcode' /></div>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>454533.00</p>
+        <p>12356</p>
+      </div>
+    </div>
+    <div class="page"
+      style='box-sizing: border-box;  display: flex; flex-direction: column; justify-content: space-between;'>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>A&L-APBBL151</p>
+        <p>4*5</p>
+      </div>
+      <div style='box-sizing: border-box; width: 100%; display: flex; justify-content: center;'><img
+          src='https://artsandlife.atf-labs.com/images/barcode.jpg ' alt='barcode' /></div>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>454533.00</p>
+        <p>12356</p>
+      </div>
+    </div>
+    <div class="page"
+      style='box-sizing: border-box;  display: flex; flex-direction: column; justify-content: space-between;'>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>A&L-APBBL151</p>
+        <p>4*5</p>
+      </div>
+      <div style='box-sizing: border-box; width: 100%; display: flex; justify-content: center;'><img
+          src='https://artsandlife.atf-labs.com/images/barcode.jpg ' alt='barcode' /></div>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>454533.00</p>
+        <p>12356</p>
+      </div>
+    </div>
+    <div class="page"
+      style='box-sizing: border-box;  display: flex; flex-direction: column; justify-content: space-between;'>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>A&L-APBBL146</p>
+        <p>4*5</p>
+      </div>
+      <div style='box-sizing: border-box; width: 100%; display: flex; justify-content: center;'><img
+          src='https://artsandlife.atf-labs.com/images/barcode.jpg ' alt='barcode' /></div>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>454533.00</p>
+        <p>12356</p>
+      </div>
+    </div>
+    <div class="page"
+      style='box-sizing: border-box;  display: flex; flex-direction: column; justify-content: space-between;'>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>A&L-APBBL147</p>
+        <p>4*5</p>
+      </div>
+      <div style='box-sizing: border-box; width: 100%; display: flex; justify-content: center;'><img
+          src='https://artsandlife.atf-labs.com/images/barcode.jpg ' alt='barcode' /></div>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>454533.00</p>
+        <p>12356</p>
+      </div>
+    </div>
+    <div class="page"
+      style='box-sizing: border-box;  display: flex; flex-direction: column; justify-content: space-between;'>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>A&L-APBBL148</p>
+        <p>4*5</p>
+      </div>
+      <div style='box-sizing: border-box; width: 100%; display: flex; justify-content: center;'><img
+          src='https://artsandlife.atf-labs.com/images/barcode.jpg ' alt='barcode' /></div>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>454533.00</p>
+        <p>12356</p>
+      </div>
+    </div>
+    <div class="page"
+      style='box-sizing: border-box;  display: flex; flex-direction: column; justify-content: space-between;'>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>A&L-APBBL149</p>
+        <p>4*5</p>
+      </div>
+      <div style='box-sizing: border-box; width: 100%; display: flex; justify-content: center;'><img
+          src='https://artsandlife.atf-labs.com/images/barcode.jpg ' alt='barcode' /></div>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>454533.00</p>
+        <p>12356</p>
+      </div>
+    </div>
+    <div class="page"
+      style='box-sizing: border-box;  display: flex; flex-direction: column; justify-content: space-between;'>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>A&L-APBBL150</p>
+        <p>4*5</p>
+      </div>
+      <div style='box-sizing: border-box; width: 100%; display: flex; justify-content: center;'><img
+          src='https://artsandlife.atf-labs.com/images/barcode.jpg ' alt='barcode' /></div>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>454533.00</p>
+        <p>12356</p>
+      </div>
+    </div>
+    <div class="page"
+      style='box-sizing: border-box;  display: flex; flex-direction: column; justify-content: space-between;'>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>A&L-APBBL151</p>
+        <p>4*5</p>
+      </div>
+      <div style='box-sizing: border-box; width: 100%; display: flex; justify-content: center;'><img
+          src='https://artsandlife.atf-labs.com/images/barcode.jpg ' alt='barcode' /></div>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>454533.00</p>
+        <p>12356</p>
+      </div>
+    </div>
+    <div class="page"
+      style='box-sizing: border-box;  display: flex; flex-direction: column; justify-content: space-between;'>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>A&L-APBBL151</p>
+        <p>4*5</p>
+      </div>
+      <div style='box-sizing: border-box; width: 100%; display: flex; justify-content: center;'><img
+          src='https://artsandlife.atf-labs.com/images/barcode.jpg ' alt='barcode' /></div>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>454533.00</p>
+        <p>12356</p>
+      </div>
+    </div>
+    <div class="page"
+      style='box-sizing: border-box;  display: flex; flex-direction: column; justify-content: space-between;'>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>A&L-APBBL151</p>
+        <p>4*5</p>
+      </div>
+      <div style='box-sizing: border-box; width: 100%; display: flex; justify-content: center;'><img
+          src='https://artsandlife.atf-labs.com/images/barcode.jpg ' alt='barcode' /></div>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>454533.00</p>
+        <p>12356</p>
+      </div>
+    </div>
+    <div class="page"
+      style='box-sizing: border-box;  display: flex; flex-direction: column; justify-content: space-between;'>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>A&L-APBBL151</p>
+        <p>4*5</p>
+      </div>
+      <div style='box-sizing: border-box; width: 100%; display: flex; justify-content: center;'><img
+          src='https://artsandlife.atf-labs.com/images/barcode.jpg ' alt='barcode' /></div>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>454533.00</p>
+        <p>12356</p>
+      </div>
+    </div>
+    <div class="page"
+      style='box-sizing: border-box;  display: flex; flex-direction: column; justify-content: space-between;'>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>A&L-APBBL151</p>
+        <p>4*5</p>
+      </div>
+      <div style='box-sizing: border-box; width: 100%; display: flex; justify-content: center;'><img
+          src='https://artsandlife.atf-labs.com/images/barcode.jpg ' alt='barcode' /></div>
+      <div style='box-sizing: border-box; display: flex; justify-content: space-between; font-size: 10.5px; font-family: arial'>
+        <p>454533.00</p>
+        <p>12356</p>
+      </div>
+    </div>
+  </div>
+</body></html>`
     printJS({
+      
       printable: htmlContent,
       type: "raw-html",
       targetStyles: ["*"], // This ensures that all styles are included
     });
+    // console.log(htmlContent);
   }
 
   printInventoryBarcode(productIds:number[]){
@@ -186,7 +485,6 @@ export default class InventoryListComponent {
       .pipe(
         tap((productBarcodeResponse) => {
           if (productBarcodeResponse) {
-            
             this.printHTML(productBarcodeResponse);
           }
         })

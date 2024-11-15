@@ -23,7 +23,8 @@ export interface InventoryModel {
   soldDate: Date,
   guid?: string,
   quantity:number,
-  productNameCode: string
+  productNameCode: string,
+  isExempted:boolean
 }
 
 export interface CheckInventoryModel{
@@ -73,7 +74,8 @@ export function createInventoryModel({
   sellingPrice= 0,
   quantity=0,
   productNameCode='',
-  guid= ''
+  guid= '',
+  isExempted=false
 }: Partial<InventoryModel>) {
   return {
     id,
@@ -93,7 +95,8 @@ export function createInventoryModel({
     soldDate,
     quantity,
     productNameCode,
-    guid
+    guid,
+    isExempted
 
   } as InventoryModel;
 }
@@ -199,6 +202,8 @@ export interface inventoryForm {
   stonesNb: FormControl<number | null>,
   costPrice: FormControl<number | null>,
   sellingPrice: FormControl<number>,
+  quantity: FormControl<number>,
+  isExempted: FormControl<boolean>,
   // productType: FormControl<string>,
   // rate: FormControl<number>,
   // sadekaar: FormControl<number>,
@@ -209,7 +214,6 @@ export interface inventoryForm {
 
 
   // design: FormControl<string>,
-  quantity: FormControl<number>,
   // color: FormControl<string>,
   // file: FormControl<File | null>,
   // name: FormControl<string>,

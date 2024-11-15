@@ -1,110 +1,73 @@
-<div
-  *ngIf="{
-    salesManList: (salesManList$ | async) ?? [],
-    qualityList: (qualityList$ | async) ?? [],
-    designList: (designList$ | async) ?? [],
-    colorList: (colorsList$ | async) ?? [],
-    sizeList: (sizeList$ | async) ?? [],
-    salesManUserList: (salesManUserList$ | async) ?? [],
-    currencyList: currencyList ?? [],
-    feedbackList: feedbackList ?? []
-  } as group"
->
+<div *ngIf="{
+  salesManList:(salesManList$ | async) ?? [],
+  qualityList:(qualityList$ | async) ?? [],
+  designList:(designList$ | async) ?? [],
+  colorList:(colorsList$ | async) ?? [],
+  sizeList:(sizeList$ | async) ?? [],
+  salesManUserList: (salesManUserList$ | async) ?? [],
+  currencyList: (currencyList) ?? [],
+  feedbackList: (feedbackList) ?? [],
+  supplierUserList: (supplierUserList$ | async) ?? [],
+} as group">
   <div class="col-md-12">
-    <ng-stepper #cdkStepper [linear]="true">
+    <ng-stepper #cdkStepper [linear]="true" class="custom-stepper">
       <cdk-step [stepControl]="clientDetailForm" [optional]="false">
-        <ng-template cdkStepLabel>
+        <ng-template cdkStepLabel class="label-li">
           <div class="step-bullet"><i class="feather icon-user"></i></div>
-          <div class="step-title">
-            Customer Details<span class="required">*</span>
-          </div>
+          <div class="step-title">Customer Details<span class="required">*</span></div>
         </ng-template>
         <!-- <app-client-details #stepOne></app-client-details> -->
         <div id="app-card" class="col-md-12" #stepOne>
           <app-card cardTitle="" [hidHeader]="true" [options]="false">
-            <form
-              [formGroup]="clientDetailForm"
-              autocomplete="off"
-              novalidate
-              #formRef="ngForm"
-            >
+            <form [formGroup]="clientDetailForm" autocomplete="off" novalidate #formRef="ngForm">
               <div class="row">
                 <div class="col-md-6">
                   <!-- enter clientName -->
                   <div class="form-group">
-                    <label for="clientName"
-                      >Customer Name<span class="required">*</span></label
-                    >
-                    <input
-                      type="text"
-                      class="form-control text-capitalize"
-                      id="clientName"
-                      placeholder="Ex: Jhon Doe"
-                      formControlName="clientName"
-                    />
+                    <label for="clientName">Customer Name<span class="required">*</span></label>
+                    <input type="text" class="form-control text-capitalize" id="clientName" placeholder="Ex: Jhon Doe"
+                      formControlName="clientName" />
                     <ul *ngIf="clientName.touched && clientName.invalid">
-                      <li
-                        *ngIf="clientName.errors?.['required']"
-                        class="text-danger"
-                      >
-                        Customer Name is required
-                      </li>
-                      <li
-                        *ngIf="clientName.errors?.['message']"
-                        class="text-danger"
-                      >
-                        {{ clientName.errors?.["message"] }}
-                      </li>
+                      <li *ngIf="clientName.errors?.['required']" class="text-danger">Customer Name is required</li>
+                      <li *ngIf="clientName.errors?.['message']" class="text-danger">{{ clientName.errors?.["message"]
+                        }}</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="col-md-6" *ngIf="!isForeignSale.value">
+                  <!-- select state -->
+                  <div class="form-group">
+                    <label for="shippingAddState">State<span class="required">*</span></label>
+                    <input type="text" class="form-control text-capitalize" formControlName="shippingState"
+                      placeholder="Ex. Delhi" [ngbTypeahead]="searchState" (focus)="getStateList()">
+                    <ul *ngIf="shippingState.touched && shippingState.invalid">
+                      <li *ngIf="shippingState.errors?.['required']" class="text-danger">State is required</li>
+                      <li *ngIf="shippingState.errors?.['message']" class="text-danger">{{
+                        shippingState.errors?.["message"] }}</li>
                     </ul>
                   </div>
                 </div>
               </div>
               <!-- Shipping Adress Details -->
-              <app-card
-                cardTitle="Shipping Addrss"
-                [hidHeader]="true"
-                [options]="false"
-              >
+              <app-card cardTitle="Shipping Addrss" [hidHeader]="true" [options]="false">
                 <div class="row">
                   <div class="col-md-4">
                     <!-- enter house number -->
                     <div class="form-group">
                       <label for="houseNumber">House Number</label>
-                      <input
-                        type="text"
-                        class="form-control text-capitalize"
-                        id="houseNumber"
-                        placeholder="Ex. 123/ABC"
-                        formControlName="houseNumber"
-                      />
+                      <input type="text" class="form-control text-capitalize" id="houseNumber" placeholder="Ex. 123/ABC"
+                        formControlName="houseNumber">
                     </div>
                   </div>
                   <div class="col-md-4">
                     <!-- enter street -->
                     <div class="form-group">
-                      <label for="street"
-                        >Street<span class="required">*</span></label
-                      >
-                      <input
-                        type="text"
-                        class="form-control text-capitalize"
-                        id="street"
-                        placeholder="Ex. Down Town"
-                        formControlName="street"
-                      />
+                      <label for="street">Street<span *ngIf="isForeignSale.value" class="required">*</span></label>
+                      <input type="text" class="form-control text-capitalize" id="street" placeholder="Ex. Down Town"
+                        formControlName="street">
                       <ul *ngIf="street.touched && street.invalid">
-                        <li
-                          *ngIf="street.errors?.['required']"
-                          class="text-danger"
-                        >
-                          Street is required
-                        </li>
-                        <li
-                          *ngIf="street.errors?.['message']"
-                          class="text-danger"
-                        >
-                          {{ street.errors?.["message"] }}
-                        </li>
+                        <li *ngIf="street.errors?.['required']" class="text-danger">Street is required</li>
+                        <li *ngIf="street.errors?.['message']" class="text-danger">{{ street.errors?.["message"] }}</li>
                       </ul>
                     </div>
                   </div>
@@ -112,13 +75,8 @@
                     <!-- enter apartment -->
                     <div class="form-group">
                       <label for="apartment">Apartment</label>
-                      <input
-                        type="text"
-                        class="form-control text-capitalize"
-                        id="apartment"
-                        placeholder="Ex. xyz heights"
-                        formControlName="apartment"
-                      />
+                      <input type="text" class="form-control text-capitalize" id="apartment"
+                        placeholder="Ex. xyz heights" formControlName="apartment">
                     </div>
                   </div>
                 </div>
@@ -126,243 +84,113 @@
                   <div class="col-md-6">
                     <!-- select Country -->
                     <div class="form-group">
-                      <label for="shippingAddCountry"
-                        >Country<span class="required">*</span></label
-                      >
-                      <input
-                        type="text"
-                        class="form-control text-capitalize"
-                        id="shippingAddCountry"
-                        formControlName="shippingCountry"
-                        placeholder="Ex. India"
-                        [ngbTypeahead]="searchCountry"
-                      />
-                      <ul
-                        *ngIf="
-                          shippingCountry.touched && shippingCountry.invalid
-                        "
-                      >
-                        <li
-                          *ngIf="shippingCountry.errors?.['required']"
-                          class="text-danger"
-                        >
-                          Country is required
-                        </li>
-                        <li
-                          *ngIf="shippingCountry.errors?.['message']"
-                          class="text-danger"
-                        >
-                          {{ shippingCountry.errors?.["message"] }}
-                        </li>
+                      <label for="shippingAddCountry">Country<span *ngIf="isForeignSale.value" class="required">*</span></label>
+                      <input type="text" class="form-control text-capitalize" id="shippingAddCountry"
+                        formControlName="shippingCountry" placeholder="Ex. India" [ngbTypeahead]="searchCountry">
+                      <ul *ngIf="shippingCountry.touched && shippingCountry.invalid">
+                        <li *ngIf="shippingCountry.errors?.['required']" class="text-danger">Country is required</li>
+                        <li *ngIf="shippingCountry.errors?.['message']" class="text-danger">{{
+                          shippingCountry.errors?.["message"] }}</li>
                       </ul>
                     </div>
                   </div>
-                  <div class="col-md-6">
+                  <div class="col-md-6" *ngIf="isForeignSale.value">
                     <!-- select state -->
                     <div class="form-group">
-                      <label for="shippingAddState"
-                        >State<span class="required">*</span></label
-                      >
-                      <input
-                        type="text"
-                        class="form-control text-capitalize"
-                        formControlName="shippingState"
-                        placeholder="Ex. Delhi"
-                        [ngbTypeahead]="searchState"
-                        (focus)="getStateList()"
-                      />
-                      <ul
-                        *ngIf="shippingState.touched && shippingState.invalid"
-                      >
-                        <li
-                          *ngIf="shippingState.errors?.['required']"
-                          class="text-danger"
-                        >
-                          State is required
-                        </li>
-                        <li
-                          *ngIf="shippingState.errors?.['message']"
-                          class="text-danger"
-                        >
-                          {{ shippingState.errors?.["message"] }}
-                        </li>
+                      <label for="shippingAddState">State<span class="required">*</span></label>
+                      <input type="text" class="form-control text-capitalize" formControlName="shippingState"
+                        placeholder="Ex. Delhi" [ngbTypeahead]="searchState" (focus)="getStateList()">
+                      <ul *ngIf="shippingState.touched && shippingState.invalid">
+                        <li *ngIf="shippingState.errors?.['required']" class="text-danger">State is required</li>
+                        <li *ngIf="shippingState.errors?.['message']" class="text-danger">{{
+                          shippingState.errors?.["message"] }}</li>
                       </ul>
                     </div>
                   </div>
-                </div>
-                <div class="row">
+
                   <div class="col-md-6">
                     <!-- enter city -->
                     <div class="form-group">
-                      <label for="shippingAddCity"
-                        >City<span class="required">*</span></label
-                      >
-                      <input
-                        type="text"
-                        class="form-control text-capitalize"
-                        placeholder="Ex: Agra"
-                        id="shippingAddCity"
-                        formControlName="shippingCity"
-                        [ngbTypeahead]="searchCity"
-                        (focus)="getCityList()"
-                      />
+                      <label for="shippingAddCity">City<span *ngIf="isForeignSale.value" class="required">*</span></label>
+                      <input type="text" class="form-control text-capitalize" placeholder="Ex: Agra"
+                        id="shippingAddCity" formControlName="shippingCity" [ngbTypeahead]="searchCity"
+                        (focus)="getCityList()">
                       <ul *ngIf="shippingCity.touched && shippingCity.invalid">
-                        <li
-                          *ngIf="shippingCity.errors?.['required']"
-                          class="text-danger"
-                        >
-                          City is required
-                        </li>
-                        <li
-                          *ngIf="shippingCity.errors?.['message']"
-                          class="text-danger"
-                        >
-                          {{ shippingCity.errors?.["message"] }}
-                        </li>
+                        <li *ngIf="shippingCity.errors?.['required']" class="text-danger">City is required</li>
+                        <li *ngIf="shippingCity.errors?.['message']" class="text-danger">{{
+                          shippingCity.errors?.["message"] }}</li>
                       </ul>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <!-- enter pincode -->
                     <div class="form-group">
-                      <label for="shippingAddPincode"
-                        >Zip/Pincode<span class="required">*</span></label
-                      >
-                      <input
-                        type="text"
-                        class="form-control"
-                        placeholder="Ex: 123456"
-                        id="shippingPincode"
-                        formControlName="shippingPinCode"
-                      />
-                      <ul
-                        *ngIf="
-                          shippingPinCode.touched && shippingPinCode.invalid
-                        "
-                      >
-                        <li
-                          *ngIf="shippingPinCode.errors?.['required']"
-                          class="text-danger"
-                        >
-                          Shipping PinCode is required
-                        </li>
-                        <li
-                          *ngIf="shippingPinCode.errors?.['message']"
-                          class="text-danger"
-                        >
-                          {{ shippingPinCode.errors?.["message"] }}
-                        </li>
+                      <label for="shippingAddPincode">Zip/Pincode<span *ngIf="isForeignSale.value" class="required">*</span></label>
+                      <input type="text" class="form-control" placeholder="Ex: 123456" id="shippingPincode"
+                        formControlName="shippingPinCode">
+                      <ul *ngIf="shippingPinCode.touched && shippingPinCode.invalid">
+                        <li *ngIf="shippingPinCode.errors?.['required']" class="text-danger">Shipping PinCode is
+                          required</li>
+                        <li *ngIf="shippingPinCode.errors?.['message']" class="text-danger">{{
+                          shippingPinCode.errors?.["message"] }}</li>
                       </ul>
                     </div>
                   </div>
                   <!-- Mobile Number -->
-                  <div
-                    class="col-md-6"
-                    *ngFor="let mobile of mobileList.controls; let i = index"
-                  >
+                  <div class="col-md-6" *ngFor="let mobile of mobileList.controls; let i=index">
                     <!-- enter mobileNumber -->
                     <div class="form-group">
                       <!-- <lib-country-list [selectedCountryConfig]="selectedCountryConfig" [countryListConfig]="countryListConfig"
                         (onCountryChange)="onCountryChange($event)"></lib-country-list> -->
-                      <label for="mobileNumber"
-                        >Mobile Number<span class="required">*</span></label
-                      >
+                      <label for="mobileNumber">Mobile Number<span *ngIf="isForeignSale.value" class="required">*</span></label>
                       <div class="input-group" formArrayName="mobileList">
-                        <input
-                          class="form-control"
-                          [formControlName]="i"
-                          placeholder="Ex: 1234567890"
-                        />
-                        <button
-                          class="btn btn-outline-danger"
-                          type="button"
-                          (click)="removeMobile(i)"
-                        >
+                        <input class="form-control" [formControlName]="i" placeholder="Ex: 1234567890">
+                        <button class="btn btn-outline-danger" type="button" (click)="removeMobile(i)">
                           <i class="feather icon-minus"></i>
                         </button>
-                        <button
-                          class="btn btn-outline-primary"
-                          type="button"
-                          (click)="addMobile()"
-                        >
+                        <button class="btn btn-outline-primary" type="button" (click)="addMobile()">
                           <i class="feather icon-plus"></i>
                         </button>
                       </div>
                       <ul *ngIf="mobileList.controls[i]?.touched">
-                        <li
-                          *ngIf="mobileList.controls[i]?.errors?.['required']"
-                          class="text-danger"
-                        >
-                          Mobile is required
+                        <li *ngIf="mobileList.controls[i]?.errors?.['required']" class="text-danger">Mobile is required
                         </li>
-                        <li
-                          *ngIf="mobileList.controls[i].errors?.['message']"
-                          class="text-danger"
-                        >
-                          {{ mobileList.controls[i].errors?.["message"] }}
-                        </li>
-                        <li
-                          *ngIf="mobileList.controls[i]?.errors?.['pattern']"
-                          class="text-danger"
-                        >
-                          Invalid mobile number
-                        </li>
+                        <li *ngIf="mobileList.controls[i].errors?.['message']" class="text-danger">{{
+                          mobileList.controls[i].errors?.["message"] }}</li>
+                        <li *ngIf="mobileList.controls[i]?.errors?.['pattern']" class="text-danger">Invalid mobile
+                          number</li>
                       </ul>
                     </div>
                   </div>
 
                   <!-- Email Address -->
-                  <div
-                    class="col-md-6"
-                    *ngFor="let email of emailList.controls; let i = index"
-                  >
+                  <div class="col-md-6" *ngFor="let email of emailList.controls; let i=index">
                     <!-- enter email -->
                     <div class="form-group">
-                      <label for="email"
-                        >E-mail<span class="required">*</span></label
-                      >
+                      <label for="email">E-mail<span *ngIf="isForeignSale.value" class="required">*</span></label>
                       <div class="input-group" formArrayName="emailList">
-                        <input
-                          class="form-control"
-                          [formControlName]="i"
-                          placeholder="Ex: xyz@gmail.com"
-                        />
-                        <button
-                          class="btn btn-outline-danger"
-                          type="button"
-                          (click)="removeEmail(i)"
-                        >
+                        <input class="form-control" [formControlName]="i" placeholder="Ex: xyz@gmail.com">
+                        <button class="btn btn-outline-danger" type="button" (click)="removeEmail(i)">
                           <i class="feather icon-minus"></i>
                         </button>
-                        <button
-                          class="btn btn-outline-primary"
-                          type="button"
-                          (click)="addEmail()"
-                        >
+                        <button class="btn btn-outline-primary" type="button" (click)="addEmail()">
                           <i class="feather icon-plus"></i>
                         </button>
                       </div>
                       <ul *ngIf="emailList.controls[i]?.touched">
-                        <li
-                          *ngIf="emailList.controls[i]?.errors?.['required']"
-                          class="text-danger"
-                        >
-                          E-mail address is required
-                        </li>
-                        <li
-                          *ngIf="emailList.controls[i].errors?.['message']"
-                          class="text-danger"
-                        >
-                          {{ emailList.controls[i].errors?.["message"] }}
-                        </li>
+                        <li *ngIf="emailList.controls[i]?.errors?.['required']" class="text-danger">E-mail address is
+                          required</li>
+                        <li *ngIf="emailList.controls[i].errors?.['message']" class="text-danger">{{
+                          emailList.controls[i].errors?.["message"] }}</li>
                       </ul>
                     </div>
                   </div>
                 </div>
-                <button class="btn btn-primary" cdkStepperNext>
-                  {{ clientDetailForm.value.id === 0 ? "Save" : "Update" }} and
-                  next
-                </button>
+                <div class="row">
+                  
+                </div>
+                <button class="btn btn-primary" (click)="markAllAsTouched()" cdkStepperNext>{{ clientDetailForm.value.id
+                  === 0? 'Save': 'Update' }} and next</button>
               </app-card>
             </form>
           </app-card>
@@ -370,7 +198,7 @@
       </cdk-step>
 
       <cdk-step [stepControl]="addProductForm" [optional]="false">
-        <ng-template cdkStepLabel>
+        <ng-template cdkStepLabel class="label-li">
           <div class="step-bullet"><i class="feather icon-plus"></i></div>
           <div class="step-title">Add Product</div>
         </ng-template>
@@ -380,140 +208,143 @@
             <form [formGroup]="addProductForm">
               <div class="row">
                 <div class="col-md-6">
-                  <!-- enter user role -->
+                  <div class="w-100 d-flex gap-1">
+                    <div class="form-group w-100">
+                      <label for="getByProductCode">Search Using Product Code</label>
+                      <input class="form-control" type="text" name="getByProductCode" id="getByProductCode" formControlName="getByProductCode">
+                    </div>
+                    <div class="pb-3 d-flex flex-column justify-content-end">
+                      <button style="width: max-content;" class="btn btn-primary" (click)="fetchProductByProductCode()">Fetch Product</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6"></div>
+                <div class="col-md-6">
+                  <!-- select quality -->
                   <div class="form-group">
-                    <label for="quallity"
-                      >Quality<span class="required">*</span></label
-                    >
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="quallity"
-                      placeholder="Ex: Cotton"
-                      formControlName="quality"
-                      [typeahead]="group.qualityList"
-                    />
+                    <label for="quality">Quality<span class="required">*</span></label>
+                    <input class="form-control text-capitalize" type="text" [ngbTypeahead]="searchQuality"
+                      id="quality" formControlName="quality" placeholder="Ex: Pachekaari">
                     <ul *ngIf="quality.touched && quality.invalid">
-                      <li
-                        *ngIf="quality.errors?.['required']"
-                        class="text-danger"
-                      >
-                        Quality is required
-                      </li>
-                      <li
-                        *ngIf="quality.errors?.['message']"
-                        class="text-danger"
-                      >
-                        {{ quality.errors?.["message"] }}
+                      <li *ngIf="quality.errors?.['required']" class="text-danger">Quality is required</li>
+                      <li *ngIf="quality.errors?.['message']" class="text-danger">{{ quality.errors?.["message"] }}
                       </li>
                     </ul>
                   </div>
                 </div>
                 <div class="col-md-6">
-                  <!-- select Design -->
+                  <!-- select Product Name -->
                   <div class="form-group">
-                    <label for="design"
-                      >Design<span class="required">*</span></label
-                    >
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="design"
-                      placeholder="Ex: Tribal Teki"
-                      formControlName="design"
-                      [typeahead]="group.designList"
-                    />
+                    <label for="product">Product Name<span class="required">*</span></label>
+                    <input class="form-control text-capitalize" type="text" [ngbTypeahead]="searchProductName"
+                      id="product" formControlName="product" placeholder="Ex: Table Top">
+                    <ul *ngIf="product.touched && product.invalid">
+                      <li *ngIf="product.errors?.['required']" class="text-danger">Product Name is required</li>
+                      <li *ngIf="product.errors?.['message']" class="text-danger">{{ product.errors?.["message"] }}</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <!-- select design -->
+                  <div class="form-group">
+                    <label for="design">Design<span class="required">*</span></label>
+                    <input class="form-control text-capitalize" type="text" [ngbTypeahead]="searchDesign" id="design"
+                      formControlName="design" placeholder="Ex: Flower Border">
                     <ul *ngIf="design.touched && design.invalid">
-                      <li
-                        *ngIf="design.errors?.['required']"
-                        class="text-danger"
-                      >
-                        Design is required
-                      </li>
-                      <li
-                        *ngIf="design.errors?.['message']"
-                        class="text-danger"
-                      >
-                        {{ design.errors?.["message"] }}
+                      <li *ngIf="design.errors?.['required']" class="text-danger">Design is required</li>
+                      <li *ngIf="design.errors?.['message']" class="text-danger">{{ design.errors?.["message"] }}</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <!-- select size -->
+                  <div class="form-group">
+                    <label for="size">Size<span class="required">*</span></label>
+                    <input type="text" class="form-control" id="size" placeholder="Ex: 24*48" formControlName="size"
+                      [ngbTypeahead]="searchSize" />
+                    <ul *ngIf="size.touched && size.invalid">
+                      <li *ngIf="size.errors?.['required']" class="text-danger">Size is required</li>
+                      <li *ngIf="size.errors?.['message']" class="text-danger">{{ size.errors?.["message"] }}</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <!-- select Shape -->
+                  <div class="form-group">
+                    <label for="shape">Shape<span class="required">*</span></label>
+                    <input type="text" class="form-control" id="shape" placeholder="Ex: REC" formControlName="shape" 
+                    [ngbTypeahead]="searchShape"/>
+                    <ul *ngIf="shape.touched && shape.invalid">
+                      <li *ngIf="shape.errors?.['required']" class="text-danger">Shape is required</li>
+                      <li *ngIf="shape.errors?.['message']" class="text-danger">{{ shape.errors?.["message"] }}</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <!-- select color -->
+                  <div class="form-group">
+                    <label for="primaryStone">Primary Stone<span class="required">*</span></label>
+                    <input type="text" class="form-control text-capitalize" id="primaryStone" placeholder="Ex: White"
+                      formControlName="primaryStone" [ngbTypeahead]="searchColour" />
+                    <ul *ngIf="primaryStone.touched && primaryStone.invalid">
+                      <li *ngIf="primaryStone.errors?.['required']" class="text-danger">Colour is required</li>
+                      <li *ngIf="primaryStone.errors?.['message']" class="text-danger">{{ primaryStone.errors?.["message"] }}
                       </li>
                     </ul>
                   </div>
                 </div>
 
                 <div class="col-md-6">
-                  <!-- select color -->
+                  <!-- select colour -->
                   <div class="form-group">
-                    <label for="color"
-                      >Colour<span class="required">*</span></label
-                    >
-                    <input
-                      type="text"
-                      class="form-control text-capitalize"
-                      id="color"
-                      placeholder="Ex: Blue"
-                      formControlName="color"
-                      [typeahead]="group.colorList"
-                    />
-                  </div>
-                  <ul *ngIf="color.touched && color.invalid">
-                    <li *ngIf="color.errors?.['required']" class="text-danger">
-                      Colour is required
-                    </li>
-                    <li *ngIf="color.errors?.['message']" class="text-danger">
-                      {{ color.errors?.["message"] }}
-                    </li>
-                  </ul>
-                </div>
-                <div class="col-md-3">
-                  <!-- enter quantity -->
-                  <div class="form-group">
-                    <label for="quantity"
-                      >Quantity<span class="required">*</span></label
-                    >
-                    <input
-                      type="text"
-                      class="form-control"
-                      placeholder="Ex: 1"
-                      formControlName="quantity"
-                    />
-                    <ul *ngIf="quantity.touched && quantity.invalid">
-                      <li
-                        *ngIf="quantity.errors?.['required']"
-                        class="text-danger"
-                      >
-                        Quantity is required
-                      </li>
-                      <li
-                        *ngIf="quantity.errors?.['message']"
-                        class="text-danger"
-                      >
-                        {{ quantity.errors?.["message"] }}
+                    <label for="colour">Primary Colour<span class="required">*</span></label>
+                    <input type="text" class="form-control text-capitalize" id="colour" placeholder="Ex: Mix"
+                      formControlName="colour"  [ngbTypeahead] = "searchPrimaryColor" />
+                    <ul *ngIf="colour.touched && colour.invalid">
+                      <li *ngIf="colour.errors?.['required']" class="text-danger">Colour is required</li>
+                      <li *ngIf="colour.errors?.['message']" class="text-danger">{{ colour.errors?.["message"] }}
                       </li>
                     </ul>
                   </div>
                 </div>
-                <div class="col-md-3">
-                  <!-- select size -->
+
+                <!-- select quantity -->
+                <div class="col-md-6">
                   <div class="form-group">
-                    <label for="size"
-                      >Size<span class="required">*</span></label
-                    >
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="size"
-                      placeholder="Ex: 5*6"
-                      formControlName="size"
-                      [typeahead]="group.sizeList"
-                    />
-                    <ul *ngIf="size.touched && size.invalid">
-                      <li *ngIf="size.errors?.['required']" class="text-danger">
-                        Size is required
-                      </li>
-                      <li *ngIf="size.errors?.['message']" class="text-danger">
-                        {{ size.errors?.["message"] }}
-                      </li>
-                    </ul>
+                    <label for="quantity">Quantity<span class="required">*</span></label>
+                    <input type="number" class="form-control" id="quantity" placeholder="Ex: 1"
+                      formControlName="quantity" />
+                    <!-- <ul *ngIf="quantity.touched && quantity.invalid">
+                      <li *ngIf="quantity.errors?.['required']" class="text-danger">quantity is required</li>
+                      <li *ngIf="quantity.errors?.['message']" class="text-danger">{{ quantity.errors?.["message"] }}</li>
+                    </ul> -->
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <!-- select No Of Stones -->
+                  <div class="form-group">
+                    <label for="stonesNb">No Of Stones</label>
+                    <input type="number" class="form-control" id="stonesNb" placeholder="Ex: 1"
+                      formControlName="stonesNb" />
+                    <!-- <ul *ngIf="stonesNb.touched && stonesNb.invalid">
+                      <li *ngIf="stonesNb.errors?.['required']" class="text-danger">No Of Stones is required</li>
+                      <li *ngIf="stonesNb.errors?.['message']" class="text-danger">{{ stonesNb.errors?.["message"] }}</li>
+                    </ul> -->
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <!-- select supplierId -->
+                  <div class="form-group">
+                    <label for="supplierId">Supplier<span class="required">*</span></label>
+                    <select id="supplierId" class="form-control" formControlName="supplierId">
+                      <option value="0">Select</option>
+                      <option *ngFor="let supplier of group.supplierUserList" value="{{ supplier.id }}">{{ supplier.name
+                        }} ({{supplier.userCode}})
+                      </option>
+                    </select>
                   </div>
                 </div>
 
@@ -521,13 +352,8 @@
                   <!-- enter Amount -->
                   <div class="form-group">
                     <label for="amount">Amount</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      placeholder="Ex: 1"
-                      formControlName="amount"
-                      (blur)="amountOnBlur()"
-                    />
+                    <input type="text" class="form-control" placeholder="Ex: 1" formControlName="amount"
+                      (blur)="amountOnBlur()">
                   </div>
                 </div>
 
@@ -535,22 +361,10 @@
                   <!-- select currency -->
                   <div class="form-group">
                     <label for="currency">Currency</label>
-                    <select
-                      class="form-control"
-                      id="size"
-                      formControlName="currency"
-                      (change)="amountOnBlur()"
-                    >
+                    <select class="form-control" id="size" formControlName="currency" (change)="amountOnBlur()">
                       <option value="">Select</option>
-                      <option
-                        *ngFor="
-                          let currency of group.currencyList;
-                          let i = index
-                        "
-                        value="{{ currency.code }}"
-                      >
-                        {{ currency.code + "-" + currency.description }}
-                      </option>
+                      <option *ngFor="let currency of group.currencyList; let i = index;" value="{{ currency.code }}">{{
+                        currency.code + '-' + currency.description }}</option>
                     </select>
                   </div>
                 </div>
@@ -559,17 +373,10 @@
                   <div class="form-group">
                     <label for="FreightInclusive">Freight Inclusive</label>
                     <div class="form-check form-switch">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        role="switch"
-                        id="FreightInclusive"
-                        value="true"
-                        formControlName="isFreightInclude"
-                      />
-                      <label class="form-check-label" for="FreightInclusive">{{
-                        isFreightInclude.value == true ? "Yes" : "No"
-                      }}</label>
+                      <input class="form-check-input" type="checkbox" role="switch" id="FreightInclusive" value="true"
+                        formControlName="isFreightInclude">
+                      <label class="form-check-label" for="FreightInclusive">{{ isFreightInclude.value == true? 'Yes':
+                        'No' }}</label>
                     </div>
                   </div>
                 </div>
@@ -578,47 +385,24 @@
                   <!-- Enter Description -->
                   <div class="form-group">
                     <label for="description">Description</label>
-                    <textarea
-                      rows="1"
-                      type="text"
-                      class="form-control"
-                      formControlName="description"
-                      maxlength="50"
-                    ></textarea>
+                    <textarea rows="1" type="text" class="form-control" formControlName="description"
+                      maxlength="50"></textarea>
                   </div>
                 </div>
 
                 <div class="col-md-3">
                   <div class="form-group">
-                    <label for=""
-                      >Order Selection<span class="required">*</span></label
-                    >
+                    <label for="">Order Selection<span class="required">*</span></label>
                     <div class="form-check">
                       <div class="form-check form-check-inline">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="isHandCarry"
-                          id="due"
-                          value="true"
-                          formControlName="isHandCarry"
-                        />
-                        <label class="form-check-label" for="due"
-                          >Hand Picked?</label
-                        >
+                        <input class="form-check-input" type="radio" name="isHandCarry" id="due" value="true"
+                          formControlName="isHandCarry">
+                        <label class="form-check-label" for="due">Hand Picked?</label>
                       </div>
                       <div class="form-check form-check-inline">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="isHandCarry"
-                          id="completed"
-                          value="false"
-                          formControlName="isHandCarry"
-                        />
-                        <label class="form-check-label" for="completed"
-                          >To Be Shipped?</label
-                        >
+                        <input class="form-check-input" type="radio" name="isHandCarry" id="completed" value="false"
+                          formControlName="isHandCarry">
+                        <label class="form-check-label" for="completed">To Be Shipped?</label>
                       </div>
                     </div>
                   </div>
@@ -626,106 +410,69 @@
 
                 <div class="col-md-3">
                   <div class="form-group">
-                    <label for="customOrder"
-                      >Custom Product<span class="required">*</span></label
-                    >
+                    <label for="customOrder">Custom Product<span class="required">*</span></label>
                     <div class="form-check form-switch">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        role="switch"
-                        id="customOrder"
-                        value="true"
+                      <input class="form-check-input" type="checkbox" role="switch" id="customOrder" value="true"
                         formControlName="isCustomized"
-                        (change)="
-                          isHandCarry.setValue(
-                            isCustomized.value ? 'false' : 'true'
-                          )
-                        "
-                      />
-                      <label class="form-check-label" for="customOrder">{{
-                        isCustomized.value == true ? "Yes" : "No"
-                      }}</label>
+                        (change)="isHandCarry.setValue(isCustomized.value? 'false': 'true') ">
+                      <label class="form-check-label" for="customOrder">{{ isCustomized.value == true? 'Yes': 'No'
+                        }}</label>
                     </div>
                   </div>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-3">
+                  <!-- Enter Delivery Date -->
+                  <div class="form-group">
+                    <label for="expectedDeliveryDate">Delivery Date</label>
+                    <input type="date" class="form-control" id="expectedDeliveryDate"
+                      formControlName="expectedDeliveryDate">
+                  </div>
+                </div>
+
+                <div class="col-md-3">
                   <!-- select salesMan -->
                   <div class="form-group">
-                    <label for="salesMan"
-                      >Sales Consultant<span class="required">*</span></label
-                    >
-                    <select
-                      class="form-control"
-                      id="salesMan"
-                      formControlName="salesManId"
-                    >
+                    <label for="salesMan">Sales Consultant<span class="required">*</span></label>
+                    <select class="form-control" id="salesMan" formControlName="salesManId">
                       <option value="0">Select</option>
-                      <option
-                        *ngFor="
-                          let salesMan of group.salesManUserList;
-                          let i = index
-                        "
-                        value="{{ salesMan.id }}"
-                      >
-                        {{ salesMan.name }}
-                      </option>
+                      <option *ngFor="let salesMan of group.salesManUserList;let i=index" value="{{ salesMan.id }}">{{
+                        salesMan.name }}</option>
                     </select>
                     <ul *ngIf="salesManId.touched && salesManId.invalid">
-                      <li
-                        *ngIf="salesManId.errors?.['min']"
-                        class="text-danger"
-                      >
-                        Sales Consultant is required
-                      </li>
-                      <li
-                        *ngIf="salesManId.errors?.['message']"
-                        class="text-danger"
-                      >
-                        {{ salesManId.errors?.["message"] }}
-                      </li>
+                      <li *ngIf="salesManId.errors?.['min']" class="text-danger">Sales Consultant is required</li>
+                      <li *ngIf="salesManId.errors?.['message']" class="text-danger">{{ salesManId.errors?.["message"]
+                        }}</li>
                     </ul>
                   </div>
                 </div>
               </div>
             </form>
-            <button class="btn btn-primary m-r-10" cdkStepperPrevious>
-              Previous
-            </button>
-            <button
-              type="button"
-              class="btn btn-outline-primary m-r-10"
-              [disabled]="addProductForm.invalid"
-              (click)="addProductClick()"
-            >
+            <!-- <button class="btn btn-primary m-r-10" cdkStepperPrevious>Previous</button> -->
+            <button type="button" class="btn btn-outline-primary m-r-10" [disabled]="addProductForm.invalid"
+              (click)="addProductClick()">
               Add More
             </button>
-            <button
-              class="btn btn-primary"
-              [disabled]="addProductForm.invalid"
-              cdkStepperNext
-            >
-              {{ clientDetailForm.value.id === 0 ? "Save" : "Update" }} and next
-            </button>
+            <!-- <button class="btn btn-primary" [disabled]="addProductForm.invalid" (click)="scrollToPaymentForm()" cdkStepperNext>
+              {{ clientDetailForm.value.id === 0? 'Save': 'Update' }} and next
+            </button> -->
+
           </app-card>
         </div>
 
         <div class="col-md-12">
-          <app-card
-            [hidHeader]="true"
-            cardTitle="Added Products Details"
-            [options]="false"
-          >
+          <app-card [hidHeader]="true" cardTitle="Added Products Details" [options]="false">
             <div class="table-responsive">
               <table class="table table-striped">
                 <thead>
                   <tr>
                     <th>#</th>
                     <th>Quality</th>
+                    <th>Product Name</th>
+                    <th>Shape</th>
                     <th>Design</th>
-                    <th>Color</th>
-                    <th>Size</th>
+                    <th>No Of Stones</th>
+                    <th>Product Code</th>
                     <th>Amount</th>
                     <th>Custom</th>
                     <th>Action</th>
@@ -735,20 +482,16 @@
                   <tr *ngFor="let product of addedProducts; let i = index">
                     <td>{{ i + 1 }}</td>
                     <td>{{ product.quality }}</td>
+                    <td>{{ product.product }}</td>
+                    <td>{{ product.shape }}</td>
                     <td>{{ product.design }}</td>
-                    <td>{{ product.colour }}</td>
-                    <td>{{ product.size }}</td>
-                    <td>{{ product.amount + " " + product.ccyCode }}</td>
-                    <td>{{ product.isCustomized ? "Yes" : "No" }}</td>
+                    <td>{{ product.stonesNB}}</td>
+                    <td>{{ product.productCode }}</td>
+                    <td>{{ product.amount + ' ' + product.ccyCode }}</td>
+                    <td>{{ product.isCustomized? 'Yes': 'No' }}</td>
                     <td id="actionBtn">
-                      <i
-                        class="feather icon-edit m-r-10"
-                        (click)="onEditClick(i)"
-                      ></i>
-                      <i
-                        class="feather icon-trash-2"
-                        (click)="onDeleteClick(i)"
-                      ></i>
+                      <i class="feather icon-edit m-r-10" (click)="onEditClick(i)"></i>
+                      <i class="feather icon-trash-2" (click)="onDeleteClick(i)"></i>
                     </td>
                   </tr>
                 </tbody>
@@ -762,103 +505,42 @@
               </div> -->
             </div>
           </app-card>
-        </div>
-      </cdk-step>
 
-      <cdk-step [stepControl]="checkOutForm" [optional]="false">
-        <ng-template cdkStepLabel>
-          <div class="step-bullet"><i class="feather icon-save"></i></div>
-          <div class="step-title">
-            Payment Information <span class="required">*</span>
-          </div>
-        </ng-template>
-        <!-- <app-checkout #stepThree></app-checkout> -->
-        <div class="col-md-12" #stepThree>
-          <form [formGroup]="checkOutForm">
-            <ul
-              id="app-card"
-              ngbNav
-              #nav="ngbNav"
-              [(activeId)]="activePaymentNav"
-              class="nav-tabs"
-            >
+          <form #paymentForm [formGroup]="checkOutForm">
+            <ul id="app-card" ngbNav #nav="ngbNav" [(activeId)]="activePaymentNav" class="nav-tabs">
               <li [ngbNavItem]="1">
                 <button ngbNavLink>Full Payment</button>
                 <ng-template ngbNavContent>
-                  <app-card
-                    cardTitle="Checkout"
-                    [hidHeader]="true"
-                    [options]="false"
-                  >
+                  <app-card cardTitle="Checkout" [hidHeader]="true" [options]="false">
                     <div class="row">
                       <div class="col-md-6">
                         <div class="form-group">
-                          <label for="comments"
-                            >Sale Description (Text entered here will appear on
-                            the invoice)</label
-                          >
-                          <textarea
-                            id="comments"
-                            rows="1"
-                            class="form-control"
-                            formControlName="saleComments"
-                          ></textarea>
+                          <label for="comments">Sale Description (Text entered here will appear on the invoice)</label>
+                          <textarea id="comments" rows="1" class="form-control"
+                            formControlName="saleComments"></textarea>
                         </div>
                       </div>
                       <div class="col-md-6">
                         <div class="form-group">
                           <label for="orderDate">Order Date</label>
-                          <input
-                            type="datetime-local"
-                            id="orderDate"
-                            class="form-control"
-                            formControlName="orderDate"
-                          />
+                          <input type="datetime-local" id="orderDate" class="form-control" formControlName="orderDate">
                         </div>
                       </div>
                     </div>
-                    <button
-                      class="btn btn-primary m-r-10"
-                      cdkStepperPrevious
-                      [disabled]="isSaleDone"
-                    >
-                      Previous
-                    </button>
-                    <button
-                      class="btn btn-primary m-r-10"
-                      (click)="uppertSale(false, true, false, 1)"
-                      [disabled]="isSaleDone || paymentDetails.length"
-                    >
-                      Invoice - Print + Email
-                    </button>
+                    <button class="btn btn-primary m-r-10" cdkStepperPrevious [disabled]="isSaleDone">Previous</button>
+                    <button class="btn btn-primary m-r-10" (click)="uppertSale(false, true, false, 1)"
+                      [disabled]="isSaleDone || paymentDetails.length || addProductForm.invalid">Invoice - Print +
+                      Email</button>
                     <!-- <ngb-progressbar type="secondary" [value]="counter" [striped]="true" [animated]="true"></ngb-progressbar> -->
-                    <button
-                      class="btn btn-primary m-r-10"
-                      (click)="uppertSale(true, true, false, 0)"
-                      [disabled]="isSaleDone || paymentDetails.length"
-                    >
-                      Invoice - Email Only
-                    </button>
-                    <button
-                      class="btn btn-primary m-r-10"
-                      *ngIf="showFeedback"
-                      [disabled]="paymentDetails.length"
-                      (click)="
-                        isSaleDone
-                          ? cdkStepper.next()
-                          : uppertSale(false, true, false, 2)
-                      "
-                    >
-                      Save
-                    </button>
-                    <button
-                      class="btn btn-primary"
-                      *ngIf="!showFeedback"
-                      [disabled]="isSaleDone || paymentDetails.length"
-                      (click)="uppertSale(false, true, true, 2)"
-                    >
-                      Update and Save
-                    </button>
+                    <button class="btn btn-primary m-r-10" (click)="uppertSale(true, true, false, 0)"
+                      [disabled]="isSaleDone || paymentDetails.length || addProductForm.invalid">Invoice - Email
+                      Only</button>
+                    <button class="btn btn-primary m-r-10" *ngIf="showFeedback"
+                      [disabled]="paymentDetails.length || addProductForm.invalid"
+                      (click)="isSaleDone? cdkStepper.next(): uppertSale(false, true, false, 2);">Save</button>
+                    <button class="btn btn-primary" *ngIf="!showFeedback"
+                      [disabled]="isSaleDone || paymentDetails.length || addProductForm.invalid"
+                      (click)="uppertSale(false, true, true, 2)">Update and Save</button>
                   </app-card>
                 </ng-template>
               </li>
@@ -869,143 +551,87 @@
                     <div class="row">
                       <div class="col-md-6">
                         <div class="form-group">
-                          <label for="saleComments"
-                            >Sale Description (Text entered here will appear on
-                            the invoice)</label
-                          >
-                          <textarea
-                            rows="2"
-                            type="text"
-                            class="form-control"
-                            id="saleComments"
-                            formControlName="saleComments"
-                          ></textarea>
+                          <label for="saleComments">Sale Description (Text entered here will appear on the
+                            invoice)</label>
+                          <textarea rows="2" type="text" class="form-control" id="saleComments"
+                            formControlName="saleComments"></textarea>
                         </div>
                       </div>
                       <!-- order date -->
                       <div class="col-md-6">
                         <div class="form-group">
                           <label for="orderDate">Order Date</label>
-                          <input
-                            type="datetime-local"
-                            id="orderDate"
-                            class="form-control"
-                            formControlName="orderDate"
-                          />
+                          <input type="datetime-local" id="orderDate" class="form-control" formControlName="orderDate">
                         </div>
                       </div>
                     </div>
+                    <div class="row">
+                      <!-- Advance Payment -->
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="advancePayment">Advance Payment</label>
+                          <input type="number" id="advancePayment" class="form-control" (blur)="advancePaymentOnBlur()"
+                            formControlName="advancePayment">
+                        </div>
+                        <ul>
+                          <li class="text-danger"
+                            *ngIf="checkOutForm.controls['advancePayment'].invalid  && (checkOutForm.controls['advancePayment'].value || checkOutForm.controls['advancePayment'].value == 0)">
+                            Advance Payment cannot be greater than the total amount</li>
+                          <li class="text-secondary"
+                            *ngIf="(!checkOutForm.controls['advancePayment'].invalid || !checkOutForm.controls['advancePayment'].value) && remainingAmount">
+                            Remaining Amount: {{remainingAmount}}</li>
+                        </ul>
+                      </div>
+                    </div>
                   </app-card>
-                  <app-card
-                    cardTitle="Checkout"
-                    [hidHeader]="true"
-                    [options]="false"
-                  >
+                  <app-card cardTitle="Checkout" [hidHeader]="true" [options]="false">
                     <div class="row">
                       <div class="col-md-3">
                         <div class="form-group">
                           <label for="remainingAmt">Remaining Amount</label>
-                          <input
-                            type="text"
-                            id="remainingAmt"
-                            class="form-control"
-                            formControlName="amount"
-                            (change)="remainingAmountOnBlur()"
-                          />
+                          <input type="text" id="remainingAmt" class="form-control" formControlName="amount"
+                            (change)="remainingAmountOnBlur()">
                         </div>
                       </div>
                       <div class="col-md-3">
                         <div class="form-group">
                           <label for="deliveryDate">Due Date</label>
-                          <input
-                            #date
-                            class="form-control"
-                            placeholder="yyyy-mm-dd"
-                            name="dp"
-                            ngbDatepicker
-                            #d="ngbDatepicker"
-                            (click)="d.toggle()"
-                            [value]="formatter.format(today)"
-                            (dateSelect)="
-                              today = dateService.validateInput(
-                                today,
-                                date.value
-                              )!
-                            "
-                            [minDate]="limitDate!"
-                          />
+                          <input #date class="form-control" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker
+                            #d="ngbDatepicker" (click)="d.toggle()" [value]="formatter.format(today)"
+                            (dateSelect)="today = dateService.validateInput(today, date.value)!"
+                            [minDate]="limitDate!" />
                         </div>
                       </div>
                       <div class="col-md-4">
                         <div class="form-group">
                           <label for="comments">Comments(If any)</label>
-                          <textarea
-                            id="comments"
-                            rows="1"
-                            class="form-control"
-                            formControlName="comments"
-                          ></textarea>
+                          <textarea id="comments" rows="1" class="form-control" formControlName="comments"></textarea>
                         </div>
                       </div>
                       <div class="col-md-2">
-                        <button
-                          class="btn btn-outline-primary m-r-10 mt-4"
-                          (click)="addPaymentClick()"
-                        >
-                          {{ editPayment ? "Update" : "Save" }}
-                        </button>
+                        <button class="btn btn-outline-primary m-r-10 mt-4" (click)="addPaymentClick()">{{ editPayment?
+                          'Update': 'Save' }}</button>
                       </div>
                     </div>
-                    <button
-                      class="btn btn-primary m-r-10"
-                      cdkStepperPrevious
-                      [disabled]="isSaleDone"
-                    >
-                      Previous
-                    </button>
-                    <button
-                      class="btn btn-primary m-r-10"
-                      (click)="uppertSale(false, false, false, 1)"
-                      [disabled]="isSaleDone || !paymentDetails.length"
-                    >
-                      Invoice - Print + Email
-                    </button>
-                    <button
-                      class="btn btn-primary m-r-10"
-                      (click)="uppertSale(true, false, false, 0)"
-                      [disabled]="isSaleDone || !paymentDetails.length"
-                    >
-                      Invoice - Email Only
-                    </button>
-                    <button
-                      class="btn btn-primary m-r-10"
-                      [disabled]="!paymentDetails.length"
-                      (click)="
-                        isSaleDone
-                          ? cdkStepper.next()
-                          : uppertSale(false, false, false, 2);
-                        navigate()
-                      "
-                    >
-                      Save
-                    </button>
+                    <button class="btn btn-primary m-r-10" cdkStepperPrevious [disabled]="isSaleDone">Previous</button>
+                    <button class="btn btn-primary m-r-10" (click)="uppertSale(false, false, false, 1)"
+                      [disabled]="isSaleDone || (!paymentDetails.length && !checkOutForm.controls['advancePayment'].value) || addProductForm.invalid || checkOutForm.invalid">Invoice
+                      - Print + Email</button>
+                    <button class="btn btn-primary m-r-10" (click)="uppertSale(true, false, false, 0)"
+                      [disabled]="isSaleDone || (!paymentDetails.length && !checkOutForm.controls['advancePayment'].value) || addProductForm.invalid || checkOutForm.invalid">Invoice
+                      - Email Only</button>
+                    <button class="btn btn-primary m-r-10"
+                      [disabled]="(!paymentDetails.length && !checkOutForm.controls['advancePayment'].value) || addProductForm.invalid || checkOutForm.invalid"
+                      *ngIf="showFeedback"
+                      (click)="isSaleDone? cdkStepper.next(): uppertSale(false, false, false, 2)">Save</button>
                     <!-- <button class="btn btn-primary" *ngIf="showFeedback" cdkStepperNext>Next</button> -->
-                    <button
-                      class="btn btn-primary"
-                      *ngIf="!showFeedback"
-                      [disabled]="isSaleDone || !paymentDetails.length"
-                      (click)="uppertSale(false, false, true, 2)"
-                    >
-                      Update and Save
-                    </button>
+                    <button class="btn btn-primary" *ngIf="!showFeedback"
+                      [disabled]="isSaleDone || (!paymentDetails.length && !checkOutForm.controls['advancePayment'].value) || addProductForm.invalid || checkOutForm.invalid"
+                      (click)="uppertSale(false,false, true, 2)">Update and Save</button>
                   </app-card>
                   <!-- grid of partial payments -->
                   <div class="col-md-12">
-                    <app-card
-                      [hidHeader]="true"
-                      cardTitle="Added Pending Payments"
-                      [options]="false"
-                    >
+                    <app-card [hidHeader]="true" cardTitle="Added Pending Payments" [options]="false">
                       <div class="table-responsive">
                         <table class="table table-striped">
                           <thead>
@@ -1018,29 +644,14 @@
                             </tr>
                           </thead>
                           <tbody>
-                            <tr
-                              *ngFor="
-                                let payment of paymentDetails;
-                                let i = index
-                              "
-                            >
+                            <tr *ngFor="let payment of paymentDetails; let i = index">
                               <td>{{ i + 1 }}</td>
                               <td>{{ payment.amount }}</td>
-                              <td>
-                                {{
-                                  payment.paymentDueDate | date: "mediumDate"
-                                }}
-                              </td>
+                              <td>{{ payment.paymentDueDate | date: 'mediumDate' }}</td>
                               <td>{{ payment.comments }}</td>
                               <td id="actionBtn">
-                                <i
-                                  class="feather icon-edit m-r-10"
-                                  (click)="onEditPaymentClick(i)"
-                                ></i>
-                                <i
-                                  class="feather icon-trash-2"
-                                  (click)="onDeletePaymentClick(i)"
-                                ></i>
+                                <i class="feather icon-edit m-r-10" (click)="onEditPaymentClick(i)"></i>
+                                <i class="feather icon-trash-2" (click)="onDeletePaymentClick(i)"></i>
                               </td>
                             </tr>
                           </tbody>
@@ -1053,8 +664,12 @@
             </ul>
           </form>
           <div [ngbNavOutlet]="nav" class="mt-2"></div>
+
         </div>
       </cdk-step>
+
+
     </ng-stepper>
   </div>
+
 </div>

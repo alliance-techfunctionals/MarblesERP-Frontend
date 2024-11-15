@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { booleanAttribute, Component, OnDestroy, OnInit } from "@angular/core";
 import {
   FormBuilder,
   FormControl,
@@ -7,6 +7,7 @@ import {
 } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BsModalService } from "ngx-bootstrap/modal";
+import printJS from "print-js";
 import {
   combineLatest,
   debounceTime,
@@ -51,8 +52,6 @@ import { SizeStoreService } from "src/app/shared/store/size/size.store";
 import { UserModel } from "src/app/shared/store/user/user.model";
 import { UserService } from "src/app/shared/store/user/user.service";
 import { UserStoreService } from "src/app/shared/store/user/user.store";
-import { InventoryModule } from "../inventory.module";
-import printJS from "print-js";
 
 @Component({
   selector: "app-inventory-detail",
@@ -93,6 +92,7 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
   productList$: Observable<string[]> = this.productStoreService
     .selectAll()
     .pipe(map((product) => product.map((t) => t.name)));
+
   productCodeList$: Observable<string[]> = this.productStoreService
     .selectAll()
     .pipe(map((product) => product.map((t) => t.name)));
@@ -132,6 +132,7 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
     sellingPrice: ["", Validators.required],
     productNameCode: ["",Validators.required],
     userCode: [""],
+    isExempted:[false],
     quantity: [""]
     // qty: [1, Validators.required]
   }) as any;
@@ -151,6 +152,9 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
 
   get size() {
     return this.inventoryForm.get("size") as FormControl;
+  }
+  get isExempted() {
+    return this.inventoryForm.get("isExempted") as FormControl;
   }
 
   get qualityType() {
@@ -375,6 +379,7 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
                   sellingPrice: inventory.sellingPrice,
                   quantity: 1,
                   userCode: "",
+                  isExempted:inventory.isExempted || false,
                   guid:""
                   // rate: inventory.rate,
                   // sadekaar: inventory.sadekaar,
@@ -467,7 +472,8 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
         productNameCode: this.productNameCode.value,
         costPrice: this.costPrice.value,
         guid: this.guid.value,
-        quantity: this.quantity.value
+        quantity: this.quantity.value,
+        isExempted: this.isExempted.value
       });
     
     const checkInventory = createCheckInventoryModel({
@@ -634,6 +640,17 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
       // this.file.setValue(event.target.files[0]);
     }
   }
+
+  // isExemption(event:any){
+  //   if(event.target.checked){
+  //     this.checkbox = true;
+  //   }else{
+  //     this.checkbox = false; 
+  //   }
+  //   console.log(this.checkbox);
+  // }
+
+
   editInventoryByGuid(event:any){
     if(event.target.checked){
        this.checkbox = true;
