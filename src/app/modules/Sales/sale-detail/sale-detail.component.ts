@@ -705,7 +705,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
                 shippingPinCode: sale.pinCode,
               });
               // change id to 0
-              sale.details.map((product) => (product.id = 0));
+              // sale.details.map((product) => (product.id = 0));
 
               // adding product details to products array
               for (let product of sale.details) {
