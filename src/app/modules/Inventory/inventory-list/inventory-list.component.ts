@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ColDef, GridApi } from 'ag-grid-community'; // Column Definition Type Interface
+import { ColDef, GridApi, GridOptions } from 'ag-grid-community'; // Column Definition Type Interface
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 import { combineLatest, concatMap, map, Observable, of, Subscription, tap } from 'rxjs';
@@ -27,10 +27,17 @@ import MessageDialogBoxComponent from '../../components/message-dialog-box/messa
 import { AgGridAngular } from 'ag-grid-angular';
 import printJS from 'print-js';
 import { ModalDeleteInventoryComponent } from 'src/app/shared/components/modal-delete/modal-delete-inventory.component';
+import 'ag-grid-enterprise';
+
 
 export interface AutoCompleteModel {
   value: any;
   display: string;
+}
+
+function isChildRow(params: any): boolean {
+  console.log(params);
+  return params.data && !params.data.productCodeRange;
 }
 
 @Component({
@@ -40,39 +47,57 @@ export interface AutoCompleteModel {
 })
 export default class InventoryListComponent {
   colDefs: ColDef[] = [
-    // { field: '', headerCheckboxSelection: true, checkboxSelection: true},
-    { headerName: "#", headerCheckboxSelection: true, checkboxSelection: true, valueGetter: "node.rowIndex + 1", maxWidth: 60, resizable: true },
+    { headerName: "#", headerCheckboxSelection: true, checkboxSelection: true, valueGetter: "node.rowIndex + 1", maxWidth: 100, resizable: true },
     { field: "supplierName", headerName: 'Supplier', filter: true, floatingFilter: true },
-    { field: "qualityType", headerName: 'Quality', filter: true, floatingFilter: true},
-    { field: "product",headerName: 'Product Name', filter: true, floatingFilter: true},
-    { field: "shape",headerName: 'Shape', filter: true, floatingFilter: true},
-    { field: "design",headerName: 'Design', filter: true, floatingFilter: true},
-    { field: "stonesNb",headerName: 'No Of Stones', filter: true, floatingFilter: true},
-    { field: "productCode",headerName: 'Product Code', filter: true, minWidth: 150, floatingFilter: true},
-    // { field: "supplierName", filter: true, floatingFilter: true, valueFormatter: params => params.value ? params.value : "N/A"},
+    { field: "qualityType", headerName: 'Quality', filter: true, floatingFilter: true },
+    { field: "product", headerName: 'Product Name', filter: true, floatingFilter: true },
+    { field: "shape", headerName: 'Shape', filter: true, floatingFilter: true },
+    { field: "design", headerName: 'Design', filter: true, floatingFilter: true },
+    { field: "stonesNb", headerName: 'No Of Stones', filter: true, floatingFilter: true },
+    { field: "productCode", headerName: 'Product Code', filter: true, minWidth: 150, floatingFilter: true },
+    { field: "inStock",
+      filter: true, floatingFilter: true,
+    },
     {
       field: "action",
       headerName: "Actions",
       cellRenderer: AgCustomButtonComponent,
-      cellRendererParams: {
-        buttonsToShow: ['edit', 'delete' , 'print'],
-        // onViewClick: this.onViewClicked.bind(this),
+      cellRendererParams: (params: any) => ({
+        buttonsToShow:  this.getButtonsToShow(params),
         onEditClick: this.onEditClicked.bind(this),
         onDeleteClick: this.onDeleteClicked.bind(this),
-        // onImageClick: this.onImageClicked.bind(this),
         onPrintClick: this.onPrintClicked.bind(this)
-      }
+      })
     }
   ];
   public defaultColDef: ColDef = {
     enableValue: true,
     filter: true,
     flex: 1,
-    minWidth: 100
+    minWidth: 100,
+    enableRowGroup: true,
   };
 
+  gridOptions: GridOptions = {
+    rowBuffer: 20,
+    getRowStyle: (params) => {
+      if (params.data && params.data.isSold) {
+        // Replace with your actual condition
+        return { background: "rgba(220, 20, 60, 0.1)" }; // Transparent crimson color
+      }
+      return undefined;
+    },
+  };
+
+  getButtonsToShow(params: any): string[] {
+    if (params.node.group) {
+      return []; // No buttons for group rows
+    }
+    return ['edit', 'delete', 'print'];
+  }
+
+  groupDefaultExpanded = 0;
   paginationPageSize = environment.tableRecordSize;
-  
 
   // onViewClicked(e: any) {
   //   this.router.navigate(['sale/view', e.rowData.id]);
@@ -102,10 +127,16 @@ export default class InventoryListComponent {
     // Show the button if rows are selected
     this.showButton = this.selectedRows.length > 0;
   }
+  
+  // onToggleClick(e: any) {
+  //   this.toggleGuidVisibility(e.rowData.guid);
+  // }
+
   onPrintClicked(e: any) {
     const idsArray: number[] = []
     idsArray.push(e.rowData.id);
     this.printInventoryBarcode(idsArray);
+
   }
   // pagination config
   pagingConfig: Pagination = createPagination({});
@@ -161,7 +192,7 @@ export default class InventoryListComponent {
       console.log("Selected Rows: ", this.selectedRows);
       const idsArray: number[] = []
       selectedRows.forEach((row) => {
-        idsArray.push(row.id);
+        if(row.id) idsArray.push(row.id);
       })
 
       this.printInventoryBarcode(idsArray);
@@ -496,7 +527,8 @@ export default class InventoryListComponent {
   
 
 
-  
+  filteredInventoryList: any[] = [];
+  expandedGuids: Set<string> = new Set();
   ngOnInit() {
     console.log("Init")
     
@@ -519,14 +551,15 @@ export default class InventoryListComponent {
     ]).pipe(
       map(([inventories, users]) => {
         const userMap = new Map(users.map((user) => [user.id, user]));
-
+    
         const result = inventories
           .map((inventory) => {
             const supplier = userMap.get(inventory.supplierId);
-
+    
             return {
               ...inventory,
               supplierName: supplier?.name || "N/A",
+              inStock: !inventory.isSold,
             };
           })
           .sort((a, b) => {
@@ -534,11 +567,92 @@ export default class InventoryListComponent {
             const dateB = new Date(b.createdOn);
             return dateB.getTime() - dateA.getTime();
           });
-
-          return result;
+    
+        // this.addProductCodeRange(result);
+        // this.filteredInventoryList = this.filterUniqueGuids(result);
+        return result;
       })
     );
   }
+
+  // addProductCodeRange(inventories: any[]): void {
+  //   const guidMap = new Map<string, string[]>();
+  
+  //   inventories.forEach(inventory => {
+  //     if (!guidMap.has(inventory.guid)) {
+  //       guidMap.set(inventory.guid, []);
+  //     }
+  //     guidMap.get(inventory.guid)?.push(inventory.productCode);
+  //   });
+  
+  //   inventories.forEach(inventory => {
+  //     const productCodes = guidMap.get(inventory.guid);
+  //     if (productCodes) {
+  //       productCodes.sort();
+  //       inventory.productCodeRange = `${productCodes[0]} - ${productCodes[productCodes.length - 1]}`;
+  //     }
+  //   });
+  // }
+  
+  // filterUniqueGuids(inventories: any[]): any[] {
+  //   const uniqueGuids = new Set();
+  //   return inventories.filter(inventory => {
+  //     if (!uniqueGuids.has(inventory.guid)) {
+  //       uniqueGuids.add(inventory.guid);
+  //       return true;
+  //     }
+  //     return false;
+  //   }).map(inventory => ({
+  //     guid: inventory.guid,
+  //     productCodeRange: inventory.productCodeRange,
+  //     supplierName: '',
+  //     qualityType: '',
+  //     product: '',
+  //     shape: '',
+  //     design: '',
+  //     stonesNb: '',
+  //     productCode: '',
+  //     action: ''
+  //   }));
+  // }
+  
+  // toggleGuidVisibility(guid: string): void {
+  //   if (this.expandedGuids.has(guid)) {
+  //     this.expandedGuids.delete(guid);
+  //   } else {
+  //     this.expandedGuids.add(guid);
+  //   }
+  //   this.updateFilteredInventoryList();
+  // }
+  
+  // updateFilteredInventoryList(): void {
+  //   this.inventoryList$.subscribe(inventories => {
+  //     const uniqueGuids = new Set();
+  //     this.filteredInventoryList = inventories.reduce((acc: any, inventory: any) => {
+  //       if (!uniqueGuids.has(inventory.guid)) {
+  //         uniqueGuids.add(inventory.guid);
+  //         acc.push({
+  //           guid: inventory.guid,
+  //           productCodeRange: inventory.productCodeRange,
+  //           supplierName: '',
+  //           qualityType: '',
+  //           product: '',
+  //           shape: '',
+  //           design: '',
+  //           stonesNb: '',
+  //           productCode: '',
+  //           action: ''
+  //         });
+  //         if (this.expandedGuids.has(inventory.guid)) {
+  //           acc.push({ ...inventory, productCodeRange: '' });
+  //         }
+  //       } else if (this.expandedGuids.has(inventory.guid)) {
+  //         acc.push({ ...inventory, productCodeRange: '' });
+  //       }
+  //       return acc;
+  //     }, []);
+  //   });
+  // }
   // printInvoice(sale: SaleModel){
   //   this.invoiceService.printInvoice(sale.id).pipe(
   //     tap((invoiceResponse) => {

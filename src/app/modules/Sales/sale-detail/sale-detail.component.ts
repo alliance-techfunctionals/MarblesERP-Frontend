@@ -254,7 +254,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
       // shape: ["", Validators.required],
       quantity: [1, [Validators.required, Validators.min(1)]],
       stonesNb: [null],
-      supplierId: ["", Validators.required],
+      supplierId: [""],
       amount: [""],
       currency: ["INR"],
       primaryStone: ["", Validators.required],
@@ -821,8 +821,8 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
         ), // used regular expression to remove all non digits characters,
         ccyCode: this.currency.value,
         description: this.description.value,
-        isCustomized: this.isCustomized.value,
-        isFreightInclude: this.isFreightInclude.value,
+        isCustomized: this.isCustomized.value == "true" ? true : false,
+        isFreightInclude: this.isFreightInclude.value == "true" ? true : false,
         expectedDeliveryDate: this.expectedDeliveryDate.value,
         productCode: this.isCustomized.value ? null : this.productCode.value,
       });
@@ -1072,6 +1072,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
     this.description.setValue(this.addedProducts[index].description);
     this.isCustomized.setValue(this.addedProducts[index].isCustomized);
     this.productCode.setValue(this.addedProducts[index].productCode);
+    this.isFreightInclude.setValue(this.addedProducts[index].isFreightInclude);
     // remove product from list before edit
     this.addedProducts.splice(index, 1);
     this.editProduct = true;

@@ -1,6 +1,7 @@
 // Angular Import
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
+import { ConsoleToggleService } from './shared/service/console-toggle.service';
 
 @Component({
   selector: 'app-root',
@@ -9,7 +10,9 @@ import { NavigationEnd, Router } from '@angular/router';
 })
 export class AppComponent implements OnInit {
   // constructor
-  constructor(private router: Router) {}
+  constructor(private router: Router, private consoleToggleService: ConsoleToggleService) {
+    this.consoleToggleService.disableConsoleInProduction();
+  }
 
   // life cycle event
   ngOnInit() {
