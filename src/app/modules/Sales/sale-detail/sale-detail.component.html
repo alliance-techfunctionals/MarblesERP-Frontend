@@ -335,18 +335,7 @@
                   </div>
                 </div>
 
-                <div class="col-md-6">
-                  <!-- select supplierId -->
-                  <div class="form-group">
-                    <label for="supplierId">Supplier<span class="required">*</span></label>
-                    <select id="supplierId" class="form-control" formControlName="supplierId">
-                      <option value="0">Select</option>
-                      <option *ngFor="let supplier of group.supplierUserList" value="{{ supplier.id }}">{{ supplier.name
-                        }} ({{supplier.userCode}})
-                      </option>
-                    </select>
-                  </div>
-                </div>
+                
 
                 <div class="col-md-2">
                   <!-- enter Amount -->
@@ -369,7 +358,7 @@
                   </div>
                 </div>
 
-                <div class="col-md-2">
+                <!-- <div class="col-md-2">
                   <div class="form-group">
                     <label for="FreightInclusive">Freight Inclusive</label>
                     <div class="form-check form-switch">
@@ -378,6 +367,17 @@
                       <label class="form-check-label" for="FreightInclusive">{{ isFreightInclude.value == true? 'Yes':
                         'No' }}</label>
                     </div>
+                  </div>
+                </div> -->
+
+                <div class="col-md-2">
+                  
+                  <div class="form-group">
+                    <label for="FreightInclusive">Freight Inclusive</label>
+                    <select class="form-control" id="FreightInclusive" formControlName="isFreightInclude" value="true">
+                      <option value="true">Yes</option>
+                      <option value="false">No</option>
+                    </select>
                   </div>
                 </div>
 
@@ -390,7 +390,7 @@
                   </div>
                 </div>
 
-                <div class="col-md-3">
+                <!-- <div class="col-md-3">
                   <div class="form-group">
                     <label for="">Order Selection<span class="required">*</span></label>
                     <div class="form-check">
@@ -406,9 +406,20 @@
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> -->
 
                 <div class="col-md-3">
+                  
+                  <div class="form-group">
+                    <label for="orderSelection">Order Selection<span class="required">*</span></label>
+                    <select class="form-control" id="orderSelection" formControlName="isHandCarry" value="true">
+                      <option value="true">Hand Picked</option>
+                      <option value="false">To Be Shipped</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- <div class="col-md-3">
                   <div class="form-group">
                     <label for="customOrder">Custom Product<span class="required">*</span></label>
                     <div class="form-check form-switch">
@@ -418,6 +429,17 @@
                       <label class="form-check-label" for="customOrder">{{ isCustomized.value == true? 'Yes': 'No'
                         }}</label>
                     </div>
+                  </div>
+                </div> -->
+
+                <div class="col-md-3">
+                  
+                  <div class="form-group">
+                    <label for="customOrder">Custom Product<span class="required">*</span></label>
+                    <select class="form-control" id="customOrder" (change)="isHandCarry.setValue(isCustomized.value? 'false': 'true') " formControlName="isCustomized" value="true">
+                      <option value="true">Yes</option>
+                      <option value="false">No</option>
+                    </select>
                   </div>
                 </div>
 

@@ -38,7 +38,10 @@
         class="ag-theme-quartz" 
         [rowData]="group.inventoryList" 
         [columnDefs]="colDefs"
-        (rowSelected)="onRowSelected()">
+        (rowSelected)="onRowSelected()"
+        [rowGroupPanelShow]="'always'"
+        [groupDefaultExpanded]="groupDefaultExpanded"
+        [gridOptions]="gridOptions">
       </ag-grid-angular>
     </div>
   </app-card>

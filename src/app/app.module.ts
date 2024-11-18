@@ -54,6 +54,7 @@ import { ModalProgressBarRoutingModule } from './shared/components/progress-bar/
 import { TagInputModule } from 'ngx-chips';
 import { ModalDeliveryPartnerInputModule } from './shared/components/modal-delivery-partner-input/modal-delivery-partner-input.module';
 import { AgCustomButtonComponent } from './shared/components/Button/ag-custom-button/ag-custom-button.component';
+import { CustomCellRendererComponent } from './shared/components/custom-grid-checkbox&toggler/custom-grid-checkbox&toggler';
 
 export function initElfDevTools() {
   return () => {
@@ -85,7 +86,8 @@ if (environment.production) {
     NavItemComponent,
     NavCollapseComponent,
     NavGroupComponent,
-    AgCustomButtonComponent
+    AgCustomButtonComponent,
+    CustomCellRendererComponent
   ],
   imports: [
     BrowserModule,

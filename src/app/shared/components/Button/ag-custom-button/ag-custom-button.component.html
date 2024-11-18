@@ -1,3 +1,4 @@
+<i *ngIf="params.buttonsToShow.includes('toggler')" class="bi bi-chevron-down m-r-10" (click)="onToggleClick($event)" style="cursor: pointer;"> </i>
 <i *ngIf="params.buttonsToShow.includes('view')" class="bi bi-eye m-r-10" (click)="onViewClick($event)"> </i>
 <i *ngIf="params.buttonsToShow.includes('edit')" class="feather icon-edit m-r-10" (click)="onEditClick($event)"> </i>
 <i *ngIf="params.buttonsToShow.includes('delete')" class="feather icon-trash-2 m-r-10" (click)="onDeleteClick($event)"></i>
@@ -6,3 +7,4 @@
 <i *ngIf="params.buttonsToShow.includes('check')" class="bi bi-check2-circle" (click)="onCheckClick($event)"></i>
 <button *ngIf="params.buttonsToShow.includes('ship')" class="btn btn-outline-primary py-1 m-r-10" (click)="onShipClick($event)">Ship Now</button>
 <button *ngIf="params.buttonsToShow.includes('delivered')" class="btn btn-outline-primary py-1" (click)="onDeliveredClick($event)">Delivered</button>
+

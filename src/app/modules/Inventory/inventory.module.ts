@@ -33,6 +33,10 @@ import { PrimaryColorStoreService } from 'src/app/shared/store/primary-color/pri
 import { ArtisanStoreService } from 'src/app/shared/store/artisan/artisan.store';
 import { ArtisanService } from 'src/app/shared/store/artisan/artisan.service';
 
+import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
+import { RippleModule } from 'primeng/ripple';
+
 @NgModule({
   declarations: [
     InventoryListComponent,
@@ -72,7 +76,8 @@ import { ArtisanService } from 'src/app/shared/store/artisan/artisan.service';
     AgGridAngular,
     TypeaheadModule,
     NgbAccordionModule,
-    TagInputModule
+    TagInputModule,
+    TableModule, ButtonModule, RippleModule
   ],
   exports: [
     InventoryListComponent,

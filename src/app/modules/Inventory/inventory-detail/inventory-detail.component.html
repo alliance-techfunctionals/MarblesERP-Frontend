@@ -9,7 +9,18 @@
   <div class="col-md-12">
     <app-card cardTitle="" [hidHeader]="true" [options]="false">
       <form [formGroup]="inventoryForm">
-        <h5>{{ inventoryForm.value.id === 0 ? "Add" : "Edit" }} Inventory</h5>
+        <div class="d-flex w-100 justify-content-between gap-2 flex-wrap">
+          <h5 class="m-0">{{ inventoryForm.value.id === 0 ? "Add" : "Edit" }} Inventory</h5>
+          <div class="d-flex gap-1 align-items-center">
+            <div [ngStyle]="{
+              'background-color': inventoryInStock ? 'green' : 'red',
+              'height': '15px',
+              'width': '15px',
+              'border-radius': '50%'
+            }"></div>
+            <p class="p-0 m-0">{{inventoryInStock ? 'Available' : 'Sold Out'}}</p>
+          </div>
+        </div>
         <hr />
         <div class="row">
           <div class="col-md-6">

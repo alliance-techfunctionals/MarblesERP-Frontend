@@ -142,6 +142,7 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
   sadekaarField = false;
   designAmtField = false;
 
+  inventoryInStock: boolean = true;
 
   get id() {
     return this.inventoryForm.get("id") as FormControl;
@@ -196,8 +197,6 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
     return this.inventoryForm.get("productNameCode") as FormControl;
   }
 
-  
-
   get supplierId() {
     return this.inventoryForm.get("supplierId") as FormControl;
   }
@@ -210,88 +209,9 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
     return this.inventoryForm.get("sellingPrice") as FormControl;
   }
 
-  // get qty(){
-  //   return this.inventoryForm.get('qty') as FormControl;
-  // }
-
   get quantity() {
     return this.inventoryForm.get('quantity') as FormControl;
   }
-
-  // get design() {
-  //   return this.inventoryForm.get('design') as FormControl;
-  // }
-
-  // get quantity() {
-  //   return this.inventoryForm.get('quantity') as FormControl;
-  // }
-  // get color() {
-  //   return this.inventoryForm.get('color') as FormControl;
-  // }
-
-  // get size() {
-  //   return this.inventoryForm.get('size') as FormControl;
-  // }
-
-  // get file() {
-  //   return this.inventoryForm.get('file') as FormControl;
-  // }
-
-  // get name() {
-  //   return this.inventoryForm.get('name') as FormControl;
-  // }
-
-  // get supplierId() {
-  //   return this.inventoryForm.get('supplierId') as FormControl;
-  // }
-
-  // generateCode() {
-  //   // Fetch the values from the form controls
-
-  //   console.log(this.inventoryForm.value)
-  //   const supplierCode = this.inventoryForm.get("supplierCode")?.value || "SC";
-  //   const pc = this.inventoryForm.get("pc")?.value || "";
-  //   const primaryColor = this.inventoryForm.get("primaryColor")?.value || "";
-
-  //   // Subscribe to supplierUserList$ to get the supplier data
-  //   this.artisanList$.subscribe(
-  //     (data) => {
-  //       console.log(data);
-  //       // Filter the supplier data to find supplier with id == 4 (replace 4 with the correct supplier ID if needed)
-  //       const artisan = data?.find(
-  //         (artisan) => artisan.name == this.supplierId.value
-  //       ); // Update artisan ID accordingly
-  //       console.log(artisan);
-  //       if (artisan) {
-  //         // Log artisan details (for debugging purposes)
-  //         console.log(artisan);
-  //         const artisanCode = artisan.name.substring(0, 2);
-
-  //         // Example code generation logic
-  //         const generatedCode = `A&L-${artisanCode.substring(
-  //           0,
-  //           3
-  //         )}${primaryColor.substring(0, 1)}${pc.substring(
-  //           0,
-  //           4
-  //         )}001`.toUpperCase();
-
-  //         // Set the generated code into the productCode form control
-  //         this.inventoryForm.get("productCode")?.setValue(generatedCode);
-  //       } else {
-  //         console.error("artisan with ID 4 not found");
-  //       }
-  //     },
-  //     (error) => {
-  //       // Handle any errors that occur
-  //       console.error("Error while fetching artisan data:", error);
-  //     },
-  //     () => {
-  //       // Handle the completion of the Observable
-  //       console.log("Observable completed");
-  //     }
-  //   );
-  // }
 
   constructor(
     private route: ActivatedRoute,
@@ -359,7 +279,7 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
                   this.store.getById(inventoryId) ?? createInventoryModel({});
 
                 console.log(inventory);
-              
+                this.inventoryInStock = !inventory.isSold;
 
                 this.inventoryForm.setValue({
                   id: inventory.id,
