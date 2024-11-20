@@ -27,7 +27,8 @@ import MessageDialogBoxComponent from '../../components/message-dialog-box/messa
 import { AgGridAngular } from 'ag-grid-angular';
 import printJS from 'print-js';
 import { ModalDeleteInventoryComponent } from 'src/app/shared/components/modal-delete/modal-delete-inventory.component';
-import 'ag-grid-enterprise';
+// import 'ag-grid-enterprise';
+import { AgGridService } from 'src/app/shared/service/ag-grid.service';
 
 
 export interface AutoCompleteModel {
@@ -47,7 +48,30 @@ function isChildRow(params: any): boolean {
 })
 export default class InventoryListComponent {
   colDefs: ColDef[] = [
-    { headerName: "#", headerCheckboxSelection: true, checkboxSelection: true, valueGetter: "node.rowIndex + 1", maxWidth: 100, resizable: true },
+    { headerName: "#", headerCheckboxSelection: true, checkboxSelection: true, valueGetter: "node.rowIndex + 1", maxWidth: 75, resizable: true },
+    {
+      headerName: "Date",
+      field: "createdOn",
+      filter: "agDateColumnFilter",
+      floatingFilter: true,
+      valueFormatter: (params) => {
+        if (!params.value) return "N/A"; // Check if the date is null or undefined
+        const date = new Date(params.value); // Convert the string date to a Date object
+        return date.toLocaleString("en-US", {
+          month: "short", // "Jul"
+          day: "numeric", // "4"
+          year:
+            date.getFullYear() === new Date().getFullYear()
+              ? undefined
+              : "numeric", // "2024"
+          hour: "numeric", // "3"
+          minute: "numeric", // "39"
+          hour12: true, // Use 12-hour format
+        });
+      },
+      minWidth: 90,
+      filterParams: this.agGridService.filterParams,
+    },
     { field: "supplierName", headerName: 'Supplier', filter: true, floatingFilter: true },
     { field: "qualityType", headerName: 'Quality', filter: true, floatingFilter: true },
     { field: "product", headerName: 'Product Name', filter: true, floatingFilter: true },
@@ -55,9 +79,7 @@ export default class InventoryListComponent {
     { field: "design", headerName: 'Design', filter: true, floatingFilter: true },
     { field: "stonesNb", headerName: 'No Of Stones', filter: true, floatingFilter: true },
     { field: "productCode", headerName: 'Product Code', filter: true, minWidth: 150, floatingFilter: true },
-    { field: "inStock",
-      filter: true, floatingFilter: true,
-    },
+    { field: "inStock", filter: true, floatingFilter: true, maxWidth: 75 },
     {
       field: "action",
       headerName: "Actions",
@@ -76,7 +98,7 @@ export default class InventoryListComponent {
     flex: 1,
     minWidth: 100,
     enableRowGroup: true,
-  };
+  };  
 
   gridOptions: GridOptions = {
     rowBuffer: 20,
@@ -171,7 +193,8 @@ export default class InventoryListComponent {
     private userSerive: UserService,
     private userStoreService: UserStoreService,
     private imageService: ImageService,
-    private messageService: MessageToastService
+    private messageService: MessageToastService,
+    public agGridService: AgGridService,
 
   ) { }
   private gridApi!: GridApi;

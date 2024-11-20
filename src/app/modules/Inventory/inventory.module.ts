@@ -37,6 +37,7 @@ import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 
+
 @NgModule({
   declarations: [
     InventoryListComponent,
@@ -77,7 +78,7 @@ import { RippleModule } from 'primeng/ripple';
     TypeaheadModule,
     NgbAccordionModule,
     TagInputModule,
-    TableModule, ButtonModule, RippleModule
+    TableModule, ButtonModule, RippleModule,
   ],
   exports: [
     InventoryListComponent,

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { EMPTY, Observable, of } from 'rxjs';
+import { EMPTY, Observable, of, throwError } from 'rxjs';
 import { catchError, delay, switchMap, take, tap } from 'rxjs/operators';
 import { ProductDetails, SaleModel } from './sale.model';
 import { SaleStoreService } from './sale.store';
@@ -50,12 +50,12 @@ export class SaleService {
       return this.MarbleInventoryHttpService.insertSale(sale).pipe(
         catchError(_error => {
           if(_error.status === 500){
-            this.messageService.error(_error.error.innerException);  
+            this.messageService.error(_error.error.message);  
           }
           else{
             this.messageService.error('Error on Inserting Sale');
           }
-          return EMPTY;
+          return throwError(_error);
         }),
         tap((response: SaleModel) => {
           // console.log({ response })
@@ -68,12 +68,12 @@ export class SaleService {
       return this.MarbleInventoryHttpService.updateSale(sale).pipe(
         catchError(_error => {
           if(_error.status === 500){
-            this.messageService.error(_error.error.innerException);
+            this.messageService.error(_error.error.message);
           }
           else{
             this.messageService.error('Error on Updating Sale');
           }
-          return EMPTY;
+          return throwError(_error);
         }),
         tap((response) => {
           // console.log({ response })
