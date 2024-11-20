@@ -957,6 +957,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
             // this.saleForm.markAsPristine()
           }),
           catchError((error) => {
+            console.log("Error Catched");
             this.onEditClick(this.addedProducts.length - 1);
             return of(null); // Return an observable to complete the stream
           })
