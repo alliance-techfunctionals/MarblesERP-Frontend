@@ -10,7 +10,7 @@ const routes: Routes = [
     component: SaleListComponent
   },
   {
-    path: 'view/:id',
+    path: 'view',
     component: SaleViewComponent
   },
   {

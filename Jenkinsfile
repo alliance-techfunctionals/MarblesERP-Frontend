@@ -24,7 +24,7 @@ pipeline {
                     echo "Branch: ${BRANCH_NAME == 'origin/develop'}"
                     if (BRANCH_NAME == 'origin/develop') {
                         sh 'sudo npm install --force; npm run build-dev'
-                    } else {
+                    } else if (BRANCH_NAME == 'origin/master') {
                         sh 'sudo npm install --force; npm run build-prod'
                     }
                   }
@@ -37,7 +37,7 @@ pipeline {
                   if (BRANCH_NAME == 'origin/develop') {
                       sh 'sudo rm -rf /var/www/testartsandlife.atf-labs.com/*'
                       sh 'sudo mv dist/* /var/www/testartsandlife.atf-labs.com/'
-                  } else {
+                  } else if (BRANCH_NAME == 'origin/master') {
                       sh 'sudo rm -rf /var/www/artsandlife.atf-labs.com/*'
                       sh 'sudo mv dist/* /var/www/artsandlife.atf-labs.com/'
                   }

@@ -27,7 +27,7 @@ import MessageDialogBoxComponent from '../../components/message-dialog-box/messa
 import { AgGridAngular } from 'ag-grid-angular';
 import printJS from 'print-js';
 import { ModalDeleteInventoryComponent } from 'src/app/shared/components/modal-delete/modal-delete-inventory.component';
-import 'ag-grid-enterprise';
+// import 'ag-grid-enterprise';
 import { AgGridService } from 'src/app/shared/service/ag-grid.service';
 
 

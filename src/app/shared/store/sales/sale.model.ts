@@ -168,6 +168,7 @@ export interface ProductDetails {
   isCustomFullfilled?: boolean;
   expectedDeliveryDate: Date;
   productCode: string;
+  isGSTExempted: boolean;
 }
 
 export interface PartPaymentDetails {
@@ -244,6 +245,7 @@ export interface addProductForm {
   isFreightInclude: FormControl<boolean>;
   productCode: FormControl<string>;
   getByProductCode: FormControl<string>;
+  isGSTExempted: FormControl<boolean>;
 }
 
 export interface checkoutForm {

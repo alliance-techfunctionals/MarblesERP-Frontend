@@ -27,6 +27,7 @@ import { IConfig } from "ngx-countries-dropdown";
 import {
   Observable,
   Subscription,
+  catchError,
   combineLatest,
   debounceTime,
   distinctUntilChanged,
@@ -93,6 +94,7 @@ import { PrimaryColorStoreService } from "src/app/shared/store/primary-color/pri
 import { PrimaryColorService } from "src/app/shared/store/primary-color/primary-color.service";
 import { ShapeStoreService } from "src/app/shared/store/shape/shape.store";
 import { ShapeService } from "src/app/shared/store/shape/shape.service";
+import { clear } from "console";
 
 @Component({
   selector: "app-sale-detail",
@@ -267,7 +269,8 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
       isCustomized: [false],
       isFreightInclude: [true],
       productCode: [''],
-      getByProductCode: ['']
+      getByProductCode: [''],
+      isGSTExempted: [false],
     });
 
   // CHECKOUT FORM
@@ -417,6 +420,10 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
 
   get isFreightInclude() {
     return this.addProductForm.get("isFreightInclude") as FormControl;
+  }
+
+  get isGSTExempted(){
+    return this.addProductForm.get("isGSTExempted") as FormControl;
   }
 
   get checkoutId() {
@@ -825,7 +832,10 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
         isFreightInclude: this.isFreightInclude.value == "true" ? true : false,
         expectedDeliveryDate: this.expectedDeliveryDate.value,
         productCode: this.isCustomized.value ? null : this.productCode.value,
+        isGSTExempted: this.isGSTExempted.value,
       });
+
+      this.clear();
     }
 
     let isBackDatedOrder = this.orderNumber.value == "New-Order" ? false : true;
@@ -869,7 +879,6 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
     });
 
     // sale is done
-    this.isSaleDone = true;
 
     this.subscriptions.push(
       combineLatest([
@@ -943,8 +952,13 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
                 )
                 .subscribe();
             }
+            this.isSaleDone = true;
             this.navigate();
             // this.saleForm.markAsPristine()
+          }),
+          catchError((error) => {
+            this.onEditClick(this.addedProducts.length - 1);
+            return of(null); // Return an observable to complete the stream
           })
         )
         .subscribe()
@@ -967,30 +981,60 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
 
   clear(): void {
     this.addProductForm = this.formBuilder.nonNullable.group({
+      // id: [0],
+      // masterId: [this.masterId.value],
+      // quality: [""],
+      // product: [""],
+      // design: ["", Validators.required],
+      // size: ["", Validators.required],
+      // shape: ["", Validators.required],
+      // quantity: [1, [Validators.required, Validators.min(1)]],
+      // stonesNb: [null],
+      // supplierId: ["", Validators.required],
+      // amount: [""],
+      // currency: [this.currency.value],
+      // primaryStone: ["", Validators.required],
+      // colour: ["", Validators.required],
+      // description: [""],
+      // salesManId: [this.salesManId.value],
+      // isHandCarry: [this.isHandCarry.value],
+      // expectedDeliveryDate: [""],
+      // orderStatus: [0],
+      // paymentStatus: [0],
+      // isCustomized: [false],
+      // isFreightInclude: [false],
+      // productCode: [''],
+      // getByProductCode: [''],
+      // isGSTExempted: [false],
+
+
+
       id: [0],
       masterId: [this.masterId.value],
-      quality: [""],
-      product: [""],
+      product: ["", Validators.required],
+      quality: ["", Validators.required],
+      colour: ["", Validators.required],
       design: ["", Validators.required],
       size: ["", Validators.required],
       shape: ["", Validators.required],
+      // shape: ["", Validators.required],
       quantity: [1, [Validators.required, Validators.min(1)]],
       stonesNb: [null],
-      supplierId: ["", Validators.required],
+      supplierId: [""],
       amount: [""],
       currency: [this.currency.value],
       primaryStone: ["", Validators.required],
-      colour: ["", Validators.required],
       description: [""],
       salesManId: [this.salesManId.value],
       isHandCarry: [this.isHandCarry.value],
-      expectedDeliveryDate: [""],
       orderStatus: [0],
+      expectedDeliveryDate: [""],
       paymentStatus: [0],
       isCustomized: [false],
-      isFreightInclude: [false],
+      isFreightInclude: [true],
       productCode: [''],
-      getByProductCode: ['']
+      getByProductCode: [''],
+      isGSTExempted: [false],
     });
     this.editProduct = false;
   }
@@ -1012,6 +1056,16 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
 
   // ADD OR UPDATE PRODUCT
   addProductClick() {
+    if (this.addProductForm.invalid) {
+      Object.keys(this.addProductForm.controls).forEach(key => {
+      const controlErrors = this.addProductForm.get(key)?.errors;
+      if (controlErrors != null) {
+        console.log('Key control: ' + key + ', error: ' + JSON.stringify(controlErrors));
+      }
+      });
+      return;
+    }
+
     this.addedProducts.push({
       id: this.ProductId.value,
       masterId: this.masterId.value,
@@ -1036,6 +1090,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
       isFreightInclude: this.isFreightInclude.value,
       expectedDeliveryDate: this.expectedDeliveryDate.value,
       productCode: this.isCustomized.value ? null : this.productCode.value,
+      isGSTExempted: this.isGSTExempted.value,
     });
     this.clear();
 
@@ -1073,6 +1128,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
     this.isCustomized.setValue(this.addedProducts[index].isCustomized);
     this.productCode.setValue(this.addedProducts[index].productCode);
     this.isFreightInclude.setValue(this.addedProducts[index].isFreightInclude);
+    this.isGSTExempted.setValue(this.addedProducts[index].isGSTExempted);
     // remove product from list before edit
     this.addedProducts.splice(index, 1);
     this.editProduct = true;
@@ -1585,6 +1641,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
             this.amount.setValue(productDetail.sellingPrice);
             this.expectedDeliveryDate.setValue(productDetail.expectedDeliveryDate);
             this.productCode.setValue(productDetail.productCode);
+            this.isGSTExempted.setValue(productDetail.isGSTExempted);
           }
         },
         (error: any) => {
