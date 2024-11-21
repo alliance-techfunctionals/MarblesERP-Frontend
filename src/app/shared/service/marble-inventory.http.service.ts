@@ -486,7 +486,7 @@ export class MarbleInventoryHttpService {
       headers: headers,
       responseType: 'text'
     }
-    return this.http.get<any>(`${this.baseUrl}sale/invoice/${saleId}`, requestOptions);
+    return this.http.get<any>(`${this.baseUrl}sale/invoice/${saleId}?invoiceType=1`, requestOptions);
   }
 
   // Custom Order API

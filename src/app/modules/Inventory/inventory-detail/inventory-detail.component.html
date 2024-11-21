@@ -11,7 +11,7 @@
       <form [formGroup]="inventoryForm">
         <div class="d-flex w-100 justify-content-between gap-2 flex-wrap">
           <h5 class="m-0">{{ inventoryForm.value.id === 0 ? "Add" : "Edit" }} Inventory</h5>
-          <div class="d-flex gap-1 align-items-center">
+          <div class="d-flex gap-1 align-items-center" *ngIf="id.value != 0">
             <div [ngStyle]="{
               'background-color': inventoryInStock ? 'green' : 'red',
               'height': '15px',
@@ -250,9 +250,9 @@
         </div>
 
         <div class="form-group">
-          <label for="isExempted" class=" m-r-10">Exemption</label>
-          <input type="checkbox" class="form-control" id="isExempted" class=" m-r-10"  formControlName="isExempted" />
-          <label for="isExempted" class=" m-r-10">Yes</label>
+          <input type="checkbox" class="form-control" id="isTaxExempted" class=" m-r-10"  formControlName="isTaxExempted" />
+          <label for="isTaxExempted" class=" m-r-10">Tax Exempted</label>
+          <!-- <label for="isTaxExempted" class=" m-r-10">Yes</label> -->
         </div>
       </form>
       <div class="col-md-12">

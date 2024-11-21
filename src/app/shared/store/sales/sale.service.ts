@@ -190,6 +190,7 @@ export class SaleService {
         return EMPTY;
       }),
       tap((response: any) => {
+        this.messageService.success('Product Fetched Successfully');
         return response.data;
       })
     )

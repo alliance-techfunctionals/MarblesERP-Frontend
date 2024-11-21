@@ -6,6 +6,12 @@ pipeline {
     }
     stages {
         stage('Pull Code') {
+            when {
+                anyOf {
+                    branch 'develop'
+                    branch 'master'
+                }
+            }
             steps {
                 script {
                     echo "Branch: ${BRANCH_NAME}"
@@ -19,6 +25,12 @@ pipeline {
             }
         }
         stage('Build Application') {
+            when {
+                anyOf {
+                    branch 'develop'
+                    branch 'master'
+                }
+            }
             steps {
                   script {
                     echo "Branch: ${BRANCH_NAME == 'origin/develop'}"
@@ -31,6 +43,12 @@ pipeline {
             }
         }
         stage('Deploy Application') {
+            when {
+                anyOf {
+                    branch 'develop'
+                    branch 'master'
+                }
+            }
             steps {
                 script {
                   echo "Branch: ${BRANCH_NAME == 'origin/develop'}"

@@ -268,9 +268,9 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
       paymentStatus: [0],
       isCustomized: [false],
       isFreightInclude: [true],
-      productCode: [''],
-      getByProductCode: [''],
-      isGSTExempted: [false],
+      productCode: [""],
+      getByProductCode: [""],
+      isTaxExempted: [false, Validators.required],
     });
 
   // CHECKOUT FORM
@@ -422,8 +422,8 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
     return this.addProductForm.get("isFreightInclude") as FormControl;
   }
 
-  get isGSTExempted(){
-    return this.addProductForm.get("isGSTExempted") as FormControl;
+  get isTaxExempted() {
+    return this.addProductForm.get("isTaxExempted") as FormControl;
   }
 
   get checkoutId() {
@@ -482,11 +482,9 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
     return this.addProductForm.get("productCode") as FormControl;
   }
 
-  get getByProductCode(){
+  get getByProductCode() {
     return this.addProductForm.get("getByProductCode") as FormControl;
   }
-
-
 
   addMobile() {
     let countryPhoneCode = 91; // default country code is India
@@ -502,7 +500,10 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
     }
     // this.mobileList.push(this.formBuilder.control(`+${countryPhoneCode} `));
     this.mobileList.push(
-      this.formBuilder.control(`+${countryPhoneCode} `, this.isForeignSale.value ? Validators.required : null)
+      this.formBuilder.control(
+        `+${countryPhoneCode} `,
+        this.isForeignSale.value ? Validators.required : null
+      )
     );
   }
 
@@ -515,10 +516,15 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
   addEmail() {
     // this.emailList.push(this.formBuilder.control(''));
     this.emailList.push(
-      this.formBuilder.control("", this.isForeignSale.value ? [
-        Validators.required,
-        (control: AbstractControl) => validateEmailFormat(control),
-      ] : null)
+      this.formBuilder.control(
+        "",
+        this.isForeignSale.value
+          ? [
+              Validators.required,
+              (control: AbstractControl) => validateEmailFormat(control),
+            ]
+          : null
+      )
     );
   }
 
@@ -609,8 +615,10 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
               this.clientDetailForm.get("shippingCity")?.clearValidators();
               this.clientDetailForm.get("shippingPinCode")?.clearValidators();
 
-              const mobileList = this.clientDetailForm.get('mobileList') as FormArray;
-  
+              const mobileList = this.clientDetailForm.get(
+                "mobileList"
+              ) as FormArray;
+
               // Iterate through each control in the mobileList FormArray
               mobileList.controls.forEach((control: AbstractControl) => {
                 // Remove all validators from the control
@@ -618,21 +626,30 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
                 control.updateValueAndValidity();
               });
 
-              const emailList = this.clientDetailForm.get('emailList') as FormArray;
+              const emailList = this.clientDetailForm.get(
+                "emailList"
+              ) as FormArray;
               emailList.controls.forEach((control: AbstractControl) => {
                 // Remove all validators from the control
                 control.clearValidators();
                 control.updateValueAndValidity();
               });
 
-              this.clientDetailForm.get('shippingCountry')?.setValue('India');
+              this.clientDetailForm.get("shippingCountry")?.setValue("India");
               this.isHandCarry.setValue("true");
-
             } else {
-              this.clientDetailForm.get("street")?.setValidators(Validators.required);
-              this.clientDetailForm.get("shippingCountry")?.setValidators(Validators.required);
-              this.clientDetailForm.get("shippingCity")?.setValidators(Validators.required);
-              this.clientDetailForm.get("shippingPinCode")?.setValidators(Validators.required);
+              this.clientDetailForm
+                .get("street")
+                ?.setValidators(Validators.required);
+              this.clientDetailForm
+                .get("shippingCountry")
+                ?.setValidators(Validators.required);
+              this.clientDetailForm
+                .get("shippingCity")
+                ?.setValidators(Validators.required);
+              this.clientDetailForm
+                .get("shippingPinCode")
+                ?.setValidators(Validators.required);
             }
 
             // Update validators on the form controls
@@ -678,10 +695,16 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
               // Add each email address as a separate control
               sale.emailAddressList.forEach((email) =>
                 this.emailList.push(
-                  this.formBuilder.control(email, this.isForeignSale.value ? [
-                    Validators.required,
-                    (control: AbstractControl) => validateEmailFormat(control),
-                  ] : null)
+                  this.formBuilder.control(
+                    email,
+                    this.isForeignSale.value
+                      ? [
+                          Validators.required,
+                          (control: AbstractControl) =>
+                            validateEmailFormat(control),
+                        ]
+                      : null
+                  )
                 )
               );
 
@@ -690,7 +713,10 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
               // mobileNumberList.forEach(mobile => this.mobileList.push(this.formBuilder.control(mobile)));
               mobileNumberList.forEach((mobile) =>
                 this.mobileList.push(
-                  this.formBuilder.control(mobile, this.isForeignSale.value ? Validators.required : null)
+                  this.formBuilder.control(
+                    mobile,
+                    this.isForeignSale.value ? Validators.required : null
+                  )
                 )
               );
 
@@ -717,9 +743,8 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
               // adding product details to products array
               for (let product of sale.details) {
                 this.addedProducts.push(product);
-                console.log(this.addedProducts)
+                console.log(this.addedProducts);
               }
-
 
               // set one product in form fields
               this.onEditClick(this.addedProducts.length - 1, true);
@@ -832,7 +857,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
         isFreightInclude: this.isFreightInclude.value == "true" ? true : false,
         expectedDeliveryDate: this.expectedDeliveryDate.value,
         productCode: this.isCustomized.value ? null : this.productCode.value,
-        isGSTExempted: this.isGSTExempted.value,
+        isTaxExempted: this.isTaxExempted.value == "true" ? true : false,
       });
 
       this.clear();
@@ -1006,9 +1031,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
       // isFreightInclude: [false],
       // productCode: [''],
       // getByProductCode: [''],
-      // isGSTExempted: [false],
-
-
+      // isTaxExempted: [false],
 
       id: [0],
       masterId: [this.masterId.value],
@@ -1033,9 +1056,9 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
       paymentStatus: [0],
       isCustomized: [false],
       isFreightInclude: [true],
-      productCode: [''],
-      getByProductCode: [''],
-      isGSTExempted: [false],
+      productCode: [""],
+      getByProductCode: [""],
+      isTaxExempted: [false, Validators.required],
     });
     this.editProduct = false;
   }
@@ -1058,11 +1081,13 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
   // ADD OR UPDATE PRODUCT
   addProductClick() {
     if (this.addProductForm.invalid) {
-      Object.keys(this.addProductForm.controls).forEach(key => {
-      const controlErrors = this.addProductForm.get(key)?.errors;
-      if (controlErrors != null) {
-        console.log('Key control: ' + key + ', error: ' + JSON.stringify(controlErrors));
-      }
+      Object.keys(this.addProductForm.controls).forEach((key) => {
+        const controlErrors = this.addProductForm.get(key)?.errors;
+        if (controlErrors != null) {
+          console.log(
+            "Key control: " + key + ", error: " + JSON.stringify(controlErrors)
+          );
+        }
       });
       return;
     }
@@ -1091,7 +1116,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
       isFreightInclude: this.isFreightInclude.value,
       expectedDeliveryDate: this.expectedDeliveryDate.value,
       productCode: this.isCustomized.value ? null : this.productCode.value,
-      isGSTExempted: this.isGSTExempted.value,
+      isTaxExempted: this.isTaxExempted.value == "true" ? true : false,
     });
     this.clear();
 
@@ -1110,7 +1135,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
       this.addProductClick();
     }
 
-    console.log(this.addedProducts[index].stonesNB)
+    console.log(this.addedProducts[index].stonesNB);
 
     this.ProductId.setValue(this.addedProducts[index].id);
     this.product.setValue(this.addedProducts[index].product);
@@ -1129,13 +1154,13 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
     this.isCustomized.setValue(this.addedProducts[index].isCustomized);
     this.productCode.setValue(this.addedProducts[index].productCode);
     this.isFreightInclude.setValue(this.addedProducts[index].isFreightInclude);
-    this.isGSTExempted.setValue(this.addedProducts[index].isGSTExempted);
+    this.isTaxExempted.setValue(this.addedProducts[index].isTaxExempted);
     // remove product from list before edit
     this.addedProducts.splice(index, 1);
     this.editProduct = true;
     this.amountOnBlur();
 
-    console.log(this.addProductForm.value)
+    console.log(this.addProductForm.value);
   }
 
   // DELETE ADDED PRODUCT
@@ -1623,11 +1648,31 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
     this.paymentForm.nativeElement.scrollIntoView({ behavior: "smooth" });
   }
 
-  fetchProductByProductCode(){
-    if(this.getByProductCode.value){
+  fetchProductByProductCode() {
+    if (this.getByProductCode.value) {
+      // If product code already exist in addedProducts array then show error message
+      let isProductExist = this.addedProducts.some(
+        (product) => product.productCode === this.getByProductCode.value
+      );
+
+      if (
+        !isProductExist &&
+        this.addProductForm.valid &&
+        this.getByProductCode.value === this.productCode.value
+      ) {
+        console.log('Called');
+        this.messageService.error("Product already added");
+        return;
+      }
+
+      if (isProductExist) {
+        this.messageService.error("Product already added");
+        return;
+      }
+
       this.saleService.getByProductCode(this.getByProductCode.value).subscribe(
         (response) => {
-          if(response){
+          if (response) {
             const productDetail = response.data;
             this.ProductId.setValue(productDetail.id);
             this.product.setValue(productDetail.product);
@@ -1640,9 +1685,13 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
             this.stonesNb.setValue(productDetail.stonesNb);
             this.supplierId.setValue(productDetail.supplierId);
             this.amount.setValue(productDetail.sellingPrice);
-            this.expectedDeliveryDate.setValue(productDetail.expectedDeliveryDate);
+            this.expectedDeliveryDate.setValue(
+              productDetail.expectedDeliveryDate
+            );
             this.productCode.setValue(productDetail.productCode);
-            this.isGSTExempted.setValue(productDetail.isGSTExempted);
+            this.isTaxExempted.setValue(productDetail.isTaxExempted);
+
+            this.getByProductCode.setValue("")
           }
         },
         (error: any) => {

@@ -24,7 +24,7 @@ export interface InventoryModel {
   guid?: string,
   quantity:number,
   productNameCode: string,
-  isExempted:boolean
+  isTaxExempted:boolean
 }
 
 export interface CheckInventoryModel{
@@ -75,7 +75,7 @@ export function createInventoryModel({
   quantity=0,
   productNameCode='',
   guid= '',
-  isExempted=false
+  isTaxExempted=false
 }: Partial<InventoryModel>) {
   return {
     id,
@@ -96,7 +96,7 @@ export function createInventoryModel({
     quantity,
     productNameCode,
     guid,
-    isExempted
+    isTaxExempted
 
   } as InventoryModel;
 }
@@ -203,7 +203,7 @@ export interface inventoryForm {
   costPrice: FormControl<number | null>,
   sellingPrice: FormControl<number>,
   quantity: FormControl<number>,
-  isExempted: FormControl<boolean>,
+  isTaxExempted: FormControl<boolean>,
   // productType: FormControl<string>,
   // rate: FormControl<number>,
   // sadekaar: FormControl<number>,
