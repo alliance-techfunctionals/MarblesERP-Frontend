@@ -27,8 +27,8 @@ pipeline {
         stage('Build Application') {
             when {
                 anyOf {
-                    branch 'develop'
-                    branch 'master'
+                    branch 'origin/develop'
+                    branch 'origin/master'
                 }
             }
             steps {
@@ -45,8 +45,8 @@ pipeline {
         stage('Deploy Application') {
             when {
                 anyOf {
-                    branch 'develop'
-                    branch 'master'
+                    branch 'origin/develop'
+                    branch 'origin/master'
                 }
             }
             steps {
