@@ -8,8 +8,8 @@ pipeline {
         stage('Pull Code') {
             when {
                 anyOf {
-                    branch 'develop'
-                    branch 'master'
+                    branch 'origin/develop'
+                    branch 'origin/master'
                 }
             }
             steps {
