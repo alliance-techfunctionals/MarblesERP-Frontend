@@ -574,6 +574,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    console.log("Testing OnInit");
     // get country list
     this.getCountryList();
     this.subscriptions.push(
