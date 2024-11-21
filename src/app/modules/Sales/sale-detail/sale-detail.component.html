@@ -211,7 +211,7 @@
                   <div class="w-100 d-flex gap-1">
                     <div class="form-group w-100">
                       <label for="getByProductCode">Search Using Product Code</label>
-                      <input class="form-control" type="text" name="getByProductCode" id="getByProductCode" formControlName="getByProductCode">
+                      <input class="form-control" type="text" name="getByProductCode" id="getByProductCode" formControlName="getByProductCode" (blur)="fetchProductByProductCode()" >
                     </div>
                     <div class="pb-3 d-flex flex-column justify-content-end">
                       <button style="width: max-content;" class="btn btn-primary" (click)="fetchProductByProductCode()">Fetch Product</button>
@@ -472,10 +472,15 @@
                 <div class="col-md-3">
                   <div class="form-group">
                     <label for="gstExempted">Is GST Exempted?<span class="required">*</span></label>
-                    <select class="form-control" id="gstExempted" formControlName="isGSTExempted" value="true">
+                    <select class="form-control" id="gstExempted" formControlName="isTaxExempted" value="true">
                       <option value=true>Yes</option>
                       <option value=false>No</option>
                     </select>
+                    <ul *ngIf="isTaxExempted.touched && isTaxExempted.invalid">
+                      <li *ngIf="isTaxExempted.errors?.['required']" class="text-danger">This field is required</li>
+                      <li *ngIf="isTaxExempted.errors?.['message']" class="text-danger">{{ isTaxExempted.errors?.["message"]
+                        }}</li>
+                    </ul>
                   </div>
                 </div>
               </div>
