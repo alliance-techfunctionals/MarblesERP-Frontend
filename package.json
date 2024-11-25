@@ -41,6 +41,7 @@
     "ag-grid-community": "^31.2.1",
     "ag-grid-enterprise": "^31.2.1",
     "angular-ng-stepper": "^2.0.0",
+    "angular-slickgrid": "^8.10.1",
     "apexcharts": "^3.41.0",
     "bootstrap": "^5.3.0",
     "bootstrap-icons": "^1.11.3",

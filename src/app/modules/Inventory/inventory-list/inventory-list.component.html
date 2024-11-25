@@ -36,7 +36,7 @@
         domLayout="autoHeight" 
         style="width: 100%" 
         class="ag-theme-quartz" 
-        [rowData]="group.inventoryList" 
+        [rowData]="rowData" 
         [columnDefs]="colDefs"
         (rowSelected)="onRowSelected()"
         [rowGroupPanelShow]="'always'"
@@ -46,6 +46,22 @@
     </div>
   </app-card>
 </div>
+
+
+
+<!-- <div class="" *ngIf="{
+  inventoryList: (inventoryList$ | async) ?? [],
+  qualityList: (qualityList$ | async) ?? [],
+  designList: (designList$ | async) ?? []
+} as group">
+  <angular-slickgrid gridId="grid1"
+            [columnDefinitions]="columnDefinitions"
+            [gridOptions]="gridOption"
+            [dataset]="rowData"
+            >
+  </angular-slickgrid>
+</div> -->
+
 
   <!-- <div class="col-md-12">
     <app-card cardTitle="" [hidHeader]="true" [options]="false" blockClass="table-border-style">

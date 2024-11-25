@@ -1,0 +1,39 @@
+<div
+*ngIf="{
+  inventoryList: (inventoryList$ | async) ?? [],
+  qualityList: (qualityList$ | async) ?? [],
+  designList: (designList$ | async) ?? []
+} as group"
+>
+<div class="col-md-12">
+  <app-card cardTitle="" [hidHeader]="true" [options]="false" blockClass="table-border-style">
+    <h4 class="d-flex"></h4>
+    <h4 class="text-end d-flex flex-row justify-content-between">
+      <h4>Inventory List</h4>
+      <div class="d-flex gap-3">
+        <!-- <button class="btn btn-primary" *ngIf="showButton" (click)="printAll()">
+          <i class="fa fa-print"></i>
+          Print
+        </button>
+        <button class="btn btn-primary" (click)="navigateInventory()">
+          
+          <i class="feather icon-plus"></i>
+          Add
+        </button> -->
+      </div>
+    </h4>
+   
+    <hr />
+    <div class="grid-container border rounded">
+      
+      <angular-slickgrid
+                        style="overflow-y: hidden;"
+                        gridId="inventoryGrid"
+                        [columnDefinitions]="columnDefinitions"
+                        [gridOptions]="gridOptions"
+                        [dataset]="dataset"
+                        (onAngularGridCreated)="angularGridReady($event)">
+      </angular-slickgrid>
+    </div>
+  </app-card>
+</div>
