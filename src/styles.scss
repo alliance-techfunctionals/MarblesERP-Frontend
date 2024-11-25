@@ -74,6 +74,9 @@ File: style.css
 /* ngx country drop down list CSS */
 @import  "node_modules/ngx-countries-dropdown/assets/styles.css";
 
+/* Angular Slickgrid CSS */
+@import '@slickgrid-universal/common/dist/styles/css/slickgrid-theme-bootstrap.css';
+
 .transparent-modal .modal-content {
   background-color: transparent;
   border: none;

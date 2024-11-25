@@ -101,3 +101,20 @@
 .ag-watermark {
   display: none;
 }
+
+.slick-pagination .slick-pagination-settings {
+  z-index: 999;
+  position: relative;
+  margin-right: 20px;
+}
+
+.slickgrid-container .slick-row .slick-cell.active {
+  border: none !important;
+  box-shadow: none !important;
+  padding: 5px 10px !important;
+}
+
+body .slickgrid-container .grid-canvas .slick-cell {
+  padding: 5px 10px !important;
+  line-height: 30px;
+}

@@ -37,11 +37,15 @@ import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 
+import { Column, GridOption, AngularSlickgridModule } from 'angular-slickgrid';
+import { InventoryListNewComponent } from './inventory-list-new/inventory-list-new.component';
+
 
 @NgModule({
   declarations: [
     InventoryListComponent,
     InventoryDetailComponent,
+    InventoryListNewComponent,
   ],
   providers: [
     InventoryStoreService,
@@ -79,6 +83,7 @@ import { RippleModule } from 'primeng/ripple';
     NgbAccordionModule,
     TagInputModule,
     TableModule, ButtonModule, RippleModule,
+    AngularSlickgridModule.forRoot(),
   ],
   exports: [
     InventoryListComponent,
