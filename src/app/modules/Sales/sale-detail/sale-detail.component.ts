@@ -111,6 +111,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
   }
 
   isSaleDone: boolean = false;
+  allowFullPayment: boolean = false;
 
   subscriptions: Subscription[] = [];
   // sort salesmans by name
@@ -868,6 +869,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
     console.log("IsBackDated-> " + isBackDatedOrder);
 
     this.checkAdvancePayment();
+    this.checkPartPaymentDetails();
 
     const sale = createSaleModel({
       id: this.id.value,
@@ -983,7 +985,9 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
             // this.saleForm.markAsPristine()
           }),
           catchError((error) => {
-            console.log("Error Catched");
+            if (error.error.message == "The full payment option should be used, as the total amount has already been received from the customer as an advance payment.") {
+              this.allowFullPayment = true;
+            }
             this.onEditClick(this.addedProducts.length - 1);
             return of(null); // Return an observable to complete the stream
           })
@@ -1699,6 +1703,44 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
           console.error("Error fetching product by product code:", error);
         }
       );
+    }
+  }
+
+  /**
+   * Check if the part payment details are valid
+   * First check if all the addedProducts have amount or not
+   * Then iterate over the paymentDetails and check if one advance payment is there
+   * If only advance payment is there and all products amount is available then add the remaining amount to the paymentDetails
+   * If amount is not available then add the remaining amount to the paymentDetails as 0
+  */
+  checkPartPaymentDetails() {
+    let isAmountAvailable = true;
+    let totalAmount = 0;
+    this.addedProducts.forEach((product) => {
+      totalAmount += product.amount;
+      if (!product.amount) {
+        isAmountAvailable = false;
+      }
+    });
+
+    if(totalAmount && totalAmount - this.advancePayment.value < 0){
+      totalAmount = 0;
+    }
+
+    if (this.paymentDetails.length == 1 && this.paymentDetails[0].paymentType === 0) {
+      this.paymentDetails.push({
+        id: 0, // hard coded bcoz no need to send
+        masterOrderId: this.masterOrderId.value,
+        paymentDueDate: new Date(),
+        amount: totalAmount ? totalAmount - this.advancePayment.value : 0,
+        ccyCode: this.currency.value,
+        comments: this.comments.value,
+        status: this.partPaymentStatus.value,
+        paymentType: 1,
+      });
+      this.isFullPayment = false;
+
+      this.sortPartPaymentList();
     }
   }
 }
