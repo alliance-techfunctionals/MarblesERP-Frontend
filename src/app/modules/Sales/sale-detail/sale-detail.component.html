@@ -566,17 +566,17 @@
                     </div>
                     <button class="btn btn-primary m-r-10" cdkStepperPrevious [disabled]="isSaleDone">Previous</button>
                     <button class="btn btn-primary m-r-10" (click)="uppertSale(false, true, false, 1)"
-                      [disabled]="isSaleDone || paymentDetails.length || addProductForm.invalid">Invoice - Print +
+                      [disabled]="(isSaleDone || paymentDetails.length || addProductForm.invalid) && !allowFullPayment">Invoice - Print +
                       Email</button>
                     <!-- <ngb-progressbar type="secondary" [value]="counter" [striped]="true" [animated]="true"></ngb-progressbar> -->
                     <button class="btn btn-primary m-r-10" (click)="uppertSale(true, true, false, 0)"
-                      [disabled]="isSaleDone || paymentDetails.length || addProductForm.invalid">Invoice - Email
+                      [disabled]="(isSaleDone || paymentDetails.length || addProductForm.invalid) && !allowFullPayment">Invoice - Email
                       Only</button>
                     <button class="btn btn-primary m-r-10" *ngIf="showFeedback"
-                      [disabled]="paymentDetails.length || addProductForm.invalid"
+                      [disabled]="(paymentDetails.length || addProductForm.invalid) && !allowFullPayment"
                       (click)="isSaleDone? cdkStepper.next(): uppertSale(false, true, false, 2);">Save</button>
                     <button class="btn btn-primary" *ngIf="!showFeedback"
-                      [disabled]="isSaleDone || paymentDetails.length || addProductForm.invalid"
+                      [disabled]="(isSaleDone || paymentDetails.length || addProductForm.invalid) && !allowFullPayment"
                       (click)="uppertSale(false, true, true, 2)">Update and Save</button>
                   </app-card>
                 </ng-template>
@@ -628,6 +628,7 @@
                           <label for="remainingAmt">Remaining Amount</label>
                           <input type="text" id="remainingAmt" class="form-control" formControlName="amount"
                             (change)="remainingAmountOnBlur()">
+                            <li class="text-danger" *ngIf="checkoutAmount.value && checkoutAmount.value <= 0">Amount should be greater than 0.</li>
                         </div>
                       </div>
                       <div class="col-md-3">
@@ -646,7 +647,7 @@
                         </div>
                       </div>
                       <div class="col-md-2">
-                        <button class="btn btn-outline-primary m-r-10 mt-4" (click)="addPaymentClick()">{{ editPayment?
+                        <button class="btn btn-outline-primary m-r-10 mt-4" (click)="addPaymentClick()" [disabled]="!checkoutAmount.value || checkoutAmount.value <= 0" >{{ editPayment?
                           'Update': 'Save' }}</button>
                       </div>
                     </div>
