@@ -1712,35 +1712,138 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
    * Then iterate over the paymentDetails and check if one advance payment is there
    * If only advance payment is there and all products amount is available then add the remaining amount to the paymentDetails
    * If amount is not available then add the remaining amount to the paymentDetails as 0
+   * 
+   * 
+   * 
+   * Check all items are with amount or not
+   * Calculate the total amount of all products
+   * Calculate the amount added in part payment array
+   * If the difference of above two is greater than 0 then add a new payment detail with the remaining amount
   */
   checkPartPaymentDetails() {
     let isAmountAvailable = true;
     let totalAmount = 0;
     this.addedProducts.forEach((product) => {
-      totalAmount += product.amount;
       if (!product.amount) {
         isAmountAvailable = false;
+      }else {
+        totalAmount += product.amount;
       }
     });
 
-    if(totalAmount && totalAmount - this.advancePayment.value < 0){
-      totalAmount = 0;
+    let amountAdded = 0;
+    this.paymentDetails.forEach((payment) => {
+      amountAdded += payment.amount;
+    });
+
+    if(isAmountAvailable){
+      if (totalAmount - amountAdded > 0) {
+        this.paymentDetails.push({
+          id: 0, // hard coded bcoz no need to send
+          masterOrderId: this.masterOrderId.value,
+          paymentDueDate: new Date(),
+          amount: totalAmount - amountAdded,
+          ccyCode: this.currency.value,
+          comments: this.comments.value,
+          status: this.partPaymentStatus.value,
+          paymentType: 1,
+        });
+        this.isFullPayment = false;
+
+        this.sortPartPaymentList();
+      }
+    }else {
+      if (this.paymentDetails.length == 1 && this.paymentDetails[0].paymentType === 0) {
+        this.paymentDetails.push({
+          id: 0, // hard coded bcoz no need to send
+          masterOrderId: this.masterOrderId.value,
+          paymentDueDate: new Date(),
+          amount: totalAmount - amountAdded > 0 ? totalAmount - amountAdded : 0,
+          ccyCode: this.currency.value,
+          comments: this.comments.value,
+          status: this.partPaymentStatus.value,
+          paymentType: 1,
+        });
+        this.isFullPayment = false;
+
+        this.sortPartPaymentList();
+      } else if (this.paymentDetails.length > 1 && totalAmount - amountAdded > 0) {
+        this.paymentDetails.push({
+          id: 0, // hard coded bcoz no need to send
+          masterOrderId: this.masterOrderId.value,
+          paymentDueDate: new Date(),
+          amount: totalAmount - amountAdded,
+          ccyCode: this.currency.value,
+          comments: this.comments.value,
+          status: this.partPaymentStatus.value,
+          paymentType: 1,
+        });
+        this.isFullPayment = false;
+
+        this.sortPartPaymentList();
+
+      }
     }
 
-    if (this.paymentDetails.length == 1 && this.paymentDetails[0].paymentType === 0) {
-      this.paymentDetails.push({
-        id: 0, // hard coded bcoz no need to send
-        masterOrderId: this.masterOrderId.value,
-        paymentDueDate: new Date(),
-        amount: totalAmount ? totalAmount - this.advancePayment.value : 0,
-        ccyCode: this.currency.value,
-        comments: this.comments.value,
-        status: this.partPaymentStatus.value,
-        paymentType: 1,
-      });
-      this.isFullPayment = false;
+    // if (totalAmount - amountAdded > 0) {
+    //   this.paymentDetails.push({
+    //     id: 0, // hard coded bcoz no need to send
+    //     masterOrderId: this.masterOrderId.value,
+    //     paymentDueDate: new Date(),
+    //     amount: totalAmount - amountAdded,
+    //     ccyCode: this.currency.value,
+    //     comments: this.comments.value,
+    //     status: this.partPaymentStatus.value,
+    //     paymentType: 1,
+    //   });
+    //   this.isFullPayment = false;
 
-      this.sortPartPaymentList();
-    }
+    //   this.sortPartPaymentList();
+    // }
+
+    // if(totalAmount && totalAmount - this.advancePayment.value < 0){
+    //   totalAmount = 0;
+    // }
+
+    // let amountRemaining = 0;
+
+
+
+
+
+
+    // if (this.paymentDetails.length == 1 && this.paymentDetails[0].paymentType === 0) {
+    //   this.paymentDetails.push({
+    //     id: 0, // hard coded bcoz no need to send
+    //     masterOrderId: this.masterOrderId.value,
+    //     paymentDueDate: new Date(),
+    //     amount: totalAmount ? totalAmount - this.advancePayment.value : 0,
+    //     ccyCode: this.currency.value,
+    //     comments: this.comments.value,
+    //     status: this.partPaymentStatus.value,
+    //     paymentType: 1,
+    //   });
+    //   this.isFullPayment = false;
+
+    //   this.sortPartPaymentList();
+    // }
   }
 }
+
+
+
+
+/**
+ * All amount available
+ *  - Calculate total amount of all products
+ *  - Calculate the amount added in part payment array
+ *  - If the difference of above two is greater than 0 then add a new payment detail with the remaining amount
+ * 
+ * All amount not available
+ *  - Calculate available amount
+ *  - If only advance is present
+ *    - Then add the remaining amount to the paymentDetails, if less than 0 set to 0
+ *  - If advance and other payments are present
+ *    - If total mismatch then add the remaining amount to the paymentDetails
+ *    - If total match or added amount is greater then do nothing
+ */
