@@ -1845,5 +1845,5 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
  *    - Then add the remaining amount to the paymentDetails, if less than 0 set to 0
  *  - If advance and other payments are present
  *    - If total mismatch then add the remaining amount to the paymentDetails
- *    - If total match or added amount is greater then do nothing
+ *    - If total match or added amount is greater then do nothing...
  */
