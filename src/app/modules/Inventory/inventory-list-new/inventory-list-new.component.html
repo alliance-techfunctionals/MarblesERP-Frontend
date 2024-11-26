@@ -11,7 +11,7 @@
     <h4 class="text-end d-flex flex-row justify-content-between">
       <h4>Inventory List</h4>
       <div class="d-flex gap-3">
-        <!-- <button class="btn btn-primary" *ngIf="showButton" (click)="printAll()">
+        <button class="btn btn-primary" *ngIf="showPrintButton" (click)="printAll()">
           <i class="fa fa-print"></i>
           Print
         </button>
@@ -19,12 +19,12 @@
           
           <i class="feather icon-plus"></i>
           Add
-        </button> -->
+        </button>
       </div>
     </h4>
    
     <hr />
-    <div class="grid-container border rounded">
+    <div id="inventory-list-container" class="grid-container border rounded">
       
       <angular-slickgrid
                         style="overflow-y: hidden;"
