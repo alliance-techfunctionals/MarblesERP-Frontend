@@ -228,7 +228,7 @@ export class InventoryListNewComponent implements OnInit {
 
 
   columnDefinitions = [
-    { id: 'createdOn', name: 'Date', field: 'createdOn', filterable: true, sortable: true, minWidth: 80, width: 80, formatter: this.customDateFormatter,
+    { id: 'createdOn', name: 'Date', field: 'createdOn', filterable: true, sortable: true, minWidth: 100, width: 100, formatter: this.customDateFormatter,
     // grouping: {
     //   getter: 'createdOn',
     //   formatter: (g: any) => `Date: <span style="var(--slick-primary-color); font-weight: bold;">${g.value}</span>  <span style="color: #659bff;">(${g.count} items)</span>`,
@@ -236,7 +236,7 @@ export class InventoryListNewComponent implements OnInit {
     //   collapsed: true
     // }
      },
-    { id: 'supplierName', name: 'Supplier Name', field: 'supplierName', filterable: true, sortable: true, minWidth: 65, width: 65,
+    { id: 'supplierName', name: 'Supplier Name', field: 'supplierName', filterable: true, sortable: true, minWidth: 65, width: 120,
       grouping: {
         getter: 'supplierName',
         formatter: (g: any) => `Supplier: <span style="var(--slick-primary-color); font-weight: bold;">${g.value}</span>  <span style="color: #659bff;">(${g.count} items)</span>`,
@@ -253,7 +253,7 @@ export class InventoryListNewComponent implements OnInit {
         collapsed: true
       }
     },
-    { id: 'product', name: 'Product', field: 'product', filterable: true, sortable: true, minWidth: 80, width: 130,
+    { id: 'product', name: 'Product', field: 'product', filterable: true, sortable: true, minWidth: 80, width: 80,
       grouping: {
         getter: 'qualityType',
         formatter: (g: any) => `Quality: <span style="var(--slick-primary-color); font-weight: bold;">${g.value}</span>  <span style="color: #659bff;">(${g.count} items)</span>`,
@@ -289,10 +289,10 @@ export class InventoryListNewComponent implements OnInit {
       }
     },
     {
-      id: 'productCode', name: 'Product Code', field: 'productCode', filterable: true, sortable: true, minWidth: 80, width: 80,
+      id: 'productCode', name: 'Product Code', field: 'productCode', filterable: true, sortable: true, minWidth: 100, width: 100,
     },
     {
-      id: 'inStock', name: 'In Stock', field: 'inStock', filterable: true, sortable: true, minWidth: 60, width: 60,
+      id: 'inStock', name: 'In Stock', field: 'inStock', filterable: true, sortable: true, maxWidth: 50, width: 50,
       grouping: {
         getter: 'inStock',
         formatter: (g: any) => `In Stock: <span style="var(--slick-primary-color); font-weight: bold;">${g.value}</span>  <span style="color: #659bff;">(${g.count} items)</span>`,
@@ -396,7 +396,6 @@ export class InventoryListNewComponent implements OnInit {
 
     const selectedRowIndexes = this.angularGrid.slickGrid.getSelectedRows(); // Indexes of selected rows
     // sort selected row indexes in ascending order
-    selectedRowIndexes.sort((a, b) => a - b);
     const selectedRowData = selectedRowIndexes.map((index) =>
       this.angularGrid.dataView.getItem(index)
     );
