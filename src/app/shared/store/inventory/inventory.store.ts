@@ -73,5 +73,21 @@ export class InventoryStoreService {
     inventoryStore.update(setEntities([]));
     return of(void 0); // Return an observable that emits a single value
   }
+
+  filterByColumns(filters: { column: keyof InventoryModel, value: any }[]): Observable<InventoryModel[]> {
+    return this.inventories$.pipe(
+      switchMap((inventories) => {
+        if (filters.length === 0) {
+          return of(inventories);
+        }
+        const filteredInventories = inventories.filter(inventory => {
+          return filters.every(filter => inventory[filter.column] === filter.value);
+        });
+        return of(filteredInventories);
+      })
+    );
+  }
+
+  
 }
 

@@ -101,3 +101,30 @@
 .ag-watermark {
   display: none;
 }
+
+.slick-pagination .slick-pagination-settings {
+  z-index: 999;
+  position: relative;
+  margin-right: 20px;
+}
+
+.slickgrid-container .slick-row .slick-cell.active {
+  border: none !important;
+  border-top: 1px solid #ddd !important;
+  box-shadow: none !important;
+  padding: 5px 10px !important;
+}
+
+body .slickgrid-container .grid-canvas .slick-cell {
+  padding: 5px 10px !important;
+  line-height: 30px;
+}
+
+// .slick-header-column.header-checkbox-selectall * {
+//   // display: none !important;
+//   opacity: 0;
+// }
+
+.sold-out-row {
+  background-color: rgba(220, 20, 60, 0.1) !important;
+}

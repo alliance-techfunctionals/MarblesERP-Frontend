@@ -834,7 +834,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
       this.primaryStone.value != "" ||
       this.colour.value != ""
     ) {
-      console.log(this.expectedDeliveryDate.value);
+      console.log(this.isCustomized.value);
       this.addedProducts.push({
         id: this.ProductId.value,
         masterId: this.masterId.value,
@@ -855,7 +855,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
         ), // used regular expression to remove all non digits characters,
         ccyCode: this.currency.value,
         description: this.description.value,
-        isCustomized: this.isCustomized.value == "true" ? true : false,
+        isCustomized: this.isCustomized.value,
         isFreightInclude: this.isFreightInclude.value == "true" ? true : false,
         expectedDeliveryDate: this.expectedDeliveryDate.value,
         productCode: this.isCustomized.value ? null : this.productCode.value,
@@ -1784,49 +1784,6 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
 
       }
     }
-
-    // if (totalAmount - amountAdded > 0) {
-    //   this.paymentDetails.push({
-    //     id: 0, // hard coded bcoz no need to send
-    //     masterOrderId: this.masterOrderId.value,
-    //     paymentDueDate: new Date(),
-    //     amount: totalAmount - amountAdded,
-    //     ccyCode: this.currency.value,
-    //     comments: this.comments.value,
-    //     status: this.partPaymentStatus.value,
-    //     paymentType: 1,
-    //   });
-    //   this.isFullPayment = false;
-
-    //   this.sortPartPaymentList();
-    // }
-
-    // if(totalAmount && totalAmount - this.advancePayment.value < 0){
-    //   totalAmount = 0;
-    // }
-
-    // let amountRemaining = 0;
-
-
-
-
-
-
-    // if (this.paymentDetails.length == 1 && this.paymentDetails[0].paymentType === 0) {
-    //   this.paymentDetails.push({
-    //     id: 0, // hard coded bcoz no need to send
-    //     masterOrderId: this.masterOrderId.value,
-    //     paymentDueDate: new Date(),
-    //     amount: totalAmount ? totalAmount - this.advancePayment.value : 0,
-    //     ccyCode: this.currency.value,
-    //     comments: this.comments.value,
-    //     status: this.partPaymentStatus.value,
-    //     paymentType: 1,
-    //   });
-    //   this.isFullPayment = false;
-
-    //   this.sortPartPaymentList();
-    // }
   }
 }
 
@@ -1845,5 +1802,5 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
  *    - Then add the remaining amount to the paymentDetails, if less than 0 set to 0
  *  - If advance and other payments are present
  *    - If total mismatch then add the remaining amount to the paymentDetails
- *    - If total match or added amount is greater then do nothing
+ *    - If total match or added amount is greater then do nothing...
  */
