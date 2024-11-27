@@ -258,8 +258,8 @@ export class InventoryListNewComponent implements OnInit {
     },
     { id: 'product', name: 'Product', field: 'product', filterable: true, sortable: true, minWidth: 80, width: 80,
       grouping: {
-        getter: 'qualityType',
-        formatter: (g: any) => `Quality: <span style="var(--slick-primary-color); font-weight: bold;">${g.value}</span>  <span style="color: #659bff;">(${g.count} items)</span>`,
+        getter: 'product',
+        formatter: (g: any) => `Product: <span style="var(--slick-primary-color); font-weight: bold;">${g.value}</span>  <span style="color: #659bff;">(${g.count} items)</span>`,
         aggregateCollapsed: true,
         collapsed: true
       }
