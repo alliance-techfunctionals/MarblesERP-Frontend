@@ -1,4 +1,4 @@
-import { CurrencyPipe } from "@angular/common";
+import { CurrencyPipe, registerLocaleData } from "@angular/common";
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { PrimeNGConfig } from "primeng/api";
@@ -17,6 +17,11 @@ import { UserStoreService } from "src/app/shared/store/user/user.store";
 import { VoucherModel } from "src/app/shared/store/voucher/voucher.model";
 import { VoucherService } from "src/app/shared/store/voucher/voucher.service";
 import { VoucherStoreService } from "src/app/shared/store/voucher/voucher.store";
+
+import localeEnIN from "@angular/common/locales/en-IN";
+import { select } from "@ngneat/elf";
+
+registerLocaleData(localeEnIN);
 
 const MONTH = 30 * 24 * 60 * 60 * 1000; // Define MONTH constant
 
@@ -248,7 +253,7 @@ export default class SaleAnalysisComponent implements OnInit {
 
     this.voucherPercentageChange =
       isNaN(this.voucherPercentageChange) ||
-      !isFinite(this.voucherPercentageChange)
+        !isFinite(this.voucherPercentageChange)
         ? 0
         : this.voucherPercentageChange;
 
@@ -268,7 +273,7 @@ export default class SaleAnalysisComponent implements OnInit {
 
     this.linkedSalePercentageChange =
       isNaN(this.linkedSalePercentageChange) ||
-      !isFinite(this.linkedSalePercentageChange)
+        !isFinite(this.linkedSalePercentageChange)
         ? 0
         : this.linkedSalePercentageChange;
 
@@ -287,7 +292,7 @@ export default class SaleAnalysisComponent implements OnInit {
 
     this.cancelledPercentageChange =
       isNaN(this.cancelledPercentageChange) ||
-      !isFinite(this.cancelledPercentageChange)
+        !isFinite(this.cancelledPercentageChange)
         ? 0
         : this.cancelledPercentageChange;
 
@@ -354,7 +359,7 @@ export default class SaleAnalysisComponent implements OnInit {
 
     this.revenuePercentageChange =
       isNaN(this.revenuePercentageChange) ||
-      !isFinite(this.revenuePercentageChange)
+        !isFinite(this.revenuePercentageChange)
         ? 0
         : this.revenuePercentageChange;
   }
@@ -1251,7 +1256,7 @@ export default class SaleAnalysisComponent implements OnInit {
   //       });
   //     }
   //   });
-  
+
   // const monthlySalesData: {
   //     monthYear: string;
   //     totalSales: number;
@@ -1561,6 +1566,293 @@ export default class SaleAnalysisComponent implements OnInit {
     this.cd.detectChanges();
   }
 
+  generateDailySaleAnalysisChartData(sales: SaleModel[]): void {
+    const salesCountByDay: { date: string; noOfSales: number }[] = [];
+
+    const today = new Date();
+    const last7Days = Array.from({ length: 7 }, (_, i) => {
+      const date = new Date(today);
+      date.setDate(today.getDate() - i);
+      return date.toISOString().split("T")[0];
+    }).reverse();
+
+    last7Days.forEach((date) => {
+      salesCountByDay.push({ date, noOfSales: 0 });
+    });
+
+    sales.forEach((sale) => {
+      const saleDate = new Date(sale.orderDate).toISOString().split("T")[0];
+      const existingDayData = salesCountByDay.find(
+        (data) => data.date === saleDate
+      );
+
+      if (existingDayData) {
+        existingDayData.noOfSales++;
+      }
+    });
+
+    const dates = salesCountByDay.map((data) => data.date);
+    const noOfSales = salesCountByDay.map((data) => data.noOfSales);
+
+    this.basicData.labels = dates;
+    this.basicData.datasets = [
+      {
+        label: "Sales",
+        data: noOfSales,
+        fill: true,
+        borderColor: "#69AFFF",
+        backgroundColor: "#69AFFF",
+        borderWidth: 1,
+      },
+    ];
+
+    this.lineBasicData.labels = dates;
+    this.lineBasicData.datasets = [
+      {
+        label: "Sales",
+        data: noOfSales,
+        fill: false,
+        borderColor: "#69AFFF",
+        backgroundColor: "#69AFFF",
+        borderWidth: 1,
+      },
+    ];
+
+    this.basicOptions.scales.y.title.text = "No of Sales";
+    this.basicOptions.scales.x.title.text = "Date";
+
+    // Trigger change detection
+    this.cd.detectChanges();
+
+    this.basicData = { ...this.basicData };
+    this.lineBasicData = { ...this.lineBasicData };
+  }
+
+  generateDailyVoucherAnalysisChartData(vouchers: VoucherModel[]): void {
+    const vouchersCountByDay: { date: string; noOfVouchers: number }[] = [];
+
+    const today = new Date();
+    const last7Days = Array.from({ length: 7 }, (_, i) => {
+      const date = new Date(today);
+      date.setDate(today.getDate() - i);
+      return date.toISOString().split("T")[0];
+    }).reverse();
+
+    last7Days.forEach((date) => {
+      vouchersCountByDay.push({ date, noOfVouchers: 0 });
+    });
+
+    vouchers.forEach((voucher) => {
+      const voucherDate = new Date(voucher.voucherDate)
+        .toISOString()
+        .split("T")[0];
+      const existingDayData = vouchersCountByDay.find(
+        (data) => data.date === voucherDate
+      );
+
+      if (existingDayData) {
+        existingDayData.noOfVouchers++;
+      }
+    });
+
+    const dates = vouchersCountByDay.map((data) => data.date);
+    const noOfVouchers = vouchersCountByDay.map((data) => data.noOfVouchers);
+
+    this.basicData.labels = dates;
+    this.basicData.datasets = [
+      {
+        label: "Vouchers",
+        data: noOfVouchers,
+        fill: true,
+        borderColor: "#69AFFF",
+        backgroundColor: "#69AFFF",
+        borderWidth: 1,
+      },
+    ];
+
+    this.lineBasicData.labels = dates;
+    this.lineBasicData.datasets = [
+      {
+        label: "Vouchers",
+        data: noOfVouchers,
+        fill: false,
+        borderColor: "#69AFFF",
+        backgroundColor: "#69AFFF",
+        borderWidth: 1,
+      },
+    ];
+
+    this.basicOptions.scales.y.title.text = "No of Vouchers";
+    this.basicOptions.scales.x.title.text = "Date";
+
+    // Trigger change detection
+    this.cd.detectChanges();
+
+    this.basicData = { ...this.basicData };
+    this.lineBasicData = { ...this.lineBasicData };
+  }
+
+  generateDailySaleVoucherCompareChartData(
+    sales: SaleModel[],
+    vouchers: VoucherModel[]
+  ): void {
+    const salesCountByDay: { date: string; noOfSales: number }[] = [];
+    const vouchersCountByDay: { date: string; noOfVouchers: number }[] = [];
+
+    const today = new Date();
+    const last7Days = Array.from({ length: 7 }, (_, i) => {
+      const date = new Date(today);
+      date.setDate(today.getDate() - i);
+      return date.toISOString().split("T")[0];
+    }).reverse();
+
+    last7Days.forEach((date) => {
+      salesCountByDay.push({ date, noOfSales: 0 });
+      vouchersCountByDay.push({ date, noOfVouchers: 0 });
+    });
+
+    sales.forEach((sale) => {
+      const saleDate = new Date(sale.orderDate).toISOString().split("T")[0];
+      const existingDayData = salesCountByDay.find(
+        (data) => data.date === saleDate
+      );
+
+      if (existingDayData) {
+        existingDayData.noOfSales++;
+      }
+    });
+
+    vouchers.forEach((voucher) => {
+      const voucherDate = new Date(voucher.voucherDate)
+        .toISOString()
+        .split("T")[0];
+      const existingDayData = vouchersCountByDay.find(
+        (data) => data.date === voucherDate
+      );
+
+      if (existingDayData) {
+        existingDayData.noOfVouchers++;
+      }
+    });
+
+    const dates = salesCountByDay.map((data) => data.date);
+    const noOfSales = salesCountByDay.map((data) => data.noOfSales);
+    const noOfVouchers = vouchersCountByDay.map((data) => data.noOfVouchers);
+
+    this.basicData.labels = dates;
+    this.basicData.datasets = [
+      {
+        label: "Vouchers",
+        data: noOfVouchers,
+        fill: true,
+        borderColor: "#42A5F5",
+        backgroundColor: "#42A5F5",
+        borderWidth: 1,
+      },
+      {
+        label: "Sales",
+        data: noOfSales,
+        fill: true,
+        borderColor: "#69CEAD",
+        backgroundColor: "#69CEAD",
+        borderWidth: 1,
+      },
+    ];
+
+    this.lineBasicData.labels = dates;
+    this.lineBasicData.datasets = [
+      {
+        label: "Vouchers",
+        data: noOfVouchers,
+        fill: false,
+        borderColor: "#42A5F5",
+        backgroundColor: "#42A5F5",
+        borderWidth: 1,
+      },
+      {
+        label: "Sales",
+        data: noOfSales,
+        fill: false,
+        borderColor: "#69CEAD",
+        backgroundColor: "#69CEAD",
+        borderWidth: 1,
+      },
+    ];
+
+    this.basicOptions.scales.y.title.text = "No of Transactions";
+    this.basicOptions.scales.x.title.text = "Date";
+
+    // Trigger change detection
+    this.cd.detectChanges();
+
+    this.basicData = { ...this.basicData };
+    this.lineBasicData = { ...this.lineBasicData };
+  }
+
+  generateDailyRevenueGeneratedChartData(sales: SaleModel[]): void {
+    const revenueByDay: { date: string; revenue: number }[] = [];
+
+    const today = new Date();
+    const last7Days = Array.from({ length: 7 }, (_, i) => {
+      const date = new Date(today);
+      date.setDate(today.getDate() - i);
+      return date.toISOString().split("T")[0];
+    }).reverse();
+
+    last7Days.forEach((date) => {
+      revenueByDay.push({ date, revenue: 0 });
+    });
+
+    sales.forEach((sale) => {
+      const saleDate = new Date(sale.orderDate).toISOString().split("T")[0];
+      const existingDayData = revenueByDay.find(
+        (data) => data.date === saleDate
+      );
+
+      if (existingDayData) {
+        sale.details.forEach((detail) => {
+          existingDayData.revenue += detail.amount || 0;
+        });
+      }
+    });
+
+    const dates = revenueByDay.map((data) => data.date);
+    const revenues = revenueByDay.map((data) => data.revenue);
+
+    this.basicData.labels = dates;
+    this.basicData.datasets = [
+      {
+        label: "Revenue",
+        data: revenues,
+        fill: true,
+        borderColor: "#69AFFF",
+        backgroundColor: "#69AFFF",
+        borderWidth: 1,
+      },
+    ];
+
+    this.lineBasicData.labels = dates;
+    this.lineBasicData.datasets = [
+      {
+        label: "Revenue",
+        data: revenues,
+        fill: false,
+        borderColor: "#69AFFF",
+        backgroundColor: "#69AFFF",
+        borderWidth: 1,
+      },
+    ];
+
+    this.basicOptions.scales.y.title.text = "Revenue Generated";
+    this.basicOptions.scales.x.title.text = "Date";
+
+    // Trigger change detection
+    this.cd.detectChanges();
+
+    this.basicData = { ...this.basicData };
+    this.lineBasicData = { ...this.lineBasicData };
+  }
+
   filterData(formValue: any): void {
     let selectedOption = formValue.typeOfChart;
     let noOfYears = formValue.numberOfYears;
@@ -1616,6 +1908,14 @@ export default class SaleAnalysisComponent implements OnInit {
         this.generateRevenueGeneratedChartData(filteredSales);
       } else if (selectedOption == "12") {
         this.generateCountryWiseSaleChartData(filteredSales);
+      } else if (selectedOption == "13") {
+        this.generateDailySaleAnalysisChartData(sales);
+      } else if (selectedOption == "14") {
+        this.generateDailyVoucherAnalysisChartData(vouchers);
+      } else if (selectedOption == "15") {
+        this.generateDailySaleVoucherCompareChartData(sales, vouchers);
+      } else if (selectedOption == "16") {
+        this.generateDailyRevenueGeneratedChartData(sales);
       }
     });
   }
@@ -1755,6 +2055,14 @@ export default class SaleAnalysisComponent implements OnInit {
       ?.valueChanges.subscribe((value: string) => {
         if (value == "3" || value == "4") {
           this.showYearField = true;
+          this.showDateFields = false;
+        } else if (
+          value == "13" ||
+          value == "14" ||
+          value == "15" ||
+          value == "16"
+        ) {
+          this.showYearField = false;
           this.showDateFields = false;
         } else {
           this.showYearField = false;

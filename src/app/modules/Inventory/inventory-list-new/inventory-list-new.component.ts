@@ -146,6 +146,9 @@ export class InventoryListNewComponent implements OnInit {
         this.onPrintClicked(data);
       }
     });
+    console.log(this.angularGrid);
+    // this.angularGrid.dataView.
+
   }
 
   applyRowStyles() {
@@ -320,7 +323,7 @@ export class InventoryListNewComponent implements OnInit {
       
     },
     draggableGrouping: {
-      dropPlaceHolderText: 'Drop a column header here to group inventory data by that column',
+      dropPlaceHolderText: 'Drop a column header here to group inventory data by any of these column - Supplier Name, Quality, Product, Shape, Design, No Of Stones, In Stock',
       deleteIconCssClass: 'mdi mdi-close',
       onGroupChanged: (e, args) => {
         this.onGroupsChanged(args);
