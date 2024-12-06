@@ -11,7 +11,11 @@
     <h4 class="text-end d-flex flex-row justify-content-between">
       <h4>Inventory List</h4>
       <div class="d-flex gap-3">
-        <button class="btn btn-primary" *ngIf="showPrintButton" (click)="printAll()">
+        <button class="btn btn-primary" *ngIf="selectedRowIds.length > 0" (click)="onSellAllSelectedInventories()">
+          <i class="bi bi-cart"></i>
+          Sell
+        </button>
+        <button class="btn btn-primary" *ngIf="selectedRowIds.length > 0" (click)="printAll()">
           <i class="fa fa-print"></i>
           Print
         </button>
@@ -32,7 +36,8 @@
                         [columnDefinitions]="columnDefinitions"
                         [gridOptions]="gridOptions"
                         [dataset]="dataset"
-                        (onAngularGridCreated)="angularGridReady($event)">
+                        (onAngularGridCreated)="angularGridReady($event)"
+                        (onGridStateChanged)="gridStateChanged($event)">
       </angular-slickgrid>
     </div>
   </app-card>

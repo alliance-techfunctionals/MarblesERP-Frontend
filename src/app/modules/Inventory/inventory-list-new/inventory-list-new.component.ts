@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AngularGridInstance, Column, FieldType, Formatters, GridOption, SlickDataView, SlickGrid} from 'angular-slickgrid';
+import { AngularGridInstance, AngularSlickgridComponent, Column, FieldType, Formatters, GridOption, GridStateChange, SlickDataView, SlickGrid} from 'angular-slickgrid';
+import { update } from 'lodash';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import printJS from 'print-js';
 import { combineLatest, concatMap, map, Observable, of, Subscription, tap } from 'rxjs';
@@ -8,6 +9,7 @@ import { ImageService } from 'src/app/core/service/Image.service';
 import { MessageToastService } from 'src/app/core/service/message-toast.service';
 import { ModalType } from 'src/app/shared/components/modal-confirm/modal-confirm.component';
 import { ModalDeleteInventoryComponent } from 'src/app/shared/components/modal-delete/modal-delete-inventory.component';
+import { ModalSaleTypeConfirmComponent } from 'src/app/shared/components/modal-sale-type-confirm/modal-sale-type-confirm.component';
 import { AgGridService } from 'src/app/shared/service/ag-grid.service';
 import { Design } from 'src/app/shared/store/design/design.model';
 import { DesignService } from 'src/app/shared/store/design/design.service';
@@ -144,6 +146,8 @@ export class InventoryListNewComponent implements OnInit {
         this.onDeleteClicked(data);
       } else if (action === 'print') {
         this.onPrintClicked(data);
+      } else if (action === 'sell') {
+        this.onSellInventory(data);
       }
     });
     console.log(this.angularGrid);
@@ -166,7 +170,8 @@ export class InventoryListNewComponent implements OnInit {
     return `
       <i class="feather icon-edit m-r-10" data-action="edit" data-row="${row}" style="color: blue; cursor: pointer"></i>
       <i class="feather icon-trash-2 m-r-10" data-action="delete" data-row="${row}" style="color: red; cursor: pointer"></i>
-      <i class="bi bi-printer" data-action="print" data-row="${row}" style="color: darkorange; cursor: pointer"></i>
+      <i class="bi bi-printer m-r-10" data-action="print" data-row="${row}" style="color: darkorange; cursor: pointer"></i>
+      <i class="bi bi-cart" data-action="sell" data-row="${row}" style="color: green; cursor: pointer"></i>
     `;
   }
 
@@ -231,30 +236,8 @@ export class InventoryListNewComponent implements OnInit {
 
 
   columnDefinitions = [
-    { id: 'createdOn', name: 'Date', field: 'createdOn', filterable: true, sortable: true, minWidth: 100, width: 100, formatter: this.customDateFormatter,
-    // grouping: {
-    //   getter: 'createdOn',
-    //   formatter: (g: any) => `Date: <span style="var(--slick-primary-color); font-weight: bold;">${g.value}</span>  <span style="color: #659bff;">(${g.count} items)</span>`,
-    //   aggregateCollapsed: true,
-    //   collapsed: true
-    // }
-     },
-    { id: 'supplierName', name: 'Supplier Name', field: 'supplierName', filterable: true, sortable: true, minWidth: 65, width: 120,
-      grouping: {
-        getter: 'supplierName',
-        formatter: (g: any) => `Supplier: <span style="var(--slick-primary-color); font-weight: bold;">${g.value}</span>  <span style="color: #659bff;">(${g.count} items)</span>`,
-        aggregateCollapsed: true,
-        collapsed: true
-      }
-    },
     {
-      id: 'qualityType', name: 'Quality', field: 'qualityType', filterable: true, sortable: true, minWidth: 75, width: 75,
-      grouping: {
-        getter: 'qualityType',
-        formatter: (g: any) => `Quality: <span style="var(--slick-primary-color); font-weight: bold;">${g.value}</span>  <span style="color: #659bff;">(${g.count} items)</span>`,
-        aggregateCollapsed: true,
-        collapsed: true
-      }
+      id: 'productCode', name: 'Product Code', field: 'productCode', filterable: true, sortable: true, minWidth: 100, width: 100,
     },
     { id: 'product', name: 'Product', field: 'product', filterable: true, sortable: true, minWidth: 80, width: 80,
       grouping: {
@@ -264,11 +247,10 @@ export class InventoryListNewComponent implements OnInit {
         collapsed: true
       }
     },
-    {
-      id: 'shape', name: 'Shape', field: 'shape', filterable: true, sortable: true, minWidth: 60, width: 60,
+    { id: 'supplierName', name: 'Supplier Name', field: 'supplierName', filterable: true, sortable: true, minWidth: 65, width: 120,
       grouping: {
-        getter: 'shape',
-        formatter: (g: any) => `Shape: <span style="var(--slick-primary-color); font-weight: bold;">${g.value}</span>  <span style="color: #659bff;">(${g.count} items)</span>`,
+        getter: 'supplierName',
+        formatter: (g: any) => `Supplier: <span style="var(--slick-primary-color); font-weight: bold;">${g.value}</span>  <span style="color: #659bff;">(${g.count} items)</span>`,
         aggregateCollapsed: true,
         collapsed: true
       }
@@ -283,6 +265,24 @@ export class InventoryListNewComponent implements OnInit {
       }
     },
     {
+      id: 'qualityType', name: 'Quality', field: 'qualityType', filterable: true, sortable: true, minWidth: 75, width: 75,
+      grouping: {
+        getter: 'qualityType',
+        formatter: (g: any) => `Quality: <span style="var(--slick-primary-color); font-weight: bold;">${g.value}</span>  <span style="color: #659bff;">(${g.count} items)</span>`,
+        aggregateCollapsed: true,
+        collapsed: true
+      }
+    },
+    {
+      id: 'shape', name: 'Shape', field: 'shape', filterable: true, sortable: true, minWidth: 60, width: 60,
+      grouping: {
+        getter: 'shape',
+        formatter: (g: any) => `Shape: <span style="var(--slick-primary-color); font-weight: bold;">${g.value}</span>  <span style="color: #659bff;">(${g.count} items)</span>`,
+        aggregateCollapsed: true,
+        collapsed: true
+      }
+    },
+    {
       id: 'stonesNb', name: 'No Of Stones', field: 'stonesNb', filterable: true, sortable: true, minWidth: 60, width: 60,
       grouping: {
         getter: 'stonesNb',
@@ -290,9 +290,6 @@ export class InventoryListNewComponent implements OnInit {
         aggregateCollapsed: true,
         collapsed: true
       }
-    },
-    {
-      id: 'productCode', name: 'Product Code', field: 'productCode', filterable: true, sortable: true, minWidth: 100, width: 100,
     },
     {
       id: 'inStock', name: 'In Stock', field: 'inStock', filterable: true, sortable: true, maxWidth: 50, width: 50,
@@ -304,8 +301,9 @@ export class InventoryListNewComponent implements OnInit {
       },
       formatter: Formatters['checkmarkMaterial']
     },
+    { id: 'createdOn', name: 'Date', field: 'createdOn', filterable: true, sortable: true, minWidth: 100, width: 100, formatter: this.customDateFormatter},
     {
-      id: 'actions', name: 'Actions', field: 'actions', minWidth: 100, maxWidth: 100,
+      id: 'actions', name: 'Actions', field: 'actions', minWidth: 125, maxWidth: 125,
       formatter: this.actionButtonsFormatter.bind(this)
     }
   ];
@@ -355,6 +353,8 @@ export class InventoryListNewComponent implements OnInit {
     checkboxSelector: {
       applySelectOnAllPages: true,
     },
+    
+    
   };
 
   onGroupsChanged(args: any) {
@@ -397,20 +397,31 @@ export class InventoryListNewComponent implements OnInit {
     //   console.error("Grid API is not available yet.");
     // }
 
-    const selectedRowIndexes = this.angularGrid.slickGrid.getSelectedRows(); // Indexes of selected rows
-    // sort selected row indexes in ascending order
-    const selectedRowData = selectedRowIndexes.map((index) =>
-      this.angularGrid.dataView.getItem(index)
-    );
+    // const selectedRowIndexes = this.angularGrid.slickGrid.getSelectedRows(); // Indexes of selected rows
+    // // sort selected row indexes in ascending order
+    // const selectedRowData = selectedRowIndexes.map((index) =>
+    //   this.angularGrid.dataView.getItem(index)
+    // );
 
-    const idsArray: number[] = []
-    selectedRowData.forEach((row) => {
-      if(row.id) idsArray.push(row.id);
-    })
+    // const idsArray: number[] = []
+    // selectedRowData.forEach((row) => {
+    //   if(row.id) idsArray.push(row.id);
+    // })
 
-    this.printInventoryBarcode(idsArray);
-    this.angularGrid.slickGrid.setSelectedRows([]); // Deselect all rows
+    // console.log(this.selectedRowIds);
+    this.printInventoryBarcode(this.selectedRowIds);
+
+    console.log(this.selectedRowIds);
+    
+    // this.angularGrid.slickGrid.setSelectedRows([]); // Deselect all rows
+    this.angularGrid.dataView.setSelectedIds([]); // Deselect all rows
+    this.selectedRowIds = [];
+    this.changeDetectorRef.detectChanges();
+
+    console.log(this.selectedRowIds);
+    
   }
+
   printHTML(htmlContent: string) {
     printJS({
       
@@ -481,6 +492,86 @@ export class InventoryListNewComponent implements OnInit {
     idsArray.push(e.id);
     this.printInventoryBarcode(idsArray);
 
+  }
+
+  onSellInventory(e: any) {
+    const productIds = [e.id];
+    let product = this.dataset.find((item) => item.id === e.id);
+    if(product.isSold) {
+      this.messageService.error("This inventory is already sold.");
+      return;
+    }
+    this.openSaleTypeConfirmationModal(productIds);
+  }
+
+  onSellAllSelectedInventories() {
+    const productIds = this.selectedRowIds;
+    const soldItems = this.dataset.filter(item => productIds.includes(item.id) && item.isSold);
+    if (soldItems.length > 0) {
+      this.messageService.error("Some of the selected inventories are already sold.");
+      return;
+    }
+    this.openSaleTypeConfirmationModal(productIds);
+  }
+
+  openSaleTypeConfirmationModal(productIds: number[]) {
+    const initialState = {};
+
+    const modalRef = this.modalService.show(ModalSaleTypeConfirmComponent, { initialState, class: 'modal-sm modal-dialog-centered' });
+    const sub = modalRef.content?.onClose.pipe(
+      tap(
+        (result: any) => {
+          if(result){
+            console.log(result.value);
+            this.router.navigate(['sale', result.value, 0, "New-Order", productIds.join(",") ]);
+          }
+        }
+      )
+    ).subscribe()
+  }
+
+  selectedRowIds: number[] = [];
+
+  gridStateChanged(params: any) {
+    const gridStateChanges: GridStateChange = params.detail;
+    console.log('Grid State changed:: ', gridStateChanges);
+    // console.log('Grid State changed:: ', gridStateChanges.change);
+
+    if(gridStateChanges?.change?.type === "pagination") {
+      console.log(this.selectedRowIds);
+      
+      // console.log(rowsOnCurrentPage);
+      const itemsPerPage = this.angularGrid.paginationService?.getCurrentItemPerPage();
+      const currentPage = this.angularGrid.paginationService?.getCurrentPageNumber();
+      const selectedRowIndex: (number)[] = [];
+      this.selectedRowIds.forEach((id) => {
+        let idx = this.angularGrid.dataView.getIdxById(id);
+        if (currentPage && itemsPerPage && idx != undefined) {
+          let start = (currentPage - 1) * itemsPerPage;
+          let end = start + itemsPerPage;
+
+          if (idx >= start && idx < end) {
+            if (currentPage > 1) {
+              selectedRowIndex.push(idx % (itemsPerPage * (currentPage - 1)));
+            }else if (currentPage === 1 && idx < itemsPerPage) {
+              selectedRowIndex.push(idx);
+            }
+          }
+        }
+
+        console.log(selectedRowIndex);
+        // console.log(idx);
+        // if (idx != undefined) selectedRowIndex.push(idx);
+      })
+
+      this.angularGrid.slickGrid.setSelectedRows(selectedRowIndex);
+    } else if (gridStateChanges?.change?.type === 'rowSelection') {
+      this.selectedRowIds = (gridStateChanges?.gridState?.rowSelection?.dataContextIds || []) as number[];
+      this.selectedRowIds = this.selectedRowIds.sort((a, b) => a - b); // sort by ID
+      this.changeDetectorRef.detectChanges();
+
+      console.log(this.angularGrid.dataView.getAllSelectedIds());
+    }
   }
 
 }
