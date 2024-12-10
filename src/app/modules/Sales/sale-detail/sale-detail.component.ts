@@ -95,6 +95,8 @@ import { PrimaryColorService } from "src/app/shared/store/primary-color/primary-
 import { ShapeStoreService } from "src/app/shared/store/shape/shape.store";
 import { ShapeService } from "src/app/shared/store/shape/shape.service";
 import { clear } from "console";
+import { InventoryStoreService } from "src/app/shared/store/inventory/inventory.store";
+import { InventoryService } from "src/app/shared/store/inventory/inventory.service";
 
 @Component({
   selector: "app-sale-detail",
@@ -571,11 +573,13 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
     protected dateService: DateService,
     private modalService: BsModalService,
     private _router: Router,
-    private imageService: ImageService
+    private imageService: ImageService,
+    private inventoryService: InventoryService,
+    private inventoryStoreService: InventoryStoreService,
   ) {}
 
   ngOnInit(): void {
-    console.log("Testing OnInit");
+    
     // get country list
     this.getCountryList();
     this.subscriptions.push(
@@ -593,6 +597,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
         this.designService.getAll(),
         this.voucherService.getAll(),
         this.feedbackService.getAll(),
+        this.inventoryService.getAll(),
       ])
         .pipe(
           tap(([params]) => {
@@ -608,6 +613,40 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
             this.orderNumber.setValue(params["orderNo"]);
 
             this.isForeignSale.setValue(params["type"] == "foreign");
+
+            if (params["productIds"]) {
+              const productIds = params["productIds"].split(",");
+              productIds.forEach((productId: any) => {
+                let product = this.inventoryStoreService.getById(productId);
+                if (product) {
+                  this.addedProducts.push({
+                    id: 0,
+                    masterId: 0,
+                    quality: product.qualityType,
+                    product: product.product,
+                    design: product.design,
+                    primaryStone: product.primaryStone,
+                    colour: product.primaryColor,
+                    size: product.size,
+                    shape: product.shape,
+                    stonesNB: product.stonesNb,
+                    supplierId: product.supplierId,
+                    quantity: 1,
+                    amount: product.sellingPrice,
+                    ccyCode: this.currency.value,
+                    description: "",
+                    isCustomized: false,
+                    isFreightInclude: true,
+                    expectedDeliveryDate: this.expectedDeliveryDate.value,
+                    productCode: product.productCode,
+                    isTaxExempted: product.isTaxExempted,
+                  });
+                }
+              })
+              console.log(this.addedProducts);
+              // set one product in form fields
+              this.onEditClick(this.addedProducts.length - 1, true);
+            }
 
             if (params["type"] == "counter") {
               // this.clientDetailForm.get("emailList")?.clearValidators();
@@ -681,7 +720,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
               this.masterOrderId.setValue(saleId);
               const sale = this.store.getById(saleId) ?? createSaleModel({});
 
-              console.log(sale);
+              
 
               // set the nav active id for payment information stepper
               this.activePaymentNav = sale.partPayment.length > 0 ? 2 : 1;
@@ -745,7 +784,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
               // adding product details to products array
               for (let product of sale.details) {
                 this.addedProducts.push(product);
-                console.log(this.addedProducts);
+                
               }
 
               // set one product in form fields
@@ -791,6 +830,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
                 this.dateService.formatDateToInput(new Date())
               );
             }
+
           })
         )
         .subscribe()
@@ -834,7 +874,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
       this.primaryStone.value != "" ||
       this.colour.value != ""
     ) {
-      console.log(this.isCustomized.value);
+      
       this.addedProducts.push({
         id: this.ProductId.value,
         masterId: this.masterId.value,
@@ -866,7 +906,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
     }
 
     let isBackDatedOrder = this.orderNumber.value == "New-Order" ? false : true;
-    console.log("IsBackDated-> " + isBackDatedOrder);
+    
 
     this.checkAdvancePayment();
     this.checkPartPaymentDetails();
@@ -962,7 +1002,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
                       // }
 
                       // const closeModalAndSpinner = () => {
-                      //   console.log("Modal closed");
+                      //   
                       //   printWindow?.close();
                       //   modalRef.hide(); // Hide the modal and remove the spinner
                       // };
@@ -1057,7 +1097,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
       salesManId: [this.salesManId.value],
       isHandCarry: [this.isHandCarry.value],
       orderStatus: [0],
-      expectedDeliveryDate: [""],
+      expectedDeliveryDate: [this.expectedDeliveryDate.value],
       paymentStatus: [0],
       isCustomized: [false],
       isFreightInclude: [true],
@@ -1089,9 +1129,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
       Object.keys(this.addProductForm.controls).forEach((key) => {
         const controlErrors = this.addProductForm.get(key)?.errors;
         if (controlErrors != null) {
-          console.log(
-            "Key control: " + key + ", error: " + JSON.stringify(controlErrors)
-          );
+          
         }
       });
       return;
@@ -1140,7 +1178,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
       this.addProductClick();
     }
 
-    console.log(this.addedProducts[index].stonesNB);
+    
 
     this.ProductId.setValue(this.addedProducts[index].id);
     this.product.setValue(this.addedProducts[index].product);
@@ -1165,7 +1203,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
     this.editProduct = true;
     this.amountOnBlur();
 
-    console.log(this.addProductForm.value);
+    
   }
 
   // DELETE ADDED PRODUCT
@@ -1665,7 +1703,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
         this.addProductForm.valid &&
         this.getByProductCode.value === this.productCode.value
       ) {
-        console.log('Called');
+        
         this.messageService.error("Product already added");
         return;
       }
@@ -1691,7 +1729,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
             this.supplierId.setValue(productDetail.supplierId);
             this.amount.setValue(productDetail.sellingPrice);
             this.expectedDeliveryDate.setValue(
-              productDetail.expectedDeliveryDate
+              this.expectedDeliveryDate.value
             );
             this.productCode.setValue(productDetail.productCode);
             this.isTaxExempted.setValue(productDetail.isTaxExempted);

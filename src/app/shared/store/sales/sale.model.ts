@@ -158,7 +158,7 @@ export interface ProductDetails {
   size: string;
   shape: string;
   quantity: number;
-  stonesNB : null;
+  stonesNB : number | null;
   supplierId: number;
   amount: number;
   ccyCode: string;

@@ -1853,6 +1853,87 @@ export default class SaleAnalysisComponent implements OnInit {
     this.lineBasicData = { ...this.lineBasicData };
   }
 
+  generateCounterVsForeignSalesChartData(sales: SaleModel[]): void {
+    const salesCountByDay: { date: string; counterSales: number; foreignSales: number }[] = [];
+
+    const today = new Date();
+    const last7Days = Array.from({ length: 7 }, (_, i) => {
+      const date = new Date(today);
+      date.setDate(today.getDate() - i);
+      return date.toISOString().split("T")[0];
+    }).reverse();
+
+    last7Days.forEach((date) => {
+      salesCountByDay.push({ date, counterSales: 0, foreignSales: 0 });
+    });
+
+    sales.forEach((sale) => {
+      const saleDate = new Date(sale.orderDate).toISOString().split("T")[0];
+      const existingDayData = salesCountByDay.find((data) => data.date === saleDate);
+
+      if (existingDayData) {
+        if (sale.isForeignSale) {
+          existingDayData.foreignSales++;
+        } else {
+          existingDayData.counterSales++;
+        }
+      }
+    });
+
+    const dates = salesCountByDay.map((data) => data.date);
+    const counterSales = salesCountByDay.map((data) => data.counterSales);
+    const foreignSales = salesCountByDay.map((data) => data.foreignSales);
+
+    this.basicData.labels = dates;
+    this.basicData.datasets = [
+      {
+        label: "Counter Sales",
+        data: counterSales,
+        fill: true,
+        borderColor: "#42A5F5",
+        backgroundColor: "#42A5F5",
+        borderWidth: 1,
+      },
+      {
+        label: "Foreign Sales",
+        data: foreignSales,
+        fill: true,
+        borderColor: "#69CEAD",
+        backgroundColor: "#69CEAD",
+        borderWidth: 1,
+      },
+    ];
+
+    this.lineBasicData.labels = dates;
+    this.lineBasicData.datasets = [
+      {
+        label: "Counter Sales",
+        data: counterSales,
+        fill: false,
+        borderColor: "#42A5F5",
+        backgroundColor: "#42A5F5",
+        borderWidth: 1,
+      },
+      {
+        label: "Foreign Sales",
+        data: foreignSales,
+        fill: false,
+        borderColor: "#69CEAD",
+        backgroundColor: "#69CEAD",
+        borderWidth: 1,
+      },
+    ];
+
+    this.basicOptions.scales.y.title.text = "No of Sales";
+    this.basicOptions.scales.x.title.text = "Date";
+
+    // Trigger change detection
+    this.cd.detectChanges();
+
+    this.basicData = { ...this.basicData };
+    this.lineBasicData = { ...this.lineBasicData };
+  }
+
   filterData(formValue: any): void {
     let selectedOption = formValue.typeOfChart;
     let noOfYears = formValue.numberOfYears;
@@ -1916,6 +1997,8 @@ export default class SaleAnalysisComponent implements OnInit {
         this.generateDailySaleVoucherCompareChartData(sales, vouchers);
       } else if (selectedOption == "16") {
         this.generateDailyRevenueGeneratedChartData(sales);
+      } else if (selectedOption == "17") {
+        this.generateCounterVsForeignSalesChartData(sales);
       }
     });
   }
@@ -2060,7 +2143,8 @@ export default class SaleAnalysisComponent implements OnInit {
           value == "13" ||
           value == "14" ||
           value == "15" ||
-          value == "16"
+          value == "16" ||
+          value == "17"
         ) {
           this.showYearField = false;
           this.showDateFields = false;

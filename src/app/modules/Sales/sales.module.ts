@@ -51,6 +51,8 @@ import { PrimaryColorService } from "src/app/shared/store/primary-color/primary-
 import { PrimaryColorStoreService } from "src/app/shared/store/primary-color/primary-color.store";
 import { ShapeService } from "src/app/shared/store/shape/shape.service";
 import { ShapeStoreService } from "src/app/shared/store/shape/shape.store";
+import { InventoryStoreService } from "src/app/shared/store/inventory/inventory.store";
+import { InventoryService } from "src/app/shared/store/inventory/inventory.service";
 @NgModule({
   declarations: [SaleListComponent, SaleDetailComponent, SaleViewComponent],
   providers: [
@@ -89,6 +91,8 @@ import { ShapeStoreService } from "src/app/shared/store/shape/shape.store";
     NgbProgressbarModule,
     NgbModalModule,
     AgGridService,
+    InventoryService,
+    InventoryStoreService
   ],
   imports: [
     SaleRoutingModule,
