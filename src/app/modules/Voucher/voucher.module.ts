@@ -27,11 +27,13 @@ import { UserStoreService } from 'src/app/shared/store/user/user.store';
 import { AuthService } from 'src/app/core/service/auth.service';
 import { DateService } from 'src/app/shared/service/date.service';
 import { AgGridService } from 'src/app/shared/service/ag-grid.service';
+import { ViewVoucherComponent } from './voucher-view/view-voucher.component';
 
 @NgModule({
   declarations: [
     VoucherListComponent,
     VoucherDetailComponent,
+    ViewVoucherComponent
   ],
   providers: [
     VoucherStoreService,
@@ -68,6 +70,7 @@ import { AgGridService } from 'src/app/shared/service/ag-grid.service';
   exports: [
     VoucherListComponent,
     VoucherDetailComponent,
+    ViewVoucherComponent,
     CardComponent
   ]
 })

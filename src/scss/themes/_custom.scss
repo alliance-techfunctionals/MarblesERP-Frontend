@@ -1,3 +1,6 @@
+@import "primeng/resources/themes/lara-light-blue/theme.css";
+@import "primeng/resources/primeng.css";
+
 .btn-page .btn {
   margin-right: 8px;
 }
@@ -42,6 +45,7 @@
   height: auto;
 }
 
+
 .pcoded-navbar.menu-light:not(.theme-horizontal) {
   .pcoded-inner-navbar > app-nav-group > app-nav-collapse > li.active > a,
   .pcoded-inner-navbar > app-nav-group > app-nav-collapse > li.pcoded-trigger > a,
@@ -68,6 +72,12 @@
   text-align: center;
 }
 
+.custom-stepper ol.steps {
+  display: flex;
+  justify-content: center;
+  padding-left: 0;
+}
+
 .fixed-button.active {
   bottom: 50px;
   opacity: 1;
@@ -82,4 +92,39 @@
   z-index: 9;
   -webkit-transition: all 0.5s ease;
   transition: all 0.5s ease;
+}
+
+.toast-container {
+  position: fixed !important;
+}
+
+.ag-watermark {
+  display: none;
+}
+
+.slick-pagination .slick-pagination-settings {
+  z-index: 999;
+  position: relative;
+  margin-right: 20px;
+}
+
+.slickgrid-container .slick-row .slick-cell.active {
+  border: none !important;
+  border-top: 1px solid #ddd !important;
+  box-shadow: none !important;
+  padding: 5px 10px !important;
+}
+
+body .slickgrid-container .grid-canvas .slick-cell {
+  padding: 5px 10px !important;
+  line-height: 30px;
+}
+
+// .slick-header-column.header-checkbox-selectall * {
+//   // display: none !important;
+//   opacity: 0;
+// }
+
+.sold-out-row {
+  background-color: rgba(220, 20, 60, 0.1) !important;
 }

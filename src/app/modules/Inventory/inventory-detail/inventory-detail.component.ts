@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { booleanAttribute, Component, OnDestroy, OnInit } from "@angular/core";
 import {
   FormBuilder,
   FormControl,
@@ -7,6 +7,7 @@ import {
 } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BsModalService } from "ngx-bootstrap/modal";
+import printJS from "print-js";
 import {
   combineLatest,
   debounceTime,
@@ -51,8 +52,6 @@ import { SizeStoreService } from "src/app/shared/store/size/size.store";
 import { UserModel } from "src/app/shared/store/user/user.model";
 import { UserService } from "src/app/shared/store/user/user.service";
 import { UserStoreService } from "src/app/shared/store/user/user.store";
-import { InventoryModule } from "../inventory.module";
-import printJS from "print-js";
 
 @Component({
   selector: "app-inventory-detail",
@@ -61,8 +60,7 @@ import printJS from "print-js";
 })
 export default class InventoryDetailComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
-  checkbox: boolean = false; 
-  
+  checkbox: boolean = false;
 
   qualityList$: Observable<string[]> = this.qualityStoreService
     .selectAll()
@@ -93,6 +91,7 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
   productList$: Observable<string[]> = this.productStoreService
     .selectAll()
     .pipe(map((product) => product.map((t) => t.name)));
+
   productCodeList$: Observable<string[]> = this.productStoreService
     .selectAll()
     .pipe(map((product) => product.map((t) => t.name)));
@@ -115,9 +114,8 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
   );
 
   inventoryForm: FormGroup<inventoryForm> = this.formBuilder.nonNullable.group({
-   
     id: [0],
-    guid:[""],
+    guid: [""],
     size: ["", Validators.required],
     qualityType: ["", Validators.required],
     product: ["", Validators.required],
@@ -130,9 +128,10 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
     supplierId: ["", Validators.required],
     costPrice: [null],
     sellingPrice: ["", Validators.required],
-    productNameCode: ["",Validators.required],
+    productNameCode: ["", Validators.required],
     userCode: [""],
-    quantity: [""]
+    isTaxExempted: [false],
+    quantity: [""],
     // qty: [1, Validators.required]
   }) as any;
 
@@ -141,6 +140,7 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
   sadekaarField = false;
   designAmtField = false;
 
+  inventoryInStock: boolean = true;
 
   get id() {
     return this.inventoryForm.get("id") as FormControl;
@@ -151,6 +151,9 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
 
   get size() {
     return this.inventoryForm.get("size") as FormControl;
+  }
+  get isTaxExempted() {
+    return this.inventoryForm.get("isTaxExempted") as FormControl;
   }
 
   get qualityType() {
@@ -192,8 +195,6 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
     return this.inventoryForm.get("productNameCode") as FormControl;
   }
 
-  
-
   get supplierId() {
     return this.inventoryForm.get("supplierId") as FormControl;
   }
@@ -206,88 +207,9 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
     return this.inventoryForm.get("sellingPrice") as FormControl;
   }
 
-  // get qty(){
-  //   return this.inventoryForm.get('qty') as FormControl;
-  // }
-
   get quantity() {
-    return this.inventoryForm.get('quantity') as FormControl;
+    return this.inventoryForm.get("quantity") as FormControl;
   }
-
-  // get design() {
-  //   return this.inventoryForm.get('design') as FormControl;
-  // }
-
-  // get quantity() {
-  //   return this.inventoryForm.get('quantity') as FormControl;
-  // }
-  // get color() {
-  //   return this.inventoryForm.get('color') as FormControl;
-  // }
-
-  // get size() {
-  //   return this.inventoryForm.get('size') as FormControl;
-  // }
-
-  // get file() {
-  //   return this.inventoryForm.get('file') as FormControl;
-  // }
-
-  // get name() {
-  //   return this.inventoryForm.get('name') as FormControl;
-  // }
-
-  // get supplierId() {
-  //   return this.inventoryForm.get('supplierId') as FormControl;
-  // }
-
-  // generateCode() {
-  //   // Fetch the values from the form controls
-
-  //   console.log(this.inventoryForm.value)
-  //   const supplierCode = this.inventoryForm.get("supplierCode")?.value || "SC";
-  //   const pc = this.inventoryForm.get("pc")?.value || "";
-  //   const primaryColor = this.inventoryForm.get("primaryColor")?.value || "";
-
-  //   // Subscribe to supplierUserList$ to get the supplier data
-  //   this.artisanList$.subscribe(
-  //     (data) => {
-  //       console.log(data);
-  //       // Filter the supplier data to find supplier with id == 4 (replace 4 with the correct supplier ID if needed)
-  //       const artisan = data?.find(
-  //         (artisan) => artisan.name == this.supplierId.value
-  //       ); // Update artisan ID accordingly
-  //       console.log(artisan);
-  //       if (artisan) {
-  //         // Log artisan details (for debugging purposes)
-  //         console.log(artisan);
-  //         const artisanCode = artisan.name.substring(0, 2);
-
-  //         // Example code generation logic
-  //         const generatedCode = `A&L-${artisanCode.substring(
-  //           0,
-  //           3
-  //         )}${primaryColor.substring(0, 1)}${pc.substring(
-  //           0,
-  //           4
-  //         )}001`.toUpperCase();
-
-  //         // Set the generated code into the productCode form control
-  //         this.inventoryForm.get("productCode")?.setValue(generatedCode);
-  //       } else {
-  //         console.error("artisan with ID 4 not found");
-  //       }
-  //     },
-  //     (error) => {
-  //       // Handle any errors that occur
-  //       console.error("Error while fetching artisan data:", error);
-  //     },
-  //     () => {
-  //       // Handle the completion of the Observable
-  //       console.log("Observable completed");
-  //     }
-  //   );
-  // }
 
   constructor(
     private route: ActivatedRoute,
@@ -349,13 +271,12 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
               userData,
             ]) => {
               if (params["id"] != 0) {
-
                 const inventoryId = Number(params["id"]);
                 const inventory =
                   this.store.getById(inventoryId) ?? createInventoryModel({});
 
                 console.log(inventory);
-              
+                this.inventoryInStock = !inventory.isSold;
 
                 this.inventoryForm.setValue({
                   id: inventory.id,
@@ -370,108 +291,107 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
                   primaryColor: inventory.primaryColor,
                   stonesNb: inventory.stonesNb,
                   supplierId:
-                  inventory.supplierId != null ? inventory.supplierId : 0,
+                    inventory.supplierId != null ? inventory.supplierId : 0,
                   costPrice: inventory.costPrice,
                   sellingPrice: inventory.sellingPrice,
                   quantity: 1,
                   userCode: "",
-                  guid:""
+                  isTaxExempted: inventory.isTaxExempted || false,
+                  guid: "",
                   // rate: inventory.rate,
                   // sadekaar: inventory.sadekaar,
                   // designAmt: inventory.designAmt,
                 });
 
-                if(inventory.guid){
-                  this.inventoryForm.get('guid')?.setValue(inventory.guid)
+                if (inventory.guid) {
+                  this.inventoryForm.get("guid")?.setValue(inventory.guid);
                 }
-                let fullProductList$ = this.productStoreService.selectAll()
+                let fullProductList$ = this.productStoreService.selectAll();
                 fullProductList$.subscribe((productList) => {
-                  let product: any = productList.find(product => product.name == inventory.product);
-        
-                  if(product) {
-                    this.inventoryForm.get('productNameCode')?.setValue(product.code)
-        
-                  }else{
-                    this.inventoryForm.get('productNameCode')?.setValue('')
+                  let product: any = productList.find(
+                    (product) => product.name == inventory.product
+                  );
+
+                  if (product) {
+                    this.inventoryForm
+                      .get("productNameCode")
+                      ?.setValue(product.code);
+                  } else {
+                    this.inventoryForm.get("productNameCode")?.setValue("");
                   }
-                })
+                });
               }
             }
           )
         )
         .subscribe()
-      );
-      
+    );
 
-      this.inventoryForm.get('product')?.valueChanges.subscribe((res) => {
-        let fullProductList$ = this.productStoreService.selectAll()
-        fullProductList$.subscribe((productList) => {
-          let product: any = productList.find(product => product.name == res);
+    this.inventoryForm.get("product")?.valueChanges.subscribe((res) => {
+      let fullProductList$ = this.productStoreService.selectAll();
+      fullProductList$.subscribe((productList) => {
+        let product: any = productList.find((product) => product.name == res);
 
-          if(product) {
-            this.inventoryForm.get('productNameCode')?.setValue(product.code)
-
-          }else{
-            this.inventoryForm.get('productNameCode')?.setValue('')
-          }
-        })
-      })
-      
-      // this.inventoryForm.get('product')?.valueChanges.subscribe((res) => {
-      //   this.productStoreService.selectAll().subscribe((productList) => {
-      //     const product = productList.find(product => product.name === res);
-      //     if (product) {
-      //       this.inventoryForm.get('productNameCode')?.setValue(product.code);
-      //     } else {
-      //       this.inventoryForm.get('productNameCode')?.setValue('');
-      //     }
-      //   });
-      // });
-    }
-    
-  
-
-
-    // protected editAllSimilarGuidData(): void {
-    //   const currentGuid = this.guid.value; // Get the current GUID
-    
-    //   this.inventoryService.getAll().subscribe(inventories => {
-    //     const similarItems = inventories.filter(item => item.guid === currentGuid);
-    
-    //     similarItems.forEach(item => {
-    //       // Edit the item as needed
-    //       item.quantity = this.quantity.value; // Example of updating quantity
-    //       // Call the upsert service for each item
-    //       this.inventoryService.upsertInventory(item).subscribe();
-    //     });
-    
-    //     // Optionally navigate or perform additional logic here
-    //   });
-    // }
-
-    // submit button click
-    protected updateInventory(print:boolean = false): void {
-      const inventory = createInventoryModel({
-        id: this.id.value,
-        supplierId: this.supplierId.value,
-        size: this.size.value,
-        qualityType: this.qualityType.value,
-        product: this.product.value,
-        productCode: this.productCode.value,
-        shape: this.shape.value,
-        primaryStone: this.primaryStone.value,
-        design: this.design.value,
-        primaryColor: this.primaryColor.value,
-        stonesNb: this.stonesNb.value,
-        sellingPrice: this.sellingPrice.value,
-        productNameCode: this.productNameCode.value,
-        costPrice: this.costPrice.value,
-        guid: this.guid.value,
-        quantity: this.quantity.value
+        if (product) {
+          this.inventoryForm.get("productNameCode")?.setValue(product.code);
+        } else {
+          this.inventoryForm.get("productNameCode")?.setValue("");
+        }
       });
-    
+    });
+
+    // this.inventoryForm.get('product')?.valueChanges.subscribe((res) => {
+    //   this.productStoreService.selectAll().subscribe((productList) => {
+    //     const product = productList.find(product => product.name === res);
+    //     if (product) {
+    //       this.inventoryForm.get('productNameCode')?.setValue(product.code);
+    //     } else {
+    //       this.inventoryForm.get('productNameCode')?.setValue('');
+    //     }
+    //   });
+    // });
+  }
+
+  // protected editAllSimilarGuidData(): void {
+  //   const currentGuid = this.guid.value; // Get the current GUID
+
+  //   this.inventoryService.getAll().subscribe(inventories => {
+  //     const similarItems = inventories.filter(item => item.guid === currentGuid);
+
+  //     similarItems.forEach(item => {
+  //       // Edit the item as needed
+  //       item.quantity = this.quantity.value; // Example of updating quantity
+  //       // Call the upsert service for each item
+  //       this.inventoryService.upsertInventory(item).subscribe();
+  //     });
+
+  //     // Optionally navigate or perform additional logic here
+  //   });
+  // }
+
+  // submit button click
+  protected updateInventory(print: boolean = false): void {
+    const inventory = createInventoryModel({
+      id: this.id.value,
+      supplierId: this.supplierId.value,
+      size: this.size.value,
+      qualityType: this.qualityType.value,
+      product: this.product.value,
+      productCode: this.productCode.value,
+      shape: this.shape.value,
+      primaryStone: this.primaryStone.value,
+      design: this.design.value,
+      primaryColor: this.primaryColor.value,
+      stonesNb: this.stonesNb.value,
+      sellingPrice: this.sellingPrice.value,
+      productNameCode: this.productNameCode.value,
+      costPrice: this.costPrice.value,
+      guid: this.guid.value,
+      quantity: this.quantity.value,
+      isTaxExempted: this.isTaxExempted.value,
+    });
+
     const checkInventory = createCheckInventoryModel({
-      
       design: this.design.value,
       size: this.size.value,
     });
@@ -500,17 +420,17 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
     console.log(inventory);
 
     if (this.inventoryForm.valid || this.inventoryForm.disabled) {
-      if(this.checkbox){
+      if (this.checkbox) {
         this.subscriptions.push(
           this.inventoryService
             .upsertInventory(inventory, true)
             .pipe(
               tap((response) => {
-                if(print) {
+                if (print) {
                   let idsArray: number[] = [];
                   response.data.forEach((item: any) => {
                     idsArray.push(item.id);
-                  })
+                  });
 
                   this.printInventoryBarcode(idsArray);
                 }
@@ -522,19 +442,17 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
             )
             .subscribe()
         );
-      }
-      else{
-
+      } else {
         this.subscriptions.push(
           this.inventoryService
             .upsertInventory(inventory, false)
             .pipe(
               tap((response) => {
-                if(print) {
+                if (print) {
                   let idsArray: number[] = [];
                   response.data.forEach((item: any) => {
                     idsArray.push(item.id);
-                  })
+                  });
 
                   this.printInventoryBarcode(idsArray);
                 }
@@ -565,7 +483,6 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
   //   });
   // }
 
- 
   protected openUpdateConfirmationModal(
     item: InventoryModel,
     existedItem: CheckInventoryModel
@@ -634,15 +551,24 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
       // this.file.setValue(event.target.files[0]);
     }
   }
-  editInventoryByGuid(event:any){
-    if(event.target.checked){
-       this.checkbox = true;
-    }else{
+
+  // isExemption(event:any){
+  //   if(event.target.checked){
+  //     this.checkbox = true;
+  //   }else{
+  //     this.checkbox = false;
+  //   }
+  //   console.log(this.checkbox);
+  // }
+
+  editInventoryByGuid(event: any) {
+    if (event.target.checked) {
+      this.checkbox = true;
+    } else {
       this.checkbox = false;
     }
-    console.log(this.checkbox)
+    console.log(this.checkbox);
   }
-  
 
   searchQuality = (text$: Observable<string>): Observable<string[]> => {
     return text$.pipe(
@@ -761,14 +687,12 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
     });
   }
 
-  printInventoryBarcode(productIds:number[]){
-
+  printInventoryBarcode(productIds: number[]) {
     this.inventoryService
       .printInventoryBarcode(productIds)
       .pipe(
         tap((productBarcodeResponse) => {
           if (productBarcodeResponse) {
-            
             this.printHTML(productBarcodeResponse);
           }
         })

@@ -6,20 +6,20 @@
   <div class="col-md-12">
     <app-card cardTitle="" [hidHeader]="true" [options]="false">
       <form [formGroup]="voucherForm">
-        <h5>{{ voucherForm.value.id === 0 ? "Add" : "Edit" }} Voucher</h5>
+        <h5>View Voucher</h5>
         <hr />
         <div class="row">
           <div class="col-md-6">
             <!-- show voucher number -->
             <div class="form-group">
-              <label for="voucherNo">Voucher Number<span class="required">*</span></label>
+              <label for="voucherNo">Voucher Number</label>
               <input type="text" class="form-control" id="name" formControlName="voucherCode" />
             </div>
           </div>
           <div class="col-md-6">
             <!-- enter name -->
             <div class="form-group">
-              <label for="companyName">Company Name<span class="required">*</span></label>
+              <label for="companyName">Company Name</label>
               <input type="text" class="form-control text-capitalize" id="companyName" placeholder="Ex: KCI" formControlName="companyName" />
               <ul *ngIf="companyName.touched && companyName.invalid">
                 <li *ngIf="companyName.errors?.['required']" class="text-danger">Company Name is required</li>
@@ -30,7 +30,7 @@
           <div class="col-md-6">
             <!-- enter driver -->
             <div class="form-group">
-              <label for="driverName">Driver Name<span class="required">*</span></label>
+              <label for="driverName">Driver Name</label>
               <input type="text" class="form-control text-capitalize" id="driverName" placeholder="Ex: John" formControlName="driverName" />
               <ul *ngIf="driverName.touched && driverName.invalid">
                 <li *ngIf="driverName.errors?.['required']" class="text-danger">Driver Name is required</li>
@@ -63,7 +63,7 @@
           <div class="col-md-6">
             <!-- select salesMan -->
             <div class="form-group">
-              <label for="salesMan">Sales Consultant<span class="required">*</span></label>
+              <label for="salesMan">Sales Consultant</label>
               <select class="form-control" id="salesMan" formControlName="salesManId">
                 <option value="0" disabled>Select</option>
                 <option *ngFor="let salesMan of group.salesManUserList | sortDescending: 'desc'" [value]="salesMan.id">
@@ -93,8 +93,7 @@
         </div>
       </form>
       <div class="col-md-12">
-        <button type="button" class="btn btn-outline-primary m-r-15" [routerLink]="'/voucher'">Cancel</button>
-        <button type="button" *ngIf="voucherForm.dirty" class="btn btn-primary" [disabled]="voucherForm.invalid"  (click)="uppertVoucher()">{{ voucherForm.value.id === 0 ? "Save" : "update" }} </button>
+        <button type="button" class="btn btn-outline-primary m-r-15" [routerLink]="'/voucher'">Back</button>
       </div>
     </app-card>
   </div>

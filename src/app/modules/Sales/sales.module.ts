@@ -45,6 +45,12 @@ import SaleDetailComponent from "./sale-detail/sale-detail.component";
 import SaleListComponent from "./sale-list/sale-list.component";
 import SaleViewComponent from "./sale-view/sale-view.component";
 import { SaleRoutingModule } from "./sales.routing.module";
+import { ProductStoreService } from "src/app/shared/store/product/product.store";
+import { ProductService } from "src/app/shared/store/product/product.service";
+import { PrimaryColorService } from "src/app/shared/store/primary-color/primary-color.service";
+import { PrimaryColorStoreService } from "src/app/shared/store/primary-color/primary-color.store";
+import { ShapeService } from "src/app/shared/store/shape/shape.service";
+import { ShapeStoreService } from "src/app/shared/store/shape/shape.store";
 @NgModule({
   declarations: [SaleListComponent, SaleDetailComponent, SaleViewComponent],
   providers: [
@@ -53,7 +59,13 @@ import { SaleRoutingModule } from "./sales.routing.module";
     RoleService,
     RoleStoreService,
     QualityService,
+    ProductStoreService,
+    ProductService,
     QualityStoreService,
+    PrimaryColorService,
+    PrimaryColorStoreService,
+    ShapeService,
+    ShapeStoreService,
     ColorService,
     ColorStoreService,
     SizeService,

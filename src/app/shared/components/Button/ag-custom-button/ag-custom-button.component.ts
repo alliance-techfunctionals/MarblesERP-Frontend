@@ -19,6 +19,18 @@ export class AgCustomButtonComponent  implements ICellRendererAngularComp {
     return true;
   }
 
+  onToggleClick($event: any): void {
+    if (this.params?.onToggleClick instanceof Function) {
+      // put anything into params u want pass into parents component
+      const params = {
+        event: $event,
+        rowData: this.params.node.data
+      }
+
+      this.params.onToggleClick(params);
+    }
+  }
+
   onViewClick($event: any): void {
     if (this.params?.onViewClick instanceof Function) {
       // put anything into params u want pass into parents component

@@ -1,4 +1,4 @@
-<div
+<!-- <div
   *ngIf="{
     currencyList:  []
   } as group"
@@ -28,7 +28,7 @@
             </tr>
             <tr>
               <td class="fw-bold">Colour</td>
-              <td *ngFor="let product of sale?.details;let i=index">{{ product.colour }}</td>
+              <td *ngFor="let product of sale?.details;let i=index">{{ product.primaryStone }}</td>
             </tr>
             <tr>
               <td class="fw-bold">Size</td>
@@ -84,4 +84,9 @@
       </div>
     </app-card>
   </div>
+</div> -->
+
+
+<div class="bg-white p-4">
+  <div [innerHTML]="invoiceHtml" class="invoice-container" style="min-width: 650px;"></div>
 </div>

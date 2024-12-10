@@ -1,25 +1,26 @@
 import { FormArray, FormControl } from "@angular/forms";
 export interface Sale {
-  id:number,
+  id: number;
   orderNumber: string;
   clientName: string;
 }
 
-export interface temporary{
-  voucher: number,
-  orderNumberId: number, 
-  customer: number,
-  orderStatus: boolean,
-  paymentStatus: number,
-  orderDate: Date,
-  gstInvoiceNumber: string,
-  isHandCarry: boolean,
+export interface temporary {
+  voucher: number;
+  orderNumberId: number;
+  customer: number;
+  orderStatus: boolean;
+  paymentStatus: number;
+  orderDate: Date;
+  gstInvoiceNumber: string;
+  isHandCarry: boolean;
 }
 
 export interface SaleModel {
   id: number;
   voucherId: number;
   orderNumber: string;
+  isForeignSale:boolean;
   // client details
   clientName: string;
   emailAddressList: string[];
@@ -40,6 +41,7 @@ export interface SaleModel {
   orderStatus: number;
   paymentStatus: number;
   // product details
+  Amount: number;
   details: ProductDetails[];
   isHandCarry: boolean;
   // checkout details
@@ -50,8 +52,10 @@ export interface SaleModel {
   isFreightInclusive: boolean; // added on 12-Jul-24
   isDeleted: boolean;
   createdOn: Date;
+  expectedDeliveryDate: Date | null;
   orderDate: Date;
   gstInvoiceNumber: string;
+  isBackDatedOrder: boolean;
   tracking: {
     id: number;
     masterSaleId: number;
@@ -68,12 +72,14 @@ export interface SaleModel {
   orderStatusName: string;
   paymentStatusName: string;
   deliveryPartnerName: string;
+  isCancelled: boolean;
 }
 
 export function createSaleModel({
   id = 0,
   voucherId = 0,
   orderNumber = "",
+  isForeignSale = false,
   clientName = "",
   mobileNumberList = [],
   emailAddressList = [],
@@ -96,16 +102,19 @@ export function createSaleModel({
   isHandCarry = true,
   isFullPayment = false,
   partPayment = [],
-  comments = '',
+  comments = "",
   isDeleted = false,
   createdOn = new Date(),
+  expectedDeliveryDate = null as Date | null,
   orderDate = new Date(),
-  gstInvoiceNumber = ''
+  gstInvoiceNumber = "",
+  isBackDatedOrder = false,
 }: Partial<SaleModel>) {
   return {
     id,
     voucherId,
     orderNumber,
+    isForeignSale,
     clientName,
     mobileNumberList,
     emailAddressList,
@@ -131,28 +140,38 @@ export function createSaleModel({
     createdOn,
     details,
     isHandCarry,
+    expectedDeliveryDate,
     orderDate,
-    gstInvoiceNumber
+    gstInvoiceNumber,
+    isBackDatedOrder,
   } as SaleModel;
 }
 
-export interface ProductDetails{
+export interface ProductDetails {
   id: number;
   masterId: number;
   quality: string;
+  product: string;
   design: string;
+  primaryStone: string;
   colour: string;
   size: string;
+  shape: string;
   quantity: number;
+  stonesNB : null;
+  supplierId: number;
   amount: number;
   ccyCode: string;
   description: string;
   isCustomized: boolean;
   isFreightInclude: boolean;
   isCustomFullfilled?: boolean;
+  expectedDeliveryDate: Date;
+  productCode: string;
+  isTaxExempted: boolean;
 }
 
-export interface PartPaymentDetails{
+export interface PartPaymentDetails {
   id: number;
   masterOrderId: number;
   paymentDueDate: Date;
@@ -160,6 +179,7 @@ export interface PartPaymentDetails{
   ccyCode: string;
   comments: string;
   status: boolean;
+  paymentType: number;
 }
 
 export interface SaleForm {
@@ -182,43 +202,53 @@ export interface SaleForm {
 }
 
 // client detail Form
-export interface ClientDetailForm{
-  id: FormControl<number>,
-  orderNumber: FormControl<string>,
-  customerId: FormControl<number>,
-  clientName: FormControl<string>,
+export interface ClientDetailForm {
+  id: FormControl<number>;
+  orderNumber: FormControl<string>;
+  isForeignSale:FormControl<boolean>;
+  customerId: FormControl<number>;
+  clientName: FormControl<string>;
   emailList: FormArray;
   mobileList: FormArray;
-  street: FormControl<string>,
-  apartment: FormControl<string>,
-  houseNumber: FormControl<string>,
-  shippingCountry: FormControl<string>,
-  shippingState: FormControl<string>,
-  shippingCity: FormControl<string>,
-  shippingPinCode: FormControl<string>,
+  street: FormControl<string>;
+  apartment: FormControl<string>;
+  houseNumber: FormControl<string>;
+  shippingCountry: FormControl<string>;
+  shippingState: FormControl<string>;
+  shippingCity: FormControl<string>;
+  shippingPinCode: FormControl<string>;
 }
 
 // Add product Form
 export interface addProductForm {
   id: FormControl<number>;
   masterId: FormControl<number>;
+  product: FormControl<string>;
   quality: FormControl<string>;
   design: FormControl<string>;
-  color: FormControl<string>;
+  primaryStone: FormControl<string>;
+  colour: FormControl<string>;
   quantity: FormControl<number>;
+  stonesNb: FormControl<null>;
+  supplierId: FormControl<string>;
   amount: FormControl<string>;
   size: FormControl<string>;
+  shape: FormControl<string>;
   currency: FormControl<string>;
   description: FormControl<string>;
   salesManId: FormControl<number>;
+  expectedDeliveryDate: FormControl<string>;
   isHandCarry: FormControl<string>;
   orderStatus: FormControl<number>;
   paymentStatus: FormControl<number>;
   isCustomized: FormControl<boolean>;
   isFreightInclude: FormControl<boolean>;
+  productCode: FormControl<string>;
+  getByProductCode: FormControl<string>;
+  isTaxExempted: FormControl<boolean>;
 }
 
-export interface checkoutForm{
+export interface checkoutForm {
   id: FormControl<number>;
   masterOrderId: FormControl<number>;
   paymentDate: FormControl<Date>;
@@ -227,9 +257,11 @@ export interface checkoutForm{
   saleComments: FormControl<string>;
   partPaymentStatus: FormControl<boolean>;
   orderDate: FormControl<string>;
+  advancePayment: FormControl<number>;
 }
 
-export interface orderNoForm{
+export interface orderNoForm {
   orderNo: FormControl<string>;
+  enableOrderNo: FormControl<boolean>;
+  isForeignSale:FormControl<boolean>;
 }
-

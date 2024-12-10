@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { EMPTY, Observable, of } from 'rxjs';
+import { EMPTY, Observable, of, throwError } from 'rxjs';
 import { catchError, delay, switchMap, take, tap } from 'rxjs/operators';
-import { MessageToastService } from 'src/app/core/service/message-toast.service';
-import { MarbleInventoryHttpService } from '../../service/marble-inventory.http.service';
-import { City, Country, State } from '../../service/open-source-data.service';
-import { SaleModel } from './sale.model';
+import { ProductDetails, SaleModel } from './sale.model';
 import { SaleStoreService } from './sale.store';
+// import { MarbleInventoryHttpService } from '../../service/carpet-inventory.http.service';
+import { MessageToastService } from 'src/app/core/service/message-toast.service';
+import { City, Country, State } from '../../service/open-source-data.service';
+import { MarbleInventoryHttpService } from '../../service/marble-inventory.http.service';
 
 @Injectable({ providedIn: 'root' })
 export class SaleService {
@@ -14,7 +15,7 @@ export class SaleService {
   constructor(
     private router: Router,
     protected store: SaleStoreService,
-    private CarpetInventoryService: MarbleInventoryHttpService,
+    private MarbleInventoryHttpService: MarbleInventoryHttpService,
     private messageService: MessageToastService
   ) { }
 
@@ -23,7 +24,7 @@ export class SaleService {
     return this.store.selectHasCache().pipe(
       take(1),
       switchMap(hasCache => {
-        const request = this.CarpetInventoryService.getAllSale().pipe(
+        const request = this.MarbleInventoryHttpService.getAllSale().pipe(
           catchError(_error => {
             if(_error.status === 500){
               this.messageService.error(_error.error.innerException);
@@ -46,15 +47,15 @@ export class SaleService {
   // insert and update Sale
   upsertSale(sale: SaleModel): Observable<SaleModel> {
     if (sale.id === 0) {
-      return this.CarpetInventoryService.insertSale(sale).pipe(
+      return this.MarbleInventoryHttpService.insertSale(sale).pipe(
         catchError(_error => {
           if(_error.status === 500){
-            this.messageService.error(_error.error.innerException);  
+            this.messageService.error(_error.error.message);  
           }
           else{
             this.messageService.error('Error on Inserting Sale');
           }
-          return EMPTY;
+          return throwError(_error);
         }),
         tap((response: SaleModel) => {
           // console.log({ response })
@@ -64,15 +65,15 @@ export class SaleService {
       );
     }
     else {
-      return this.CarpetInventoryService.updateSale(sale).pipe(
+      return this.MarbleInventoryHttpService.updateSale(sale).pipe(
         catchError(_error => {
           if(_error.status === 500){
-            this.messageService.error(_error.error.innerException);
+            this.messageService.error(_error.error.message);
           }
           else{
             this.messageService.error('Error on Updating Sale');
           }
-          return EMPTY;
+          return throwError(_error);
         }),
         tap((response) => {
           // console.log({ response })
@@ -85,7 +86,7 @@ export class SaleService {
 
   // delete sale
   deleteSale(sale: SaleModel): void {
-    this.CarpetInventoryService.deleteSale(sale).pipe(
+    this.MarbleInventoryHttpService.deleteSale(sale).pipe(
       catchError(error => {
         console.error('Error on getting sales:', error)
         return EMPTY;
@@ -96,29 +97,29 @@ export class SaleService {
       })
     ).subscribe();
   }
-// cancel
-// delete sale
-cancelSale(sale: SaleModel, comment: string): void {
-  this.CarpetInventoryService.cancelSale(sale, comment).pipe(
-    catchError(error => {
-      console.error('Error on getting sales:', error)
-      return EMPTY;
-    }),
-    tap((response: boolean) => {
-      if(response){
-        this.store.deleteById(sale.id);
-        this.messageService.success('Sale Cancelled successfully');
-      }else {
-        this.messageService.error('Something Went wrong');
-      }
-    })
-  ).subscribe();
-}
 
+  // delete sale
+  cancelSale(sale: SaleModel, comment: string): void {
+    this.MarbleInventoryHttpService.cancelSale(sale, comment).pipe(
+      catchError(error => {
+        console.error('Error on getting sales:', error)
+        return EMPTY;
+      }),
+      tap((response: boolean) => {
+        if(response){
+          // this.store.deleteById(sale.id);
+          this.store.cancelById(sale.id, {isCancelled: true});
+          this.messageService.success('Sale Cancelled successfully');
+        }else {
+          this.messageService.error('Failed to cancel sale');
+        }
+      })
+    ).subscribe();
+  }
 
   // check order number
   checkOrderNo(orderNo: string): Observable<boolean> {
-    return this.CarpetInventoryService.isOrderNoExists(orderNo).pipe(
+    return this.MarbleInventoryHttpService.isOrderNoExists(orderNo).pipe(
       catchError(_error => {
         this.messageService.error(_error.error.message);
         return EMPTY;
@@ -130,7 +131,7 @@ cancelSale(sale: SaleModel, comment: string): void {
   }
 
   getCountryList(): Observable<Country[]> {
-    return this.CarpetInventoryService.getCountries().pipe(
+    return this.MarbleInventoryHttpService.getCountries().pipe(
       catchError(_error => {
         console.error('Error on getting country list:', _error.error.innerException)
         return EMPTY;
@@ -143,7 +144,7 @@ cancelSale(sale: SaleModel, comment: string): void {
   }
 
   getStateList(country: string): Observable<State[]> {
-    return this.CarpetInventoryService.getStates(country).pipe(
+    return this.MarbleInventoryHttpService.getStates(country).pipe(
       catchError(_error => {
         console.error('Error on getting State list:', _error.error.innerException)
         return EMPTY;
@@ -156,7 +157,7 @@ cancelSale(sale: SaleModel, comment: string): void {
   }
 
   getCityList(state: string): Observable<City[]> {
-    return this.CarpetInventoryService.getCities(state).pipe(
+    return this.MarbleInventoryHttpService.getCities(state).pipe(
       catchError(_error => {
         console.error('Error on getting City list:', _error.error.innerException)
         return EMPTY;
@@ -170,7 +171,7 @@ cancelSale(sale: SaleModel, comment: string): void {
 
   // get latest voucher number
   getOrderNo(): Observable<string> {
-    return this.CarpetInventoryService.getNextOrderNo().pipe(
+    return this.MarbleInventoryHttpService.getNextOrderNo().pipe(
       catchError(_error => {
         const error = JSON.parse(_error.error);
         this.messageService.error(error['message']);
@@ -178,6 +179,19 @@ cancelSale(sale: SaleModel, comment: string): void {
       }),
       tap((response: string) => {
         // this.store.up(response);
+      })
+    )
+  }
+
+  getByProductCode(productCode: string): Observable<any> {
+    return this.MarbleInventoryHttpService.getByProductCode(productCode).pipe(
+      catchError(_error => {
+        this.messageService.error(_error.error.message);
+        return EMPTY;
+      }),
+      tap((response: any) => {
+        this.messageService.success('Product Fetched Successfully');
+        return response.data;
       })
     )
   }

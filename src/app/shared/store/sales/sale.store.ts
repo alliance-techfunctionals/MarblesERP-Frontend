@@ -83,6 +83,10 @@ export class SaleStoreService {
     saleStore.update(deleteEntities(id));
   }
 
+  cancelById(id: number, updatedData: Partial<SaleModel>): void {
+    saleStore.update(updateEntities(id, updatedData));
+  }
+
   filterByDateRange(fromDate: Date, toDate: Date): Observable<SaleModel[]> {
     return this.sales$.pipe(
       map(sales => sales.filter(sale =>

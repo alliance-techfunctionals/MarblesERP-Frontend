@@ -6,10 +6,14 @@
         "primarycolor",
         "primarystone",
         "sadekaar",
+        "Slickgrid",
+        "Toastr",
         "Typeahead",
         "uppert"
     ],
     "cSpell.ignoreWords": [
         "HOSJ"
-    ]
+    ],
+    "terminal.integrated.shellIntegration.enabled": false,
+    "terminal.integrated.shellIntegration.history": 25
 }
