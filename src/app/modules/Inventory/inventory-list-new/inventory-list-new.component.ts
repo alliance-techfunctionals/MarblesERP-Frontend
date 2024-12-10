@@ -150,7 +150,7 @@ export class InventoryListNewComponent implements OnInit {
         this.onSellInventory(data);
       }
     });
-    console.log(this.angularGrid);
+    
     // this.angularGrid.dataView.
 
   }
@@ -183,12 +183,16 @@ export class InventoryListNewComponent implements OnInit {
       this.angularGrid.slickGrid.invalidate(); // Invalidate and refresh all rows
       this.angularGrid.slickGrid.render(); // Re-render the grid
     }
-    if(this.dataset.length > 10) {
-      this.angularGrid.paginationService?.togglePaginationVisibility(true);
+
+    if (this.angularGrid?.paginationService) {
+      if(this.dataset.length > 10) {
+        this.angularGrid.paginationService?.togglePaginationVisibility(true);
+      }else {
+        this.angularGrid.paginationService?.togglePaginationVisibility(false);
+      }
+      this.changeDetectorRef.detectChanges();
     }
-    this.changeDetectorRef.detectChanges();
-    // this.updatePagination(); // Update pagination metadata
-  } 
+  }
 
   updatePagination(): void {
     if (this.angularGrid?.paginationService) {
@@ -359,14 +363,16 @@ export class InventoryListNewComponent implements OnInit {
 
   onGroupsChanged(args: any) {
     
-
     if (args.groupColumns.length > 0) {
       this.angularGrid.paginationService?.togglePaginationVisibility(false);
     }else {
       if(this.dataset.length > 10) {
         this.angularGrid.paginationService?.togglePaginationVisibility(true);
+      }else {
+        this.angularGrid.paginationService?.togglePaginationVisibility(false);
       }
     }
+    this.dataset = [...this.dataset]
   }
 
   onSelectedRowsChanged(e: any, args: any) {
@@ -408,17 +414,17 @@ export class InventoryListNewComponent implements OnInit {
     //   if(row.id) idsArray.push(row.id);
     // })
 
-    // console.log(this.selectedRowIds);
+    // 
     this.printInventoryBarcode(this.selectedRowIds);
 
-    console.log(this.selectedRowIds);
+    
     
     // this.angularGrid.slickGrid.setSelectedRows([]); // Deselect all rows
     this.angularGrid.dataView.setSelectedIds([]); // Deselect all rows
     this.selectedRowIds = [];
     this.changeDetectorRef.detectChanges();
 
-    console.log(this.selectedRowIds);
+    
     
   }
 
@@ -452,7 +458,7 @@ export class InventoryListNewComponent implements OnInit {
   }
 
   onDeleteClicked(e: any) {
-    console.log("Deleted")
+    
     this.openDeleteConfirmationModal(e);
   }
 
@@ -522,7 +528,7 @@ export class InventoryListNewComponent implements OnInit {
       tap(
         (result: any) => {
           if(result){
-            console.log(result.value);
+            
             this.router.navigate(['sale', result.value, 0, "New-Order", productIds.join(",") ]);
           }
         }
@@ -534,13 +540,13 @@ export class InventoryListNewComponent implements OnInit {
 
   gridStateChanged(params: any) {
     const gridStateChanges: GridStateChange = params.detail;
-    console.log('Grid State changed:: ', gridStateChanges);
-    // console.log('Grid State changed:: ', gridStateChanges.change);
+    
+    // 
 
     if(gridStateChanges?.change?.type === "pagination") {
-      console.log(this.selectedRowIds);
       
-      // console.log(rowsOnCurrentPage);
+      
+      // 
       const itemsPerPage = this.angularGrid.paginationService?.getCurrentItemPerPage();
       const currentPage = this.angularGrid.paginationService?.getCurrentPageNumber();
       const selectedRowIndex: (number)[] = [];
@@ -559,8 +565,8 @@ export class InventoryListNewComponent implements OnInit {
           }
         }
 
-        console.log(selectedRowIndex);
-        // console.log(idx);
+        
+        // 
         // if (idx != undefined) selectedRowIndex.push(idx);
       })
 
@@ -569,8 +575,6 @@ export class InventoryListNewComponent implements OnInit {
       this.selectedRowIds = (gridStateChanges?.gridState?.rowSelection?.dataContextIds || []) as number[];
       this.selectedRowIds = this.selectedRowIds.sort((a, b) => a - b); // sort by ID
       this.changeDetectorRef.detectChanges();
-
-      console.log(this.angularGrid.dataView.getAllSelectedIds());
     }
   }
 
