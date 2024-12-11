@@ -1,0 +1,25 @@
+<div class="modal-body text-center">
+    <i [class]="icon"></i>
+    <h5> Sale Confirmation </h5>
+<div class='form-check d-inline-flex ' >
+    <!-- Select All Checkbox -->
+    <form action="" [formGroup]="saleTypeForm">
+        <label class="form-check-label ms-2 text-start" for="sale-type">Which type of sale do you want to proceed with ?
+        </label>
+        <div class="form-check w-50 mt-2 ms-2">
+            <input type="radio" id="foreign" formControlName="saleType" value="foreign" class="form-check-input">
+            <label for="foreign" class="form-check-label">Foreign</label>
+        </div>
+        <div class="form-check w-50 ms-2">
+            <input type="radio" id="counter" formControlName="saleType" value="counter" class="form-check-input">
+            <label for="counter" class="form-check-label">Counter</label>
+        </div>
+
+    </form>
+</div>
+    
+<div>
+    <button type="button" class="btn btn-outline-primary  m-r-15" (click)="modalDecline()">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="modalConfirm()">Proceed</button>
+</div>
+</div>

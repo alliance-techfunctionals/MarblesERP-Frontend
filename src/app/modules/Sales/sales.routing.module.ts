@@ -20,7 +20,11 @@ const routes: Routes = [
   {
     path: ':type/:id/:orderNo',
     component: SaleDetailComponent
-  }  
+  },
+  {
+    path: ':type/:id/:orderNo/:productIds',
+    component: SaleDetailComponent
+  }
 ];
 
 @NgModule({
