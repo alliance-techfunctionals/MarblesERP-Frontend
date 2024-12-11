@@ -174,7 +174,7 @@
             <div class="form-group">
               <label for="costPrice">Cost Price</label>
               <input type="number" class="form-control" id="costPrice" placeholder="Enter Cost Price"
-                formControlName="costPrice" />
+                formControlName="costPrice" (input)="getSellPrice($event)"/>
               <!-- <ul *ngIf="costPrice.touched && costPrice.invalid">
                 <li *ngIf="costPrice.errors?.['required']" class="text-danger">Cost Price is required</li>
                 <li *ngIf="costPrice.errors?.['message']" class="text-danger">{{ costPrice.errors?.["message"] }}</li>
