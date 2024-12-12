@@ -210,8 +210,8 @@ export class InventoryListNewComponent implements OnInit {
     const options: Intl.DateTimeFormatOptions = {
       month: 'short',
       day: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric',
+      // hour: 'numeric',
+      // minute: 'numeric',
     };
 
     if (date.getFullYear() !== now.getFullYear()) {
