@@ -4,7 +4,7 @@ import { AngularGridInstance, AngularSlickgridComponent, Column, FieldType, Form
 import { update } from 'lodash';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import printJS from 'print-js';
-import { combineLatest, concatMap, map, Observable, of, Subscription, tap } from 'rxjs';
+import { combineLatest, concatMap, filter, map, Observable, of, Subscription, tap } from 'rxjs';
 import { ImageService } from 'src/app/core/service/Image.service';
 import { MessageToastService } from 'src/app/core/service/message-toast.service';
 import { ModalType } from 'src/app/shared/components/modal-confirm/modal-confirm.component';
@@ -104,20 +104,20 @@ export class InventoryListNewComponent implements OnInit {
       })
     );
 
-    
     // this.defineGrid();
-    this.inventoryList$.subscribe((data) => {
-      this.dataset = data;
-      this.updateGridData()
-      this.changeDetectorRef.markForCheck(); // Trigger change detection
-    });
+    this.inventoryList$.pipe(
+      filter((data: any[]) => Array.isArray(data))
+    ).subscribe((data) => {
+      const sortedData = data.sort((a: { id: number; }, b: { id: number; }) => b.id - a.id);
+      this.dataset = sortedData;
+      this.updateGridData();
+      this.changeDetectorRef.markForCheck(); 
+    });    
   }
 
   angularGridReady(angularGrid: AngularGridInstance | any) {
     this.angularGrid = angularGrid.detail;
     
-
-
     // Subscribe to row selection changes
     this.angularGrid.slickGrid.onSelectedRowsChanged.subscribe((_e, args) => {
       
@@ -450,7 +450,6 @@ export class InventoryListNewComponent implements OnInit {
         })
       )
       .subscribe();
-
   }
 
   onEditClicked(e: any) {
@@ -458,7 +457,6 @@ export class InventoryListNewComponent implements OnInit {
   }
 
   onDeleteClicked(e: any) {
-    
     this.openDeleteConfirmationModal(e);
   }
 

@@ -11,10 +11,18 @@
           <div class="col-md-4">
             <div class="form-group">
               <label for="orderNumber">Order Number</label>
-              <select id="orderNumber" class="form-control" formControlName="saleMasterId" (change)="fillVoucherAndInvoiceNo()">
-                <option value="0">Select</option>
-                <option *ngFor="let sale of group.saleList; let i=index" value="{{ sale.id }}">{{ sale.orderNumber + ' - ' + (sale.customerId | getClientNameById | async | titlecase) + ' - ' + (sale.country | titlecase) }}</option>
-              </select>
+              <mat-form-field appearance="fill" style="width: 100%;">
+                <mat-select #saleSelect formControlName="saleMasterId" (openedChange)="onSaleDropdownOpen()" panelClass="sale-lazy-load-panel">
+                  <div>
+                    <input (keydown.space)="$event.stopPropagation()" style="width: 100%; margin: 5px 0; height: 40px;" placeholder="Search Order Number" (input)="onSaleInputChange($event)">
+                  </div>
+                  <mat-option [value]="0">Select</mat-option>
+                  <mat-option *ngFor="let sale of filteredSaleList;" [value]="sale.id">
+                    {{ sale.orderNumber + ' - ' + (sale.customerId | getClientNameById | async | titlecase)
+                     + ' - ' + (sale.salesManId | getUserByRoleId | async | titlecase) }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
             </div>
             <button class="btn btn-primary m-r-10" [disabled]="linkSaleForm.invalid || (voucherId.value == '0' && invoiceNo.value == '')" (click)="linkSaleClick()">Save</button>
             <button class="btn btn-primary" [disabled]="saleMasterId.errors?.['min']" (click)="openDeleteConfirmationModal()">Remove</button>
@@ -23,10 +31,17 @@
           <div class="col-md-4">
             <div class="form-group">
               <label for="voucherCode">Voucher Code</label>
-              <select id="voucherCode" class="form-control" formControlName="voucherId">
-                <option value="0">Select</option>
-                <option *ngFor="let voucher of group.voucherList; let i=index" value="{{ voucher.id }}">{{ voucher.voucherCode + '/ ' + voucher.companyName }}</option>
-              </select>
+              <mat-form-field appearance="fill" style="width: 100%;">
+                <mat-select #voucherSelect formControlName="voucherId" (openedChange)="onVoucherDropdownOpen()" panelClass="voucher-lazy-load-panel">
+                  <div>
+                    <input style="width: 100%; margin: 5px 0; height: 40px;" placeholder="Search Voucher Code" (input)="onVoucherInputChange($event)">
+                  </div>
+                  <mat-option [value]="0">Select</mat-option>
+                  <mat-option *ngFor="let voucher of filteredVoucherList;" [value]="voucher.id">
+                    {{ voucher.voucherCode + '/ ' + voucher.companyName + '/ ' + voucher.guideName }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
             </div>
           </div>
 
