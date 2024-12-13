@@ -1,0 +1,48 @@
+<!-- <div
+*ngIf="{
+  inventoryList: (inventoryList$ | async) ?? [],
+  qualityList: (qualityList$ | async) ?? [],
+  designList: (designList$ | async) ?? []
+} as group"
+> -->
+<div class="col-md-12">
+  <app-card cardTitle="" [hidHeader]="true" [options]="false" blockClass="table-border-style">
+    <h4 class="d-flex"></h4>
+    <h4 class="text-end d-flex flex-row justify-content-between">
+      <h4>Inventory List</h4>
+      <div class="d-flex gap-3">
+        <button class="btn btn-primary" *ngIf="selectedRowIds.length > 0" (click)="onSellAllSelectedInventories()">
+          <i class="bi bi-cart"></i>
+          Sell
+        </button>
+        <button class="btn btn-primary" *ngIf="selectedRowIds.length > 0" (click)="printAll()">
+          <i class="fa fa-print"></i>
+          Print
+        </button>
+        <!-- <button class="btn btn-primary" (click)="navigateInventory()">
+          <i class="feather icon-plus"></i>
+          Add
+        </button> -->
+      </div>
+    </h4>
+   
+    <hr />
+    <div id="inventory-list-container" class="grid-container border rounded">
+      <div *ngIf="dataset.length == 0" class="loader-container d-flex justify-content-center py-3">
+        <div class="spinner-border" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+      <angular-slickgrid
+                        *ngIf="dataset.length != 0"
+                        style="overflow-y: hidden;"
+                        gridId="inventoryGrid"
+                        [columnDefinitions]="columnDefinitions"
+                        [gridOptions]="gridOptions"
+                        [dataset]="dataset"
+                        (onAngularGridCreated)="angularGridReady($event)"
+                        (onGridStateChanged)="gridStateChanged($event)">
+      </angular-slickgrid>
+    </div>
+  </app-card>
+</div>

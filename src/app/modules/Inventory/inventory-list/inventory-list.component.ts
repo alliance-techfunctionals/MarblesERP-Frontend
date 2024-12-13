@@ -231,7 +231,6 @@ export default class InventoryListComponent {
 
 @ViewChild('agGrid') agGrid!: AgGridAngular;
 
-
   printAll() {
     if (this.agGrid && this.agGrid.api) {
       const selectedRows = this.agGrid.api.getSelectedRows(); // Get selected rows

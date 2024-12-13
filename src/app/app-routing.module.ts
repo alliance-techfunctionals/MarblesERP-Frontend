@@ -54,6 +54,12 @@ const routes: Routes = [
         canActivate: [authGuard],
         data: { expectedRole: ['1000','3000', '6000', '7000'] }
       },
+      {
+        path: 'by-vendor',
+        loadChildren: () => import('./modules/Inventory/inventory-list-by-vendor/inventory-by-vendor.module').then((m) => m.InventoryModule),
+        canActivate: [authGuard],
+        data: { expectedRole: ['1000','3000', '6000', '7000'] }
+      },
       // {
       //   path: 'purchase-voucher-detail',
       //   loadChildren: () => import('./modules/Purchase-Voucher/purchase-voucher.module').then((m) => m.PurchaseVoucherModule),

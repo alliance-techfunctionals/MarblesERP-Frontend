@@ -60,6 +60,14 @@ export const NavigationItems: NavigationItem[] = [
         url: '/inventory',
         icon: 'bi bi-diagram-3',
         roles: ['1000', '3000', '6000', '7000']
+      },
+      {
+        id: 'Inventory',
+        title: 'Inventory Management(By Vendor)',
+        type: 'item',
+        url: '/by-vendor',
+        icon: 'bi bi-diagram-3',
+        roles: ['1000', '3000', '6000', '7000']
       }
     ]
   },
