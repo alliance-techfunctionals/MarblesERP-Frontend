@@ -14,7 +14,7 @@
         </button>
       </h4>
       <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
-        <ng-container *ngFor="let role of group.roleList | sortDescending: 'asc' ">
+        <ng-container *ngFor="let role of roleList | sortDescending: 'asc' ">
           <li [ngbNavItem]="role.id">
             <button ngbNavLink (click)="tabClick(role.id)">{{ role.role }}</button>
             <ng-template ngbNavContent>

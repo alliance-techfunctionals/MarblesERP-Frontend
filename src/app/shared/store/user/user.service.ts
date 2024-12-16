@@ -45,7 +45,7 @@ export class UserService {
     if (user.id === 0) {
       return this.CarpetInventoryService.insertUser(user).pipe(
         catchError(error => {
-          this.messageService.error('Error on insert user:', error);
+          this.messageService.error('Error on insert user:', error.error.message);
           return EMPTY;
         }),
         tap((response: UserModel) => {
@@ -57,7 +57,7 @@ export class UserService {
     else {
       return this.CarpetInventoryService.updateUser(user).pipe(
         catchError(error => {
-          this.messageService.error('Error on update user:', error);
+          this.messageService.error('Error on update user:', error.error.message);
           return EMPTY;
         }),
         tap((response) => {
