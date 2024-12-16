@@ -22,6 +22,7 @@ import { environment } from 'src/environments/environment';
 })
 export default class UsersListComponent implements OnInit, OnDestroy {
   roleList:Role[] = []
+  userList:UserModel[] = []
   // filteredRoleList:Role[] = []
   // colDefs: ColDef[] = [
   //   { headerName: "#", valueGetter: "node.rowIndex + 1", maxWidth: 60 },
@@ -91,8 +92,10 @@ export default class UsersListComponent implements OnInit, OnDestroy {
       this.userService.getAll().subscribe(),
       this.roleService.getAll().subscribe()
     )
-    this.roleList$.subscribe(res=>{
-      this.roleList = res
+    this.userList$.subscribe(res =>{
+      this.userList = res
+      // if(this.userList.id == 5000)
+      console.log(this.userList)
       // this.filteredRoleList = this.roleList
     })
   }
