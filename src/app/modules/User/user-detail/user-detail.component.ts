@@ -38,8 +38,8 @@ export default class UserDetailComponent implements OnInit, OnDestroy {
     pinCode: [''],
     state: ['UP'],
     password: [''],
-    userCode: ['',Validators.required]
-    
+    userCode: ['',Validators.required],
+    lastSupplierProductCode: [0,Validators.required]
   });
 
   showSupplierCode:boolean=false;
@@ -98,6 +98,9 @@ export default class UserDetailComponent implements OnInit, OnDestroy {
   }
   get userCode(){
     return this.userForm.get('userCode') as FormControl;
+  }
+  get lastSupplierProductCode(){
+    return this.userForm.get('lastSupplierProductCode') as FormControl;
   }
  
 
@@ -171,7 +174,8 @@ export default class UserDetailComponent implements OnInit, OnDestroy {
               state: 'UP',
               emailAddressList: user.emailAddressList,
               password: user.password,
-              userCode: user.userCode
+              userCode: user.userCode,
+              lastSupplierProductCode: user.lastSupplierProductCode
             })
           }
         })
@@ -206,7 +210,8 @@ export default class UserDetailComponent implements OnInit, OnDestroy {
       roleId: this.roleId.value,
       state: "UP",
       password: this.password.value,
-      userCode: this.userCode.value
+      userCode: this.userCode.value,
+      lastSupplierProductCode: this.lastSupplierProductCode.value
     });
 
     if (this.userForm.valid || this.userForm.disabled) {

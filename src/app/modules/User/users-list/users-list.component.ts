@@ -21,6 +21,8 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./users-list.component.scss'],
 })
 export default class UsersListComponent implements OnInit, OnDestroy {
+  roleList:Role[] = []
+  // filteredRoleList:Role[] = []
   // colDefs: ColDef[] = [
   //   { headerName: "#", valueGetter: "node.rowIndex + 1", maxWidth: 60 },
   //   { headerName: "Name", field: "name", filter: true, floatingFilter: true },
@@ -89,13 +91,17 @@ export default class UsersListComponent implements OnInit, OnDestroy {
       this.userService.getAll().subscribe(),
       this.roleService.getAll().subscribe()
     )
-
+    this.roleList$.subscribe(res=>{
+      this.roleList = res
+      // this.filteredRoleList = this.roleList
+    })
   }
+
 
   // navigate to User
   protected navigateUser(id: number = 0): void {
     // saving tabIndex temporarily
-    window.localStorage.setItem('tabIndex',this.active.toString());
+    window.localStorage.setItem('tabIndex', this.active.toString());
     this.router.navigate(['users', id]);
   }
 
@@ -122,7 +128,7 @@ export default class UsersListComponent implements OnInit, OnDestroy {
     }
   }
 
-  tabClick(id: number){
+  tabClick(id: number) {
     window.localStorage.setItem('tabIndex', id.toString());
   }
 

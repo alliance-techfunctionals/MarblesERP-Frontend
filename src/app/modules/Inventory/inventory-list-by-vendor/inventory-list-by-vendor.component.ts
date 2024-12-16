@@ -197,22 +197,10 @@ export class InventoryListByVendorComponent {
         totalItems: this.dataset.length,
         pageSizes: [this.dataset.length],
       };
-      console.log(this.angularGrid?.paginationService, ' ----')
-      console.error('angularGrid or its paginationService is defined.');
-    } else {
-      console.error('angularGrid or its paginationService is not defined.');
     }
     this.angularGrid.paginationService?.togglePaginationVisibility(false);
     this.angularGrid.gridService.renderGrid();
     this.changeDetectorRef.detectChanges();
-
-    // if (this.angularGrid.dataView) {
-    //   this.angularGrid.dataView.setPagingOptions({ pageSize: this.dataset.length, pageNum: 0 });
-    // }
-
-    // this.angularGrid.gridService.renderGrid();
-
-    console.log('Grouped dataset:', this.dataset);
   }
 
 
