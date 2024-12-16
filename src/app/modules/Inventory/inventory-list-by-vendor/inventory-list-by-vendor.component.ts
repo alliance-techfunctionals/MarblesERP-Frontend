@@ -177,7 +177,7 @@ export class InventoryListByVendorComponent {
     this.angularGrid.dataView.setGrouping({
       getter: 'supplierName',
       formatter: (g: { value: any; count: any; }) => {
-        return `Supplier: <span style="var(--slick-primary-color); font-weight: bold;">${g.value}</span>  <span style="color: #659bff;">(${g.count} items)</span>`;
+        return `Supplier Name: <span style="var(--slick-primary-color); font-weight: bold;">${g.value}</span>  <span style="color: #659bff;">(${g.count} items)</span>`;
       },
       comparer: (a: { value: any; }, b: { value: any; }) => {
         return SortComparers['numeric'](a.value, b.value, SortDirectionNumber.asc);
