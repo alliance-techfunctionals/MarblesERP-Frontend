@@ -52,7 +52,6 @@ export class DesignStoreService {
     return this.designs$.pipe(
       switchMap((item) => item.length > 0 ? of(true) : of(false))
     )
-
   }
 
   getById(id: number): Design | undefined {
