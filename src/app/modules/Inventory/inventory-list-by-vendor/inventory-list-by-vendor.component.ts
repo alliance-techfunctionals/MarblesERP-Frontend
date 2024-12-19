@@ -1,10 +1,9 @@
-import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
-import { Aggregators, AngularGridInstance, AngularSlickgridComponent, Column, FieldType, Formatters, GridOption, GridStateChange, SlickDataView, SlickGrid, SortComparers, SortDirectionNumber } from 'angular-slickgrid';
-import { update } from 'lodash';
+import { AngularGridInstance, Column, Formatters, GridOption, GridStateChange, Observable, SortComparers, SortDirectionNumber, Subscription } from 'angular-slickgrid';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import printJS from 'print-js';
-import { combineLatest, concatMap, filter, map, Observable, of, Subscription, tap } from 'rxjs';
+import { combineLatest, concatMap, filter, map, of, tap } from 'rxjs';
 import { ImageService } from 'src/app/core/service/Image.service';
 import { MessageToastService } from 'src/app/core/service/message-toast.service';
 import { ModalType } from 'src/app/shared/components/modal-confirm/modal-confirm.component';
@@ -24,11 +23,11 @@ import { UserService } from 'src/app/shared/store/user/user.service';
 import { UserStoreService } from 'src/app/shared/store/user/user.store';
 
 @Component({
-  selector: 'app-inventory-list-new',
-  templateUrl: './inventory-list-new.component.html',
-  styleUrls: ['./inventory-list-new.component.scss']
+  selector: 'app-inventory-list-by-vendor',
+  templateUrl: './inventory-list-by-vendor.component.html',
+  styleUrls: ['./inventory-list-by-vendor.component.scss']
 })
-export class InventoryListNewComponent implements OnInit {
+export class InventoryListByVendorComponent {
   angularGrid!: AngularGridInstance;
   // gridOptions!: GridOption;
   // columnDefinitions: Column[] = [];
@@ -107,7 +106,7 @@ export class InventoryListNewComponent implements OnInit {
     // this.defineGrid();
     this.inventoryList$.pipe(
       filter((data: any[]) => Array.isArray(data))
-    ).subscribe((data) => {
+    ).subscribe((data: { id: number; }[]) => {
       const sortedData = data.sort((a: { id: number; }, b: { id: number; }) => b.id - a.id);
       this.dataset = sortedData;
       this.updateGridData();
@@ -154,6 +153,15 @@ export class InventoryListNewComponent implements OnInit {
 
   }
 
+  ngAfterViewInit() {
+    const interval = setInterval(() => {
+      if (this.angularGrid) {
+        clearInterval(interval);
+        this.groupBySupplierName();
+      }
+    }, 50);
+  }
+
   applyRowStyles() {
     const unsoldRows = this.dataset
       .filter((row) => !row.isSold)
@@ -163,6 +171,36 @@ export class InventoryListNewComponent implements OnInit {
       }, {});
 
     this.angularGrid.slickGrid.setCellCssStyles('unsoldRows', unsoldRows);
+  }
+
+  groupBySupplierName() {
+    this.angularGrid.dataView.setGrouping({
+      getter: 'supplierName',
+      formatter: (g: { value: any; count: any; }) => {
+        return `Supplier Name: <span style="var(--slick-primary-color); font-weight: bold;">${g.value}</span>  <span style="color: #659bff;">(${g.count} items)</span>`;
+      },
+      comparer: (a: { value: any; }, b: { value: any; }) => {
+        return SortComparers['numeric'](a.value, b.value, SortDirectionNumber.asc);
+      },
+      aggregators: [],
+      aggregateCollapsed: false,
+      lazyTotalsCalculation: true
+    });
+
+    this.angularGrid.dataView.collapseAllGroups();
+
+    console.log(this.angularGrid.gridService)
+
+    if (this.angularGrid && this.angularGrid.paginationService) {
+      this.angularGrid.paginationService.paginationOptions = {
+        pageSize: this.dataset.length,
+        totalItems: this.dataset.length,
+        pageSizes: [this.dataset.length],
+      };
+    }
+    this.angularGrid.paginationService?.togglePaginationVisibility(false);
+    this.angularGrid.gridService.renderGrid();
+    this.changeDetectorRef.detectChanges();
   }
 
 
@@ -330,7 +368,6 @@ export class InventoryListNewComponent implements OnInit {
       dropPlaceHolderText: 'Drop a column header here to group inventory data by any of these column - Supplier Name, Quality, Product, Shape, Design, No Of Stones, In Stock',
       deleteIconCssClass: 'mdi mdi-close',
       onGroupChanged: (e, args) => {
-        console.log(args)
         this.onGroupsChanged(args);
       }
     },
@@ -579,5 +616,4 @@ export class InventoryListNewComponent implements OnInit {
       this.changeDetectorRef.detectChanges();
     }
   }
-
 }

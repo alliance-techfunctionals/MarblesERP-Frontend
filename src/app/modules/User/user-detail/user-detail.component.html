@@ -140,6 +140,19 @@
           </div>
 
           <div class="col-md-6">
+            <!-- Last Product Code -->
+            <div class="form-group">
+              <label for="lastSupplierProductCode">Last Product Code<span class="required">*</span></label>
+              <input type="text" class="form-control text-capitalize" id="name" placeholder="123"
+                formControlName="lastSupplierProductCode" />
+              <ul *ngIf="lastSupplierProductCode.touched && lastSupplierProductCode.invalid">
+                <li *ngIf="lastSupplierProductCode.errors?.['required']" class="text-danger">Last Product Code is required</li>
+                <li *ngIf="lastSupplierProductCode.errors?.['message']" class="text-danger">{{ name.errors?.["message"] }}</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
             <!-- User Code -->
             <div class="form-group" *ngIf="showSupplierCode">
               <label for="showSupplierCode">Supplier Code<span class="required">*</span></label>
@@ -151,8 +164,6 @@
               </ul>
             </div>
           </div>
-
-
 
         </div>
       </form>

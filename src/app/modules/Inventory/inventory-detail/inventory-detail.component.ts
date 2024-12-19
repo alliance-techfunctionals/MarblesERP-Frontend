@@ -699,4 +699,10 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
       )
       .subscribe();
   }
+  getSellPrice(event:any){
+    console.log(event.target.value * 12)
+    this.inventoryForm.patchValue({
+      sellingPrice: (event.target.value * 12)
+    })
+  }
 }

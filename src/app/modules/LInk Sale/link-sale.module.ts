@@ -14,6 +14,9 @@ import { VoucherService } from 'src/app/shared/store/voucher/voucher.service';
 import { VoucherStoreService } from 'src/app/shared/store/voucher/voucher.store';
 import { UserStoreService } from 'src/app/shared/store/user/user.store';
 import { UserService } from 'src/app/shared/store/user/user.service';
+import { MatInputModule } from '@angular/material/input';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -36,7 +39,10 @@ import { UserService } from 'src/app/shared/store/user/user.service';
     NgxPaginationModule,
     PipesModule,
     CardComponent,
-    AgGridAngular
+    AgGridAngular,
+    MatInputModule,
+    MatSelectModule,
+    MatOptionModule,
   ],
   exports: [
     LinkSaleComponent,

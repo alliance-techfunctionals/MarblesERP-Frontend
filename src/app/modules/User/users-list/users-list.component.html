@@ -13,6 +13,13 @@
           Add
         </button>
       </h4>
+
+      <!-- <div class="input-group mb-2">
+        <div class="form-outline" data-mdb-input-init>
+          <input type="search" id="form1" placeholder="Search Name" class="form-control" />
+        </div>
+      </div> -->
+      
       <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
         <ng-container *ngFor="let role of group.roleList | sortDescending: 'asc' ">
           <li [ngbNavItem]="role.id">
@@ -35,7 +42,6 @@
                   [columnDefs]="colDefs">
                 </ag-grid-angular>
               </ng-container> -->
-
               <div class="table-responsive"> 
                 <table class="table table-striped">
                   <thead>
