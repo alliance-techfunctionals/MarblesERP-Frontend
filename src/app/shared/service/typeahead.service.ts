@@ -17,5 +17,4 @@ export class TypeaheadService {
 				term.length < 2 ? [] : items.filter((v) => v.toLowerCase().startsWith(term.toLocaleLowerCase())).splice(0, 10),
 			),
 		);
-  
 }

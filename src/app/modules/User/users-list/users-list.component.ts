@@ -21,9 +21,9 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./users-list.component.scss'],
 })
 export default class UsersListComponent implements OnInit, OnDestroy {
-  roleList:Role[] = []
+  inputValue:string = '';
   userList:UserModel[] = []
-  // filteredRoleList:Role[] = []
+  filteredUserList:UserModel[] = []
   // colDefs: ColDef[] = [
   //   { headerName: "#", valueGetter: "node.rowIndex + 1", maxWidth: 60 },
   //   { headerName: "Name", field: "name", filter: true, floatingFilter: true },
@@ -70,9 +70,13 @@ export default class UsersListComponent implements OnInit, OnDestroy {
   // users List
   userList$: Observable<UserModel[]> = this.store.selectAll();
   roleList$: Observable<Role[]> = this.roleStoreService.selectAll().pipe(
-    tap((item) => this.active = window.localStorage.getItem('tabIndex') ? Number(window.localStorage.getItem('tabIndex')) : item[0]?.id)
+    tap((item) => {this.active = window.localStorage.getItem('tabIndex') ? Number(window.localStorage.getItem('tabIndex')) : item[0]?.id
+      this.store.selectByRoleId(this.active).subscribe(res=>{
+        this.userList = res
+        this.filteredUserList = this.userList
+      })
+    })
   );
-
 
   // subscription
   subscriptions: Subscription[] = [];
@@ -92,14 +96,15 @@ export default class UsersListComponent implements OnInit, OnDestroy {
       this.userService.getAll().subscribe(),
       this.roleService.getAll().subscribe()
     )
-    this.userList$.subscribe(res =>{
-      this.userList = res
-      // if(this.userList.id == 5000)
-      console.log(this.userList)
-      // this.filteredRoleList = this.roleList
-    })
   }
 
+  onInputChange(event:any){
+    this.inputValue = event.target.value
+    const query = this.inputValue.toLowerCase()
+    this.filteredUserList = this.userList.filter((value)=>
+      value.name.toLowerCase().includes(query)
+    )
+  }
 
   // navigate to User
   protected navigateUser(id: number = 0): void {
@@ -132,9 +137,13 @@ export default class UsersListComponent implements OnInit, OnDestroy {
   }
 
   tabClick(id: number) {
+    console.log(this.userList)
     window.localStorage.setItem('tabIndex', id.toString());
+    this.store.selectByRoleId(Number(window.localStorage.getItem('tabIndex'))).subscribe(res=>{
+      this.userList = res
+      this.filteredUserList = this.userList
+    })
   }
-
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());

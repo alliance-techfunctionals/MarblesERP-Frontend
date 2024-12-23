@@ -14,11 +14,11 @@
         </button>
       </h4>
 
-      <!-- <div class="input-group mb-2">
+      <div class="input-group mb-2">
         <div class="form-outline" data-mdb-input-init>
-          <input type="search" id="form1" placeholder="Search Name" class="form-control" />
+          <input type="search" id="form1" placeholder="Search Name" class="form-control" (input)="onInputChange($event)" />
         </div>
-      </div> -->
+      </div>
       
       <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
         <ng-container *ngFor="let role of group.roleList | sortDescending: 'asc' ">
@@ -42,6 +42,7 @@
                   [columnDefs]="colDefs">
                 </ag-grid-angular>
               </ng-container> -->
+
               <div class="table-responsive"> 
                 <table class="table table-striped">
                   <thead>
@@ -62,7 +63,7 @@
                         UsersListByRole: (selectUserByRoleId(role.id) | async) ?? []
                       } as group1"
                     >
-                      <tr *ngFor="let user of group1.UsersListByRole | orderBy: 'id': 'desc' | paginate: pagingConfig; let i = index">
+                      <tr *ngFor="let user of filteredUserList | orderBy: 'id': 'desc' | paginate: pagingConfig; let i = index">
                         <td>{{ i + 1 }}</td>
                         <td>{{ user.name }}</td>
                         <!-- <td>{{ user.emailAddressList && user.emailAddressList[0] ? user.emailAddressList[0]: 'N/A' }}</td> -->
