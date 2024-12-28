@@ -186,11 +186,14 @@ export default class UserDetailComponent implements OnInit, OnDestroy {
       if(value==5000){
         this.showSupplierCode =true;
         this.userForm.get('userCode')?.setValidators([Validators.required]);
+        this.userForm.get('lastSupplierProductCode')?.setValidators([Validators.required]);
       }else{
         this.showSupplierCode = false;
         this.userForm.get('userCode')?.clearValidators();
+        this.userForm.get('lastSupplierProductCode')?.clearValidators();
       }
       this.userForm.get('userCode')?.updateValueAndValidity();
+      this.userForm.get('lastSupplierProductCode')?.updateValueAndValidity();
     })
   
   }
