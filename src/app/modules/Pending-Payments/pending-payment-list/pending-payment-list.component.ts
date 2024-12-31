@@ -24,6 +24,10 @@ import { AgGridService } from 'src/app/shared/service/ag-grid.service';
   styleUrls: ['./pending-payment-list.component.scss']
 })
 export default class PendingPaymentListComponent implements OnInit, OnDestroy{
+  isPaymentLoading = false;
+  isUserLoading = false;
+  isSaleLoading = false;
+
   colDefs: ColDef[] = [
     { headerName: "Date", field: "createdOn", filter: "agDateColumnFilter", floatingFilter: true , valueFormatter: params => {
       if (!params.value) return "N/A"; // Check if the date is null or undefined
@@ -118,12 +122,15 @@ export default class PendingPaymentListComponent implements OnInit, OnDestroy{
   ) { }
 
   ngOnInit() {
+    this.isPaymentLoading = true;
+    this.isSaleLoading = true;
+    this.isUserLoading = true;
     this.store.resetPendingPaymentStore();
     this.userStoreService.resetUserStore();
     this.subscriptions.push(
-      this.pendingPaymentService.getAll().subscribe(),
-      this.saleService.getAll().subscribe(),
-      this.userService.getAll().subscribe()
+      this.pendingPaymentService.getAll().subscribe(() => this.isPaymentLoading = false),
+      this.saleService.getAll().subscribe(() => this.isSaleLoading = false),
+      this.userService.getAll().subscribe(() => this.isUserLoading = false),
     )
   }
 

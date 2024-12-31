@@ -14,8 +14,13 @@
         <!-- total functinality is written to send alerts and just need to uncomment the code in html and ts file -->
       </h4>
       <hr />
-
-      <ag-grid-angular 
+      <div *ngIf="isPaymentLoading || isSaleLoading || isUserLoading" class="loader-container d-flex justify-content-center py-3">
+        <div class="spinner-border" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    <ag-grid-angular 
+    *ngIf="!isPaymentLoading && !isSaleLoading && !isUserLoading"
         [pagination]="true" 
         [paginationPageSizeSelector]="paginationPageSize" 
         [paginationPageSize]="10" 

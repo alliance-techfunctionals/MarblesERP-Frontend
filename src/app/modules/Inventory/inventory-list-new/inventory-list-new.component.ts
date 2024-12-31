@@ -29,6 +29,7 @@ import { UserStoreService } from 'src/app/shared/store/user/user.store';
   styleUrls: ['./inventory-list-new.component.scss']
 })
 export class InventoryListNewComponent implements OnInit {
+  isLoading = false;
   angularGrid!: AngularGridInstance;
   // gridOptions!: GridOption;
   // columnDefinitions: Column[] = [];
@@ -61,8 +62,9 @@ export class InventoryListNewComponent implements OnInit {
     private changeDetectorRef: ChangeDetectorRef,
     private zone: NgZone
   ) { }
-
+  
   ngOnInit(): void {
+    this.isLoading = true;
     this.store.resetInventoryStore();
 
     this.subscriptions.push(
@@ -73,6 +75,7 @@ export class InventoryListNewComponent implements OnInit {
         .subscribe(() => {
           // this.prepareGrid();
           this.changeDetectorRef.markForCheck();
+          this.isLoading = false
         })
     )
 

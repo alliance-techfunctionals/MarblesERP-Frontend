@@ -87,7 +87,13 @@
 
       <hr>
       <div>
+      <div *ngIf="isServiceLoading || isUserServiceLoading" class="loader-container d-flex justify-content-center py-3">
+        <div class="spinner-border" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
         <ag-grid-angular 
+          *ngIf="!isServiceLoading && !isUserServiceLoading"
           [pagination]="true" 
           [paginationPageSizeSelector]="paginationPageSize" 
           [paginationPageSize]="10" 
