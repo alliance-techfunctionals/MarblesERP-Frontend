@@ -28,6 +28,7 @@ import printJS from "print-js";
   styleUrls: ["./purchase-voucher-list.component.scss"],
 })
 export class PurchaseVoucherListComponent implements OnInit {
+  isLoading = false;
   colDefs: ColDef[] = [
     {
       headerName: "#",
@@ -167,7 +168,7 @@ export class PurchaseVoucherListComponent implements OnInit {
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
-
+    this.isLoading = true;
     console.log("Hi there");
     this.store.resetPurchaseVoucherStore();
     this.userStoreService.resetUserStore();
@@ -184,7 +185,9 @@ export class PurchaseVoucherListComponent implements OnInit {
           }
         )
       )
-      .subscribe()
+      .subscribe(()=>{
+        this.isLoading = false;
+      })
   );
 
 

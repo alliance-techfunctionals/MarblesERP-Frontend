@@ -28,6 +28,7 @@ import { UserStoreService } from 'src/app/shared/store/user/user.store';
   styleUrls: ['./inventory-list-by-vendor.component.scss']
 })
 export class InventoryListByVendorComponent {
+  isLoading = false;
   angularGrid!: AngularGridInstance;
   // gridOptions!: GridOption;
   // columnDefinitions: Column[] = [];
@@ -62,6 +63,7 @@ export class InventoryListByVendorComponent {
   ) { }
 
   ngOnInit(): void {
+    this.isLoading = true;
     this.store.resetInventoryStore();
 
     this.subscriptions.push(
@@ -72,6 +74,7 @@ export class InventoryListByVendorComponent {
         .subscribe(() => {
           // this.prepareGrid();
           this.changeDetectorRef.markForCheck();
+          this.isLoading = false;
         })
     )
 

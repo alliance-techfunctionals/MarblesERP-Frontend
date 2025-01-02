@@ -117,13 +117,13 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
     id: [0],
     guid: [""],
     size: ["", Validators.required],
-    qualityType: ["", Validators.required],
+    qualityType: ["Pachekaari", Validators.required],
     product: ["", Validators.required],
     productCode: [""],
-    shape: ["", Validators.required],
-    primaryStone: ["", Validators.required],
-    design: ["", Validators.required],
-    primaryColor: ["", Validators.required],
+    shape: ["OCT", Validators.required],
+    primaryStone: ["White", Validators.required],
+    design: ["Gulab", Validators.required],
+    primaryColor: ["Mix", Validators.required],
     stonesNb: [null],
     supplierId: ["", Validators.required],
     costPrice: [null],
@@ -700,9 +700,8 @@ export default class InventoryDetailComponent implements OnInit, OnDestroy {
       .subscribe();
   }
   getSellPrice(event:any){
-    console.log(event.target.value * 12)
     this.inventoryForm.patchValue({
-      sellingPrice: (event.target.value * 12)
+      sellingPrice: (event.target.value * 10)
     })
   }
 }

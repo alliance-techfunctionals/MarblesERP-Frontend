@@ -20,7 +20,13 @@
               <li [ngbNavItem]="1">
                 <button ngbNavLink>Shipment</button>
                 <ng-template ngbNavContent>
+                    <div *ngIf="isDeliveryShipmentLoading || isSaleLoading || isUserLoading" class="loader-container d-flex justify-content-center py-3">
+                      <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                      </div>
+                    </div>
                   <ag-grid-angular 
+                  *ngIf="!isDeliveryShipmentLoading && !isSaleLoading && !isUserLoading"
                     [pagination]="true" 
                     [paginationPageSizeSelector]="paginationPageSize" 
                     [paginationPageSize]="10" 
@@ -63,7 +69,13 @@
               <li [ngbNavItem]="2">
                 <button ngbNavLink>Delivered</button>
                 <ng-template ngbNavContent>
+                  <div *ngIf="isDeliveryShipmentLoading || isSaleLoading || isUserLoading" class="loader-container d-flex justify-content-center py-3">
+                    <div class="spinner-border" role="status">
+                      <span class="sr-only">Loading...</span>
+                    </div>
+                  </div>
                 <ag-grid-angular 
+                *ngIf="!isDeliveryShipmentLoading && !isSaleLoading && !isUserLoading" 
                   [pagination]="true" 
                   [paginationPageSizeSelector]="false" 
                   [paginationPageSize]="10" 
