@@ -36,10 +36,13 @@ import { ArtisanService } from 'src/app/shared/store/artisan/artisan.service';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
-
+import {MatDatepickerModule} from '@angular/material/datepicker';
 import { Column, GridOption, AngularSlickgridModule } from 'angular-slickgrid';
 import { InventoryListNewComponent } from './inventory-list-new/inventory-list-new.component';
-
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatNativeDateModule } from '@angular/material/core';
+import {NativeDateAdapter} from '@angular/material/core';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -82,8 +85,8 @@ import { InventoryListNewComponent } from './inventory-list-new/inventory-list-n
     TypeaheadModule,
     NgbAccordionModule,
     TagInputModule,
-    TableModule, ButtonModule, RippleModule,
-    AngularSlickgridModule.forRoot(),
+    TableModule, ButtonModule, RippleModule,MatFormFieldModule, MatDatepickerModule,MatNativeDateModule,
+    AngularSlickgridModule.forRoot(), FormsModule
   ],
   exports: [
     InventoryListComponent,
@@ -92,3 +95,4 @@ import { InventoryListNewComponent } from './inventory-list-new/inventory-list-n
   ]
 })
 export class InventoryModule { }
+
