@@ -1,8 +1,10 @@
-import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Aggregators, AngularGridInstance, AngularSlickgridComponent, Column, FieldType, Formatters, GridOption, GridStateChange, SlickDataView, SlickGrid, SortComparers, SortDirectionNumber } from 'angular-slickgrid';
 import { update } from 'lodash';
 import { BsModalService } from 'ngx-bootstrap/modal';
+import { it } from 'node:test';
 import printJS from 'print-js';
 import { combineLatest, concatMap, filter, map, Observable, of, Subscription, tap } from 'rxjs';
 import { ImageService } from 'src/app/core/service/Image.service';
@@ -22,6 +24,7 @@ import { QualityService } from 'src/app/shared/store/quality/quality.service';
 import { QualityStoreService } from 'src/app/shared/store/quality/quality.store';
 import { UserService } from 'src/app/shared/store/user/user.service';
 import { UserStoreService } from 'src/app/shared/store/user/user.store';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-inventory-list-new',
@@ -31,6 +34,7 @@ import { UserStoreService } from 'src/app/shared/store/user/user.store';
 export class InventoryListNewComponent implements OnInit {
   isLoading = false;
   angularGrid!: AngularGridInstance;
+  range!:FormGroup
   // gridOptions!: GridOption;
   // columnDefinitions: Column[] = [];
   dataset: any[] = [];
@@ -62,8 +66,12 @@ export class InventoryListNewComponent implements OnInit {
     private changeDetectorRef: ChangeDetectorRef,
     private zone: NgZone
   ) { }
-  
+
   ngOnInit(): void {
+    this.range = new FormGroup({
+      start: new FormControl<Date | null>(null,[Validators.required]),
+      end: new FormControl<Date | null>(null,[Validators.required]),
+    });
     this.isLoading = true;
     this.store.resetInventoryStore();
 
@@ -113,6 +121,7 @@ export class InventoryListNewComponent implements OnInit {
     ).subscribe((data) => {
       const sortedData = data.sort((a: { id: number; }, b: { id: number; }) => b.id - a.id);
       this.dataset = sortedData;
+      console.log(this.dataset)
       this.updateGridData();
       this.changeDetectorRef.markForCheck();
     });
@@ -582,5 +591,27 @@ export class InventoryListNewComponent implements OnInit {
       this.changeDetectorRef.detectChanges();
     }
   }
+  
+  downloadExcel() {
+  if (this.range.invalid) return;
+    const { start, end } = this.range.value;
+    const startDate = new Date(start ? start.toLocaleDateString('en-US') : null)
+    const endDate = new Date(end ? end.toLocaleDateString('en-US') : null)
+  
+    const formattedData = this.dataset.map((item: any) => {
+      const itemDate = new Date(item.createdOn);
+      const formattedDate = itemDate.toLocaleDateString('en-US'); 
+      return { ...item, createdOn: formattedDate };
+    });
 
+    const filteredData = formattedData.filter(item => {
+      const itemDate = new Date(item.createdOn);
+      return itemDate >= startDate && itemDate <= endDate;
+    });
+  
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(filteredData);
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    XLSX.writeFile(wb, 'inventory-data.xlsx');
+  }
 }
