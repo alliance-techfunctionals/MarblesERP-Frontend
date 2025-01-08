@@ -607,7 +607,7 @@ export class InventoryListNewComponent implements OnInit {
   }
 
   hoveredDate: NgbDate | null = null;
-  fromDate1: NgbDate | null = this.calendar.getPrev(this.calendar.getToday(), 'd', 10);
+  fromDate1: NgbDate | null = this.calendar.getToday();
   toDate1: NgbDate | null = this.calendar.getToday();
   limitDate: NgbDate | null = this.calendar.getToday();
 
@@ -634,6 +634,13 @@ export class InventoryListNewComponent implements OnInit {
     return (
       this.fromDate && !this.toDate && this.hoveredDate && date.after(this.fromDate1) && date.before(this.hoveredDate)
     );
+  }
+
+  showFormatDate(date: NgbDate | null): string {
+    if (date) {
+      return `${date.day.toString().padStart(2, '0')}-${date.month.toString().padStart(2, '0')}-${date.year}`;
+    }
+    return '';
   }
 
   formatDate(date: NgbDate | null): string | null {

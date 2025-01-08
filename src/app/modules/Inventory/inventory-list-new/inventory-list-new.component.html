@@ -55,8 +55,8 @@
               </div>
             </div>
             <div class="input-group">
-              <input #dpFromDate class="form-control" placeholder="yyyy-mm-dd" name="dpFromDate"
-                [value]="formatter.format(fromDate1)"
+              <input #dpFromDate class="form-control" placeholder="dd-mm-yyyy" name="dpFromDate"
+                [value]="showFormatDate(fromDate1)"
                 (input)="fromDate1 = dateService.validateInput(fromDate1, dpFromDate.value)" />
               <button class="btn btn-outline-secondary bi bi-calendar3" (click)="datepicker.toggle()"
                 type="button"></button>
@@ -64,8 +64,8 @@
           </div>
           <div class="ms-2">
             <div class="input-group">
-              <input #dpToDate class="form-control" placeholder="yyyy-mm-dd" name="dpToDate"
-                [value]="formatter.format(toDate1)"
+              <input #dpToDate class="form-control" placeholder="dd-mm-yyyy" name="dpToDate"
+                [value]="showFormatDate(toDate1)"
                 (input)="toDate1 = dateService.validateInput(toDate1, dpToDate.value)" />
               <button class="btn btn-outline-secondary bi bi-calendar3" (click)="datepicker.toggle()"
                 type="button"></button>
