@@ -8,8 +8,13 @@
         <h4>Custom Order List</h4>
       </h4>
       <hr />
-
+        <div *ngIf="isCustomOrderLoading || isUserLoading || isRoleLoading" class="loader-container d-flex justify-content-center py-3">
+          <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
       <ag-grid-angular 
+      *ngIf="!isCustomOrderLoading && !isUserLoading && !isRoleLoading"
         [pagination]="true" 
         [paginationPageSizeSelector]="paginationPageSize" 
         [paginationPageSize]="10"

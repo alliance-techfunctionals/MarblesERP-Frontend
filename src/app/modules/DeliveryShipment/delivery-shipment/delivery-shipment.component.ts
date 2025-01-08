@@ -28,6 +28,9 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./delivery-shipment.component.scss']
 })
 export default class DeliveryShipmentComponent implements OnInit, OnDestroy {
+  isDeliveryShipmentLoading = false;
+  isSaleLoading = false;
+  isUserLoading = false;
   colDefs: ColDef[] = [
     { headerName: "Date", field: "createdOn", filter: true, floatingFilter: true,
       valueFormatter: params => {
@@ -194,10 +197,13 @@ export default class DeliveryShipmentComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.isDeliveryShipmentLoading = true;
+    this.isSaleLoading = true;
+    this.isUserLoading = true;
     this.subscriptions.push(
-      this.saleService.getAll().subscribe(),
-      this.userService.getAll().subscribe(),
-      this.deliveryPartnerService.getAll().subscribe()
+      this.saleService.getAll().subscribe(() => this.isSaleLoading = false),
+      this.userService.getAll().subscribe(() => this.isUserLoading = false),
+      this.deliveryPartnerService.getAll().subscribe(() => this.isDeliveryShipmentLoading = false)
     )
   }
 

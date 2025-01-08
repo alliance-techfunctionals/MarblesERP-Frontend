@@ -66,6 +66,7 @@ import { AgCustomDropdownComponent } from "src/app/shared/components/Button/ag-c
   styleUrls: ["./sale-list.component.scss"],
 })
 export default class SaleListComponent implements OnInit, OnDestroy {
+  isLoading = false;
   colDefs: ColDef[] = [
     {
       headerName: "Order Date",
@@ -325,6 +326,7 @@ export default class SaleListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.isLoading = true;
     // check user is sales man or admin
     this.isUserSalesMan = this.authService.getRole() == 2000 ? true : false;
     if (this.isUserSalesMan) {
@@ -352,7 +354,9 @@ export default class SaleListComponent implements OnInit, OnDestroy {
             }
           )
         )
-        .subscribe()
+        .subscribe(() => {
+          this.isLoading = false;
+        })
     );
   }
 

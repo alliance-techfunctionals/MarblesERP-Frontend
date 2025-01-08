@@ -25,7 +25,8 @@ import { AgGridService } from 'src/app/shared/service/ag-grid.service';
   styleUrls: ['./voucher-list.component.scss']
 })
 export default class VoucherListComponent implements OnInit, OnDestroy {
-
+  isServiceLoading = false;
+  isUserServiceLoading = false;
   colDefs: ColDef[] = [
     {
       headerName: "Voucher Date",
@@ -137,11 +138,13 @@ export default class VoucherListComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.isServiceLoading = true;
+    this.isUserServiceLoading = true;
     // check user admin or not
     this.isUserAdmin = this.authService.getRole() == 8000? false: true;
     this.subscriptions.push(
-      this.service.getAll().subscribe(),
-      this.userService.getAll().subscribe()
+      this.service.getAll().subscribe(()=>{this.isServiceLoading = false}),
+      this.userService.getAll().subscribe(()=>{this.isUserServiceLoading = false}),
     )
   }
 

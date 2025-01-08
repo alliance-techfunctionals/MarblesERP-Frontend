@@ -24,6 +24,10 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./custom-order-list.component.scss']
 })
 export default class CustomOrderListComponent implements OnInit, OnDestroy{
+  isCustomOrderLoading = false;
+  isUserLoading = false;
+  isRoleLoading = false;
+
   colDefs: ColDef[] = [
     { headerName: "#", valueGetter: "node.rowIndex + 1", maxWidth: 60 },
     { headerName:"Order No.", field: "orderNumber", filter: true, floatingFilter: true },
@@ -112,11 +116,14 @@ export default class CustomOrderListComponent implements OnInit, OnDestroy{
   ) { }
 
   ngOnInit() {
+    this.isCustomOrderLoading = true;
+    this.isUserLoading = true;
+    this.isRoleLoading = true;
     this.store.resetStore();
     this.subscriptions.push(
-      this.customOrderService.getAll().subscribe(),
-      this.userService.getAll().subscribe(),
-      this.roleService.getAll().subscribe()
+      this.customOrderService.getAll().subscribe(() => this.isCustomOrderLoading = false),
+      this.userService.getAll().subscribe(()=> this.isUserLoading = false),
+      this.roleService.getAll().subscribe(() => this.isRoleLoading = false)
     )
   }
 

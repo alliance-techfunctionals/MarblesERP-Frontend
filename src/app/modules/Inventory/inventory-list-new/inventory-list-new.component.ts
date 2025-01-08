@@ -1,8 +1,11 @@
-import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NgbCalendar, NgbDate, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { Aggregators, AngularGridInstance, AngularSlickgridComponent, Column, FieldType, Formatters, GridOption, GridStateChange, SlickDataView, SlickGrid, SortComparers, SortDirectionNumber } from 'angular-slickgrid';
 import { update } from 'lodash';
 import { BsModalService } from 'ngx-bootstrap/modal';
+import { it } from 'node:test';
 import printJS from 'print-js';
 import { combineLatest, concatMap, filter, map, Observable, of, Subscription, tap } from 'rxjs';
 import { ImageService } from 'src/app/core/service/Image.service';
@@ -11,6 +14,7 @@ import { ModalType } from 'src/app/shared/components/modal-confirm/modal-confirm
 import { ModalDeleteInventoryComponent } from 'src/app/shared/components/modal-delete/modal-delete-inventory.component';
 import { ModalSaleTypeConfirmComponent } from 'src/app/shared/components/modal-sale-type-confirm/modal-sale-type-confirm.component';
 import { AgGridService } from 'src/app/shared/service/ag-grid.service';
+import { DateService } from 'src/app/shared/service/date.service';
 import { Design } from 'src/app/shared/store/design/design.model';
 import { DesignService } from 'src/app/shared/store/design/design.service';
 import { DesignStoreService } from 'src/app/shared/store/design/design.store';
@@ -22,6 +26,8 @@ import { QualityService } from 'src/app/shared/store/quality/quality.service';
 import { QualityStoreService } from 'src/app/shared/store/quality/quality.store';
 import { UserService } from 'src/app/shared/store/user/user.service';
 import { UserStoreService } from 'src/app/shared/store/user/user.store';
+import { dateFilterForm } from 'src/app/shared/store/voucher/voucher.model';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-inventory-list-new',
@@ -29,7 +35,9 @@ import { UserStoreService } from 'src/app/shared/store/user/user.store';
   styleUrls: ['./inventory-list-new.component.scss']
 })
 export class InventoryListNewComponent implements OnInit {
+  isLoading = false;
   angularGrid!: AngularGridInstance;
+  range!: FormGroup
   // gridOptions!: GridOption;
   // columnDefinitions: Column[] = [];
   dataset: any[] = [];
@@ -37,6 +45,13 @@ export class InventoryListNewComponent implements OnInit {
   // subscription
   subscriptions: Subscription[] = [];
 
+
+  dateFilterForm: FormGroup<dateFilterForm> = this.formBuilder.nonNullable.group({
+    fromDate: [new Date(), Validators.required],
+    toDate: [new Date(), Validators.required]
+  });
+
+  
   // inventories List
   inventoryList$: Observable<any> = of([]);
   qualityList$: Observable<Quality[]> = this.qualityStoreService.selectAll();
@@ -46,6 +61,8 @@ export class InventoryListNewComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private calendar: NgbCalendar,
+    protected dateService: DateService,
     private store: InventoryStoreService,
     private service: InventoryService,
     private designStoreService: DesignStoreService,
@@ -57,12 +74,19 @@ export class InventoryListNewComponent implements OnInit {
     private userStoreService: UserStoreService,
     private imageService: ImageService,
     private messageService: MessageToastService,
+    public formatter: NgbDateParserFormatter,
     public agGridService: AgGridService,
     private changeDetectorRef: ChangeDetectorRef,
+    private formBuilder: FormBuilder,
     private zone: NgZone
   ) { }
 
   ngOnInit(): void {
+    this.range = new FormGroup({
+      start: new FormControl<Date | null>(null, [Validators.required]),
+      end: new FormControl<Date | null>(null, [Validators.required]),
+    });
+    this.isLoading = true;
     this.store.resetInventoryStore();
 
     this.subscriptions.push(
@@ -73,6 +97,7 @@ export class InventoryListNewComponent implements OnInit {
         .subscribe(() => {
           // this.prepareGrid();
           this.changeDetectorRef.markForCheck();
+          this.isLoading = false
         })
     )
 
@@ -110,6 +135,7 @@ export class InventoryListNewComponent implements OnInit {
     ).subscribe((data) => {
       const sortedData = data.sort((a: { id: number; }, b: { id: number; }) => b.id - a.id);
       this.dataset = sortedData;
+      console.log(this.dataset)
       this.updateGridData();
       this.changeDetectorRef.markForCheck();
     });
@@ -580,4 +606,107 @@ export class InventoryListNewComponent implements OnInit {
     }
   }
 
+  hoveredDate: NgbDate | null = null;
+  fromDate1: NgbDate | null = this.calendar.getToday();
+  toDate1: NgbDate | null = this.calendar.getToday();
+  limitDate: NgbDate | null = this.calendar.getToday();
+
+  get fromDate() {
+    return this.dateFilterForm.get('fromDate') as FormControl
+  }
+
+  get toDate() {
+    return this.dateFilterForm.get('toDate') as FormControl
+  }
+
+  onDateSelection(date: NgbDate) {
+    if (!this.fromDate && !this.toDate) {
+      this.fromDate1 = date;
+    } else if (this.fromDate1 && !this.toDate1 && date && (date.after(this.fromDate1) || date.equals(this.fromDate1))) {
+      this.toDate1 = date;
+    } else {
+      this.toDate1 = null;
+      this.fromDate1 = date;
+    }
+  }
+
+  isHovered(date: NgbDate) {
+    return (
+      this.fromDate && !this.toDate && this.hoveredDate && date.after(this.fromDate1) && date.before(this.hoveredDate)
+    );
+  }
+
+  showFormatDate(date: NgbDate | null): string {
+    if (date) {
+      return `${date.day.toString().padStart(2, '0')}-${date.month.toString().padStart(2, '0')}-${date.year}`;
+    }
+    return '';
+  }
+
+  formatDate(date: NgbDate | null): string | null {
+    if (!date) return null;
+    const year = date.year; // Full year
+    const month = date.month; // Month without leading zero
+    const day = date.day; // Day without leading zero
+  
+    return `${month}/${day}/${year}`;
+  }
+
+  isInside(date: NgbDate) {
+    return this.toDate && date.after(this.fromDate1) && date.before(this.toDate1);
+  }
+
+  isRange(date: NgbDate) {
+    return (
+      date.equals(this.fromDate1) ||
+      (this.toDate && date.equals(this.toDate1)) ||
+      this.isInside(date) ||
+      this.isHovered(date)
+    );
+  }
+
+  downloadExcel() {
+    if(this.dateFilterForm.invalid) return;
+
+    const startDate = String(this.formatDate(this.fromDate1))
+    const endDate = String(this.formatDate(this.toDate1))
+
+    const formattedData = this.dataset.map((item: any) => {
+      const itemDate = new Date(item.createdOn);
+      const formattedDate = itemDate.toLocaleDateString('en-US');
+      return { ...item, createdOn: formattedDate };
+    });
+
+    const filteredData = formattedData
+      .filter(item => {
+        const itemDate = new Date(item.createdOn);
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        return itemDate >= start && itemDate <= end;
+      })
+      .map((item, index) => {
+        return {
+          srNo: index+1,
+          Date: item.createdOn,
+          supplierName: item.supplierName,
+          size: item.size,
+          qualityType: item.qualityType,
+          product: item.product,
+          productCode: item.productCode,
+          shape: item.shape,
+          primaryStone: item.primaryStone,
+          design: item.design,
+          primaryColor: item.primaryColor,
+          costPrice: item.costPrice,
+          sellingPrice: item.sellingPrice,
+          noOfStones: item.stonesNb
+        };
+      });
+
+    console.log(filteredData, ' filtered')
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(filteredData);
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    XLSX.writeFile(wb, 'inventory-data.xlsx');
+  }
 }

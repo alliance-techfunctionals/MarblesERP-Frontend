@@ -22,8 +22,13 @@
       <!-- <button type="button" *ngIf="inventoryForm.dirty" class="btn btn-primary" [disabled]="inventoryForm.invalid" (click)="uppertInventory()">{{ inventoryForm.value.id === 0 ? "Save" : "Update" }}</button> -->
       <hr />
       <div>
-  
+          <div *ngIf="isLoading" class="loader-container d-flex justify-content-center py-3">
+            <div class="spinner-border" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+          </div>
         <ag-grid-angular #agGrid 
+        *ngIf="!isLoading"
          [rowSelection]="'multiple'"
          [pagination]="true"
          [paginationPageSize]="10"
