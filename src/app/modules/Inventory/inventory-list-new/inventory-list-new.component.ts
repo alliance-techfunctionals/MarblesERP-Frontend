@@ -687,6 +687,7 @@ export class InventoryListNewComponent implements OnInit {
       .map((item, index) => {
         return {
           srNo: index+1,
+          Date: item.createdOn,
           supplierName: item.supplierName,
           size: item.size,
           qualityType: item.qualityType,
@@ -698,8 +699,7 @@ export class InventoryListNewComponent implements OnInit {
           primaryColor: item.primaryColor,
           costPrice: item.costPrice,
           sellingPrice: item.sellingPrice,
-          noOfStones: item.stonesNb,
-          Date: item.createdOn
+          noOfStones: item.stonesNb
         };
       });
 
