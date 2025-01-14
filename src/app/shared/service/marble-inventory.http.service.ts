@@ -651,7 +651,7 @@ export class MarbleInventoryHttpService {
           Authorization: `eyJhbGciOiJuoPlcErtYInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IplkuG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_acRtsw5c`,
           "Accept": "text/plain"
         });
-        return this.http.get<any[]>('https://mpe4d2f55244b420e121.free.beeceptor.com/data', { headers });
+        return this.http.get<any[]>('http://localhost:5019/api/countries', { headers });
   }
 
   getStates(country: any): Observable<any[]> {
