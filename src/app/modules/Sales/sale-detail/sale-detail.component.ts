@@ -167,9 +167,9 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
   // COUNTRIES LIST
   countriesList = G20_COUNTRY_DATA;
   // STATE LIST
-  stateList: string[] = [];
+  stateList: any[] = [];
   // CITY LIST
-  cityList: string[] = [];
+  cityList: any[] = [];
 
   public active = 1;
   // variable to decide nav when showing the payment information step
@@ -494,12 +494,12 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
     if (this.shippingCountry.value != "") {
       // set mobile number with the country code
       const selectedCountry = this.COUNTRY_DATA.find(
-        (country) => country.country_name == this.shippingCountry.value
+        (country) => country.name == this.shippingCountry.value
       );
       // if country is selected then set the country code to the mobile number
-      if (selectedCountry) {
-        countryPhoneCode = selectedCountry.country_phone_code;
-      }
+      // if (selectedCountry) {
+      //   countryPhoneCode = selectedCountry.country_phone_code;
+      // }
     }
     // this.mobileList.push(this.formBuilder.control(`+${countryPhoneCode} `));
     this.mobileList.push(
@@ -1519,8 +1519,10 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
     this.saleService.getCountryList().subscribe(
       (response) => {
         this.COUNTRY_DATA = response;
+        console.log(response, ' ==')
+        console.log(this.COUNTRY_DATA, ' ==>')
         this.countriesList = response.map(
-          (resp: Country) => resp["country_name"]
+          (resp: Country) => resp["name"]
         );
       },
       (error) => {
@@ -1533,48 +1535,73 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
     if (this.shippingCountry.value != "") {
       // set mobile number with the country code
       const selectedCountry = this.COUNTRY_DATA.find(
-        (country) => country.country_name == this.shippingCountry.value
+        (country) => country.name == this.shippingCountry.value
       );
       // if country is selected then set the country code to the mobile number
       if (selectedCountry) {
-        const countryPhoneCode = selectedCountry.country_phone_code;
-        const updatedMobileList = this.clientDetailForm
-          .get("mobileList")
-          ?.value.map((mobileNumber: string) => {
-            // Assuming mobile numbers might already contain a country code, you may want to replace or prepend the new one
-            // For simplicity, this example just prepends the new country code
-            return `+${countryPhoneCode} `;
-          });
+        // const countryPhoneCode = selectedCountry.country_phone_code;
+        // const updatedMobileList = this.clientDetailForm
+        //   .get("mobileList")
+        //   ?.value.map((mobileNumber: string) => {
+        //     // Assuming mobile numbers might already contain a country code, you may want to replace or prepend the new one
+        //     // For simplicity, this example just prepends the new country code
+        //     return `+${countryPhoneCode} `;
+        //   });
 
-        this.clientDetailForm.get("mobileList")?.setValue(updatedMobileList!);
+        // this.clientDetailForm.get("mobileList")?.setValue(updatedMobileList!);
       }
 
-      this.saleService.getStateList(this.shippingCountry.value).subscribe(
-        (response) => {
-          this.stateList = response.map((resp: State) => resp["state_name"]);
-        },
-        (error) => {
-          console.error("Error fetching state list:", error);
-        }
-      );
+      if (selectedCountry && selectedCountry.id) {
+        const countryId = selectedCountry.id;
+  
+        // Fetch states using the country ID
+        this.saleService.getStateList(countryId).subscribe(
+          (response) => {
+            this.stateList = response.map((resp: State) => resp["name"]);
+          },
+          (error) => {
+            console.error("Error fetching state list:", error);
+          }
+        );
+      } else {
+        console.warn("Selected country does not have a valid ID.");
+      }
     } else {
       // remove country code from the mobile number
+      this.stateList = []
       this.clientDetailForm.get("mobileList")?.setValue([""]);
     }
   }
 
   getCityList() {
     if (this.shippingState.value != "") {
-      this.saleService.getCityList(this.shippingState.value).subscribe(
-        (response) => {
-          this.cityList = response.map((resp: City) => resp["city_name"]);
-        },
-        (error) => {
-          console.error("Error fetching city list:", error);
-        }
+      // Find the selected state object based on the state name
+      const selectedState = this.stateList.find(
+        (state) => state.name === this.shippingState.value
       );
+  
+      // Ensure the selected state exists and has a valid ID
+      if (selectedState && selectedState.id) {
+        const stateId = selectedState.id;
+  
+        // Fetch cities using the state ID
+        this.saleService.getCityList(stateId).subscribe(
+          (response) => {
+            this.cityList = response.map((resp: City) => resp["name"]);
+          },
+          (error) => {
+            console.error("Error fetching city list:", error);
+          }
+        );
+      } else {
+        console.warn("Selected state does not have a valid ID.");
+      }
+    } else {
+      // Clear city list if no state is selected
+      this.cityList = [];
     }
   }
+  
 
   searchCountry = (text$: Observable<string>) =>
     text$.pipe(

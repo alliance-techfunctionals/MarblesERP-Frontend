@@ -26,7 +26,7 @@ import { SubPendingPaymentModel } from '../store/sub-pending-payment/sub-pending
 import { UserModel } from '../store/user/user.model';
 import { VoucherModel } from '../store/voucher/voucher.model';
 import { City, Country, OpenSourceDataService, State } from './open-source-data.service';
-import {PurchaseModel } from '../store/Purchase-voucher/purchase.model';
+import { PurchaseModel } from '../store/Purchase-voucher/purchase.model';
 
 @Injectable({
   providedIn: 'root'
@@ -50,19 +50,19 @@ export class MarbleInventoryHttpService {
 
 
   // Sign In API
-  signInUser(user: SignInModel): Observable<string>{
+  signInUser(user: SignInModel): Observable<string> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const requestOptions: Object = {
       headers: headers,
       responseType: 'text'
     }
-    return this.http.post<string>(`${this.baseUrl}Authorization/logIn`,user,requestOptions)
+    return this.http.post<string>(`${this.baseUrl}Authorization/logIn`, user, requestOptions)
   }
 
   // User API
   getAllUser(): Observable<UserModel[]> {
     const headers = this.getHeaders();
-    return this.http.get<UserModel[]>(`${this.baseUrl}user`,{ headers: headers});
+    return this.http.get<UserModel[]>(`${this.baseUrl}user`, { headers: headers });
   }
 
   insertUser(user: UserModel): Observable<UserModel> {
@@ -83,7 +83,7 @@ export class MarbleInventoryHttpService {
   // Role API
   getAllRole(): Observable<Role[]> {
     const headers = this.getHeaders();
-    return this.http.get<Role[]>(`${this.baseUrl}user/userrole`,{ headers: headers});
+    return this.http.get<Role[]>(`${this.baseUrl}user/userrole`, { headers: headers });
   }
 
   // Quality (qualityTypeName) API
@@ -130,8 +130,8 @@ export class MarbleInventoryHttpService {
   }
 
 
-  
-  
+
+
   // Artisan API
   getAllArtisan(): Observable<ArtisanResponse[]> {
     const headers = this.getHeaders();
@@ -184,7 +184,7 @@ export class MarbleInventoryHttpService {
 
     delete inventory.guid;
 
-    
+
     const authToken = localStorage.getItem('Token');
     const headers = new HttpHeaders({
       Authorization: `Bearer ${authToken}`
@@ -193,24 +193,24 @@ export class MarbleInventoryHttpService {
     // Convert the array into query parameters
     let params = new HttpParams();
     params = params.append('quantity', inventory.quantity);
-    
+
     const requestOptions = {
       headers: headers,
       params: params,
     };
     return this.http.post<InventoryModel>(`${this.baseUrl}inventory`, inventory, requestOptions);
   }
-  
+
   // updateInventory(inventory: InventoryModel): Observable<InventoryModel> {
   //   console.log(inventory)
-        
+
   //   let params = new HttpParams();
   //   const authToken = localStorage.getItem('Token');
   //   const headers = new HttpHeaders({
   //     Authorization: `Bearer ${authToken}`
   //   });
-    
-    
+
+
   //   params = params.append('id', inventory.id);
   //   // params = params.append('guid', inventory.guid);
 
@@ -223,14 +223,14 @@ export class MarbleInventoryHttpService {
   // }
   updateInventoryById(inventory: InventoryModel): Observable<InventoryModel> {
     console.log(inventory)
-        
+
     let params = new HttpParams();
     const authToken = localStorage.getItem('Token');
     const headers = new HttpHeaders({
       Authorization: `Bearer ${authToken}`
     });
-    
-    
+
+
     params = params.append('id', inventory.id);
     // params = params.append('guid', inventory.guid);
 
@@ -243,14 +243,14 @@ export class MarbleInventoryHttpService {
   }
   updateInventoryByGuid(inventory: InventoryModel): Observable<InventoryModel> {
     console.log(inventory)
-        
+
     let params = new HttpParams();
     const authToken = localStorage.getItem('Token');
     const headers = new HttpHeaders({
       Authorization: `Bearer ${authToken}`
     });
-    
-    if(inventory.guid){
+
+    if (inventory.guid) {
       params = params.append('guid', inventory.guid);
     }
 
@@ -261,7 +261,7 @@ export class MarbleInventoryHttpService {
     };
     return this.http.put<InventoryModel>(`${this.baseUrl}inventory`, inventory, requestOptions);
   }
-  
+
   deleteInventory(inventory: InventoryModel): Observable<InventoryModel> {
 
     const authToken = localStorage.getItem('Token');
@@ -277,7 +277,7 @@ export class MarbleInventoryHttpService {
       headers: headers,
       params: params,
     };
-    
+
     return this.http.delete<InventoryModel>(`${this.baseUrl}inventory`, requestOptions);
   }
   deleteInventoryById(inventory: InventoryModel): Observable<InventoryModel> {
@@ -295,7 +295,7 @@ export class MarbleInventoryHttpService {
       headers: headers,
       params: params,
     };
-    
+
     return this.http.delete<InventoryModel>(`${this.baseUrl}inventory`, requestOptions);
   }
   deleteInventoryByGuid(inventory: InventoryModel): Observable<InventoryModel> {
@@ -305,7 +305,7 @@ export class MarbleInventoryHttpService {
       Authorization: `Bearer ${authToken}`
     });
     let params = new HttpParams();
-    if(inventory.guid){
+    if (inventory.guid) {
 
       params = params.append('guid', inventory.guid);
     }
@@ -315,13 +315,13 @@ export class MarbleInventoryHttpService {
       headers: headers,
       params: params,
     };
-    
+
     return this.http.delete<InventoryModel>(`${this.baseUrl}inventory`, requestOptions);
   }
-  
+
   checkInventory(inventory: CheckInventoryModel): Observable<CheckInventoryModel> {
     const headers = this.getHeaders();
-    return this.http.post<CheckInventoryModel>(`${this.baseUrl}inventory/check-inventory`,inventory, { headers: headers });
+    return this.http.post<CheckInventoryModel>(`${this.baseUrl}inventory/check-inventory`, inventory, { headers: headers });
   }
 
   // printInventoryBarcode(ids: number[]): Observable<string> {
@@ -339,17 +339,17 @@ export class MarbleInventoryHttpService {
     // Convert the array into query parameters
     let params = new HttpParams();
     ids.forEach(id => {
-        params = params.append('ids', id.toString());
+      params = params.append('ids', id.toString());
     });
 
     const requestOptions = {
-        headers: headers,
-        params: params,
-        responseType: 'text' as 'json' // Set response type to text
+      headers: headers,
+      params: params,
+      responseType: 'text' as 'json' // Set response type to text
     };
 
     return this.http.get<string>(`${this.baseUrl}inventory/generate-barcode`, requestOptions);
-}
+  }
 
 
 
@@ -357,27 +357,27 @@ export class MarbleInventoryHttpService {
 
   // Purchase-Voucher Product API
 
-  insertPurchaseVoucher(purchase:PurchaseModel):Observable<PurchaseModel>{
+  insertPurchaseVoucher(purchase: PurchaseModel): Observable<PurchaseModel> {
     const headers = this.getHeaders();
-    return this.http.post<PurchaseModel>(`${this.baseUrl}purchase-voucher`, purchase,{headers:headers});
-  }
-  
-  getPurchaseVoucher():Observable<PurchaseModel[]>{
-    const headers = this.getHeaders();
-    return this.http.get<PurchaseModel[]>(`${this.baseUrl}purchase-voucher` , {headers : headers});
-  }
-  updatePurchaseVoucher(purchase:PurchaseModel):Observable<PurchaseModel>{
-    const headers = this.getHeaders();
-    return this.http.put<PurchaseModel>(`${this.baseUrl}purchase-voucher/${purchase.id}` , purchase ,{headers : headers});
-  }
-  deletePurchaseVoucher(purchase:PurchaseModel): Observable<PurchaseModel> {
-    const headers = this.getHeaders();
-    return this.http.delete<PurchaseModel>(`${this.baseUrl}purchase-voucher/${purchase.id}`,{ headers: headers });
+    return this.http.post<PurchaseModel>(`${this.baseUrl}purchase-voucher`, purchase, { headers: headers });
   }
 
-  getPurchaseVoucherById(purchase:PurchaseModel):Observable<PurchaseModel[]>{
+  getPurchaseVoucher(): Observable<PurchaseModel[]> {
     const headers = this.getHeaders();
-    return this.http.get<PurchaseModel[]>(`${this.baseUrl}purchase-voucher${purchase.id}`,{headers : headers});
+    return this.http.get<PurchaseModel[]>(`${this.baseUrl}purchase-voucher`, { headers: headers });
+  }
+  updatePurchaseVoucher(purchase: PurchaseModel): Observable<PurchaseModel> {
+    const headers = this.getHeaders();
+    return this.http.put<PurchaseModel>(`${this.baseUrl}purchase-voucher/${purchase.id}`, purchase, { headers: headers });
+  }
+  deletePurchaseVoucher(purchase: PurchaseModel): Observable<PurchaseModel> {
+    const headers = this.getHeaders();
+    return this.http.delete<PurchaseModel>(`${this.baseUrl}purchase-voucher/${purchase.id}`, { headers: headers });
+  }
+
+  getPurchaseVoucherById(purchase: PurchaseModel): Observable<PurchaseModel[]> {
+    const headers = this.getHeaders();
+    return this.http.get<PurchaseModel[]>(`${this.baseUrl}purchase-voucher${purchase.id}`, { headers: headers });
   }
 
 
@@ -421,7 +421,7 @@ export class MarbleInventoryHttpService {
       headers: headers,
       responseType: 'text'
     }
-    return this.http.get<string>(`${this.baseUrl}sale/voucher/next-voucher-code`,requestOptions);
+    return this.http.get<string>(`${this.baseUrl}sale/voucher/next-voucher-code`, requestOptions);
   }
 
   // sale API
@@ -445,7 +445,7 @@ export class MarbleInventoryHttpService {
     return this.http.delete<SaleModel>(`${this.baseUrl}sale/deleteTransaction/${sale.id}`, { headers: headers });
   }
 
-  isOrderNoExists(orderNo: string): Observable<boolean>{
+  isOrderNoExists(orderNo: string): Observable<boolean> {
     const headers = this.getHeaders();
     return this.http.get<boolean>(`${this.baseUrl}sale/order-exist/${orderNo}`, { headers: headers });
   }
@@ -456,7 +456,7 @@ export class MarbleInventoryHttpService {
       headers: headers,
       responseType: 'text'
     }
-    return this.http.get<string>(`${this.baseUrl}sale/sale/next-order-number`,requestOptions);
+    return this.http.get<string>(`${this.baseUrl}sale/sale/next-order-number`, requestOptions);
   }
 
   getByProductCode(productCode: string): Observable<any> {
@@ -474,7 +474,7 @@ export class MarbleInventoryHttpService {
       headers: headers,
       responseType: 'text'
     }
-    return this.http.post<any>(`${this.baseUrl}Notification/getInvoice/pushE-mail`, saleDetail,requestOptions);
+    return this.http.post<any>(`${this.baseUrl}Notification/getInvoice/pushE-mail`, saleDetail, requestOptions);
   }
 
   printInvoice(saleId: number): Observable<string> {
@@ -510,9 +510,9 @@ export class MarbleInventoryHttpService {
     return this.http.delete<CustomOrderModel>(`${this.baseUrl}sale/deleteTransaction/${customOrder.id}`, { headers: headers });
   }
 
-  orderReceived(customOrder: CustomOrderModel): Observable<string>{
+  orderReceived(customOrder: CustomOrderModel): Observable<string> {
     const headers = this.getHeaders();
-    return this.http.patch<string>(`${this.baseUrl}sale/custom-product-status/${customOrder.id}`,true, { headers: headers })
+    return this.http.patch<string>(`${this.baseUrl}sale/custom-product-status/${customOrder.id}`, true, { headers: headers })
   }
 
   // Custom Order Progress API
@@ -528,7 +528,7 @@ export class MarbleInventoryHttpService {
     formData.append("comments", customOrderProgress.comments);
     formData.append("image", customOrderProgress.image!);
     formData.append("imageUrl", customOrderProgress.imageUrl);
-    
+
     const authToken = localStorage.getItem('Token');
     const headers = new HttpHeaders({
       Authorization: `Bearer ${authToken}`
@@ -544,12 +544,12 @@ export class MarbleInventoryHttpService {
     formData.append("comments", customOrderProgress.comments);
     formData.append("image", customOrderProgress.image!);
     formData.append("imageUrl", customOrderProgress.imageUrl);
-    
+
     const authToken = localStorage.getItem('Token');
     const headers = new HttpHeaders({
       Authorization: `Bearer ${authToken}`
     });
-    
+
     return this.http.put<CustomOrderProgressModel>(`${this.baseUrl}sale/CustomProgress/${customOrderProgress.id}`, formData, { headers: headers });
   }
 
@@ -574,9 +574,9 @@ export class MarbleInventoryHttpService {
     return this.http.put<PendingPaymentModel>(`${this.baseUrl}partPayment/${pendingPayment.id}`, pendingPayment, { headers: headers });
   }
 
-  sendReminder(list: number[]): Observable<boolean>{
+  sendReminder(list: number[]): Observable<boolean> {
     const headers = this.getHeaders();
-    return this.http.post<boolean>(`${this.baseUrl}notification/sendPartPaymentAlerts`,list, { headers: headers });
+    return this.http.post<boolean>(`${this.baseUrl}notification/sendPartPaymentAlerts`, list, { headers: headers });
   }
 
   // Sub Payment Pending List
@@ -603,7 +603,7 @@ export class MarbleInventoryHttpService {
   // Link sale voucher API
   patchLinkSaleVoucher(sale: LinkSale): Observable<boolean> {
     const headers = this.getHeaders();
-    return this.http.patch<boolean>(`${this.baseUrl}sale/link-sale?saleMasterId=${sale.saleMasterId}&voucherId=${sale.voucherId == 0? '': sale.voucherId}&gstInvoiceNumber=${sale.invoiceNo}`,sale.saleMasterId, { headers: headers });
+    return this.http.patch<boolean>(`${this.baseUrl}sale/link-sale?saleMasterId=${sale.saleMasterId}&voucherId=${sale.voucherId == 0 ? '' : sale.voucherId}&gstInvoiceNumber=${sale.invoiceNo}`, sale.saleMasterId, { headers: headers });
   }
 
   deleteLinkSaleVoucher(sale: LinkSale): Observable<boolean> {
@@ -636,7 +636,7 @@ export class MarbleInventoryHttpService {
   // Delivery Partner API
   getAllDeliveryPartners(): Observable<DeliveryPartnerModel[]> {
     const headers = this.getHeaders();
-    return this.http.get<DeliveryPartnerModel[]>(`${this.baseUrl}DeliveryPartner`,{ headers: headers});
+    return this.http.get<DeliveryPartnerModel[]>(`${this.baseUrl}DeliveryPartner`, { headers: headers });
   }
 
   insertDeliveryPartner(deliveryPartner: DeliveryPartnerModel): Observable<DeliveryPartnerModel> {
@@ -646,42 +646,31 @@ export class MarbleInventoryHttpService {
 
   // Open Source API for Country and State
   getCountries(): Observable<Country[]> {
-      return this.openSourceDataService.getAuthToken().pipe(
-        switchMap(response => {
-          const authToken = response['auth_token'];
-          const headers = new HttpHeaders({
-            Authorization: `Bearer ${authToken}`,
-            "Accept": "application/json"
-          });
-          return this.http.get<Country[]>('https://www.universal-tutorial.com/api/countries/', { headers });
-        })
-      );
+        // const authToken = response['auth_token'];
+        const headers = new HttpHeaders({
+          Authorization: `eyJhbGciOiJuoPlcErtYInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IplkuG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_acRtsw5c`,
+          "Accept": "text/plain"
+        });
+        return this.http.get<Country[]>('http://localhost:5019/api/countries', { headers });
   }
 
-  getStates(country: string): Observable<State[]> {
-    return this.openSourceDataService.getAuthToken().pipe(
-      switchMap(response => {
-        const authToken = response['auth_token'];
+  getStates(country: any): Observable<State[]> {
+        // const authToken = response['auth_token'];
         const headers = new HttpHeaders({
-          Authorization: `Bearer ${authToken}`,
-          "Accept": "application/json"
+          Authorization: `eyJhbGciOiJuoPlcErtYInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IplkuG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_acRtsw5c`,
+          "Accept": "text/plain"
         });
-        return this.http.get<State[]>(`https://www.universal-tutorial.com/api/states/${country}`, { headers });
-      })
-    );
+        return this.http.get<State[]>(`http://localhost:5019/api/states/${country}`, { headers });
   }
 
-  getCities(state: string): Observable<City[]> {
-    return this.openSourceDataService.getAuthToken().pipe(
-      switchMap(response => {
-        const authToken = response['auth_token'];
+  getCities(state: any): Observable<City[]> {
+        // const authToken = response['auth_token'];
         const headers = new HttpHeaders({
-          Authorization: `Bearer ${authToken}`,
-          "Accept": "application/json"
+          Authorization: `eyJhbGciOiJuoPlcErtYInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IplkuG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_acRtsw5c`,
+          "Accept": "text/plain"
         });
-        return this.http.get<City[]>(`https://www.universal-tutorial.com/api/cities/${state}`, { headers });
-      })
-    );
+        return this.http.get<City[]>(`http://localhost:5019/api/cities/${state}`, { headers });
+    
   }
 
 }
