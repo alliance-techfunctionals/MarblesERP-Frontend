@@ -76,10 +76,11 @@ export default class VoucherListComponent implements OnInit, OnDestroy {
   onDeleteClicked(e: any) {
     this.openDeleteConfirmationModal(e.rowData);
   }
+
   onViewClicked(e: any) {
     this.router.navigate(['voucher/view', e.rowData.id]);
   }
-
+  
   // subscription
   subscriptions: Subscription[] = [];
   // pagination config

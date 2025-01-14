@@ -130,39 +130,39 @@ export class SaleService {
     );
   }
 
-  getCountryList(): Observable<Country[]> {
+  getCountryList(): Observable<any[]> {
     return this.MarbleInventoryHttpService.getCountries().pipe(
       catchError(_error => {
         console.error('Error on getting country list:', _error.error.innerException)
         return EMPTY;
       }),
-      tap((response: Country[]) => {
+      tap((response: any[]) => {
         
         return response;
       })
     );
   }
 
-  getStateList(country: string): Observable<State[]> {
+  getStateList(country: string): Observable<any[]> {
     return this.MarbleInventoryHttpService.getStates(country).pipe(
       catchError(_error => {
         console.error('Error on getting State list:', _error.error.innerException)
         return EMPTY;
       }),
-      tap((response: State[]) => {
+      tap((response: any[]) => {
         
         return response;
       })
     );
   }
 
-  getCityList(state: string): Observable<City[]> {
+  getCityList(state: string): Observable<any[]> {
     return this.MarbleInventoryHttpService.getCities(state).pipe(
       catchError(_error => {
         console.error('Error on getting City list:', _error.error.innerException)
         return EMPTY;
       }),
-      tap((response: City[]) => {
+      tap((response: any[]) => {
         
         return response;
       })

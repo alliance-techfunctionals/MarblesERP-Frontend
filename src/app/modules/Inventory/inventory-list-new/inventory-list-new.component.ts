@@ -107,6 +107,8 @@ export class InventoryListNewComponent implements OnInit {
       this.userStoreService.selectAll(),
     ]).pipe(
       map(([inventories, users]) => {
+        console.log(inventories, ' ==> inventories')
+        console.log(users, ' ==> users')
         const userMap = new Map(users.map((user) => [user.id, user]));
 
         const result = inventories
@@ -135,7 +137,7 @@ export class InventoryListNewComponent implements OnInit {
     ).subscribe((data) => {
       const sortedData = data.sort((a: { id: number; }, b: { id: number; }) => b.id - a.id);
       this.dataset = sortedData;
-      console.log(this.dataset)
+      console.log(this.dataset, '  ==>dataset')
       this.updateGridData();
       this.changeDetectorRef.markForCheck();
     });
