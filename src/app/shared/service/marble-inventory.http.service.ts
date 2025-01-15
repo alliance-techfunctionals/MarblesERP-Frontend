@@ -646,31 +646,18 @@ export class MarbleInventoryHttpService {
 
   // Open Source API for Country and State
   getCountries(): Observable<any[]> {
-        // const authToken = response['auth_token'];
-        const headers = new HttpHeaders({
-          Authorization: `eyJhbGciOiJuoPlcErtYInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IplkuG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_acRtsw5c`,
-          "Accept": "text/plain"
-        });
-        return this.http.get<any[]>('http://localhost:5019/api/countries', { headers });
+    const headers = this.getHeaders();
+    return this.http.get<any[]>(`${this.baseUrl}countries`, { headers: headers });
   }
 
-  getStates(country: any): Observable<any[]> {
-        // const authToken = response['auth_token'];
-        const headers = new HttpHeaders({
-          Authorization: `eyJhbGciOiJuoPlcErtYInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IplkuG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_acRtsw5c`,
-          "Accept": "text/plain"
-        });
-        return this.http.get<any[]>(`http://localhost:5019/api/states/${country}`, { headers });
+  getStates(countryId: string): Observable<any[]> {
+    const headers = this.getHeaders();
+    return this.http.get<any[]>(`${this.baseUrl}states/${countryId}`, { headers: headers });
   }
 
-  getCities(state: any): Observable<any[]> {
-        // const authToken = response['auth_token'];
-        const headers = new HttpHeaders({
-          Authorization: `eyJhbGciOiJuoPlcErtYInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IplkuG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_acRtsw5c`,
-          "Accept": "text/plain"
-        });
-        return this.http.get<any[]>(`http://localhost:5019/api/cities/${state}`, { headers });
-    
+  getCities(stateId: string): Observable<any[]> {
+    const headers = this.getHeaders();
+    return this.http.get<any[]>(`${this.baseUrl}cities/${stateId}`, { headers: headers });
   }
 
 }
