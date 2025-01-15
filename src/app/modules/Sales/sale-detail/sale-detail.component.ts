@@ -1519,10 +1519,8 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
     this.saleService.getCountryList().subscribe(
       (response) => {
         this.COUNTRY_DATA = response;
-        console.log(response, ' ==')
-        console.log(this.COUNTRY_DATA, ' ==>')
         this.countriesList = response.map(
-          (resp: Country) => resp["name"]
+          (resp: any) => resp["name"]
         );
       },
       (error) => {
@@ -1557,7 +1555,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
         // Fetch states using the country ID
         this.saleService.getStateList(countryId).subscribe(
           (response) => {
-            this.stateList = response.map((resp: State) => resp["name"]);
+            this.stateList = response
           },
           (error) => {
             console.error("Error fetching state list:", error);
@@ -1587,7 +1585,7 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
         // Fetch cities using the state ID
         this.saleService.getCityList(stateId).subscribe(
           (response) => {
-            this.cityList = response.map((resp: City) => resp["name"]);
+            this.cityList = response.map((resp: any) => resp["name"]);
           },
           (error) => {
             console.error("Error fetching city list:", error);
@@ -1614,16 +1612,19 @@ export default class SaleDetailComponent implements OnInit, OnDestroy {
       )
     );
 
-  searchState = (text$: Observable<string>) =>
-    text$.pipe(
-      debounceTime(200),
-      distinctUntilChanged(),
-      map((term) =>
-        this.stateList
-          .filter((v) => v.toLowerCase().startsWith(term.toLocaleLowerCase()))
-          .splice(0, 10)
-      )
-    );
+    searchState = (text$: Observable<string>) =>
+      text$.pipe(
+        debounceTime(200),
+        distinctUntilChanged(),
+        map((term) =>
+          this.stateList
+            .filter((v) =>
+              v.name.toLowerCase().startsWith(term.toLowerCase())
+            )
+            .slice(0, 10) 
+            .map((v) => v.name)
+        )
+      );
 
   searchCity = (text$: Observable<string>) =>
     text$.pipe(
